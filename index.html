@@ -5,7 +5,14 @@
 	<title>accounting.js - money-formatting JavaScript library</title>
 	<link href="style.css" rel="stylesheet"/>
 	<script type="text/javascript">
-		var _gaq = _gaq || []; _gaq.push(['_setAccount', 'UA-17884149-3']); _gaq.push(['_trackPageview']); (function() {var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);})();
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-17884149-3']);
+		_gaq.push(['_trackPageview']);
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
 	</script>
 </head>
 
@@ -61,10 +68,7 @@ accounting.formatColumn([123.5, 3456.49, 777888.99, 12345678, -5432], "$ ");</pr
 		
 		<h4><strong>unformat()</strong> - get a value from any formatted number/currency string</h4>
 		<p>Takes any number and removes all currency formatting:</p>
-		<pre class="prettyprint lang-js">var price = accounting.formatMoney(12345678.90, "GBP &pound; "); // GBP &pound; 12,345,678.90
-
-// Remove currency formatting and get value:
-var raw = accounting.unformat(price); // 12345678.9</pre>
+		<pre class="prettyprint lang-js">accounting.unformat("GBP &pound; 12,345,678.90"); // 12345678.9</pre>
 	</section>
 	
 	<section id="demo">
@@ -131,6 +135,7 @@ var raw = accounting.unformat(price); // 12345678.9</pre>
 			<li>Add several other general and excel-style money formatting methods</li>
 			<li>Add padding parameter to override amount of space between currency symbol and value</li>
 			<li>Add parameter to control digit grouping (allowing 4-digit columns, eg. "CNY 123,4567.89")</li>
+			<li>Make <code>formatNumber()</code> by default use the same precision as the provided number</li>
 			<li>Implement feedback</li>
 		</ul>
 	</section>
@@ -150,8 +155,9 @@ var raw = accounting.unformat(price); // 12345678.9</pre>
 		<hr />
 		<p><a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="josscrowcroft" data-url="http://josscrowcroft.github.com/accounting.js" data-text="accounting.js - JavaScript library for money/currency formatting">Tweet</a> &nbsp; <g:plusone size="medium"></g:plusone></p>
 		<h3>Moar Info</h3>
-		<p><small><strong>accounting.js</strong> was made by <a href="http://www.josscrowcroft.com" title="Joss">Joss</a> (that's me) in Hong Kong, originally for internal use in <a href="http://demandanalytics.com" title="Demand Analytics">Demand Analytics</a>' enterprise application. It seemed to be working pretty well, so I'm releasing it in the hope that other people and apps can make use of and contribute to it.</small></p>
-		<p><small>You can follow me on Twitter at <a href="http://twitter.com/josscrowcroft" title="@josscrowcroft on Twitter">@josscrowcroft</a>. Any questions? Just email me <a href="http://www.josscrowcroft.com/contact/" title="Contact Joss">here</a> or post on the <a href="https://github.com/josscrowcroft/accounting.js" title="accounting.js Github repository">accounting.js Github repository</a>.</small></p>
+		<p><small><strong>accounting.js</strong> was made by <a href="http://www.josscrowcroft.com" title="Joss">Joss</a> (that's me) in Hong Kong, originally for internal use in the <a href="http://demandanalytics.com" title="Demand Analytics">Demand Analytics</a> enterprise application. It seemed to be working pretty well, so I'm releasing it in the hope that other people and apps can make use of and contribute to it.</small></p>
+		<p><small>You can follow me on Twitter at <a href="http://twitter.com/josscrowcroft" title="@josscrowcroft on Twitter">@josscrowcroft</a>, I mostly post about JS, HTML5, startups, Hong Kong and things I've built.</small></p>
+		<p><small>Any questions? Just email me <a href="http://www.josscrowcroft.com/contact/" title="Contact Joss">here</a> or post on the <a href="https://github.com/josscrowcroft/accounting.js" title="accounting.js Github repository">accounting.js Github repository</a>.</small></p>
 	</section>
 
 	<script src="https://raw.github.com/josscrowcroft/accounting.js/master/accounting.js"></script>
