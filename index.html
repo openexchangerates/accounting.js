@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="utf-8">
+	<title>accounting.js - money-formatting JavaScript library</title>
+
+	<link href="style.css" rel="stylesheet"/>	
+</head>
+
+<body>
+	<section>
+		<h1>accounting.js</h1>
+		<p><strong>accounting.js</strong> is a tiny JavaScript library for number money and currency formatting, with optional excel-style column rendering (to line up symbols and decimals). It's lightweight, fully localisable and has zero dependencies.</p>
+		<p><a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="josscrowcroft" data-url="http://josscrowcroft.github.com/accounting.js" data-text="accounting.js - JavaScript library for money/currency formatting">Tweet</a> &nbsp; <g:plusone size="medium"></g:plusone></p>
+		<ul>
+			<li><a href="#methods" title="methods">methods</a>
+			<li><a href="#demo" title="demo">demo</a>
+			<li><a href="#instructions" title="instructions">instructions</a>
+			<li><a href="#documentation" title="documentation">documentation</a>
+			<li><a href="#roadmap" title="roadmap">roadmap</a>
+			<li><a href="#support" title="support">feedback / support</a>
+			<li><a href="#download" title="download">download</a>
+			<li><a href="#moar" title="moar info">moar info</a>
+		</ul>
+	</section>
+	
+	<section id="methods">
+		<h2>Library Methods</h2>
+		<h4><strong>formatMoney()</strong> - format any number into currency</h4>
+		<p>The most basic function of this library is money-formatting numbers, with currency symbol, precision (places), and thousand/decimal separators:</p>
+		<pre class="prettyprint lang-js">// Default usage and custom precision/symbol :
+accounting.formatMoney(12345678); // $12,345,678.00
+
+// European formatting:
+accounting.formatMoney(4999.99, "&euro;", 2, ".", ",")); // &euro;4.999,99
+
+// It works for negative values, too:
+accounting.formatMoney(-500000, "&pound; ", 0) ); // &pound; -500,000</pre>
+		<h4><strong>formatColumn()</strong> - format a list of values for column-display</h4>
+		<p>This table demonstrates how <strong>accounting.js</strong> can take a list of numbers and money-format them with padding to line up currency symbols and decimal places (NB: <code>white-space:pre</code> is needed for the browser to render the padded spaces):</p>
+		<table id="demo-table">
+			<thead>
+				<tr>
+					<th>Original Number:</th>
+					<th>With accounting.js:</th>
+					<th>Different settings:</th>
+					<th>European format:</th>
+					<th>Symbol after value:</th>
+				</tr>
+			</thead>
+			<tbody></tbody>
+		</table>
+		<pre class="prettyprint lang-js">// Format list of numbers for display:
+accounting.formatColumn([123.5, 3456.49, 777888.99, 12345678, -5432], "$ ");</pre>
+
+		<h4><strong>formatNumber()</strong> - format a number with custom precision and localisation</h4>
+		<p>The base function of the library, which takes any number or array of numbers, runs <code>accounting.unformat()</code> to remove any formatting, and returns the number(s) formatted with separated thousands and custom precision:</p>
+		<pre class="prettyprint lang-js">accounting.formatNumber(9876543); // 9,876,543</pre>
+		
+		<h4><strong>unformat()</strong> - get a value from any formatted number/currency string</h4>
+		<p>Takes any number and removes all currency formatting:</p>
+		<pre class="prettyprint lang-js">var price = accounting.formatMoney(12345678.90, "GBP &pound; "); // GBP &pound; 12,345,678.90
+
+// Remove currency formatting and get value:
+var raw = accounting.unformat(price); // 12345678.9</pre>
+	</section>
+	
+	<section id="demo">
+		<h2>Demo / Try it out</h2>
+		
+		<h4>Money formatting:</h4>
+		<div class="well">
+			<p>Enter any number into the box and choose currency. Uses <code>accounting.formatMoney()</code>:</p>
+			<p>
+				<select id="demo-number-symbol">
+					<option value="$ ">$</option>
+					<option value="&pound; ">&pound;</option>
+					<option value="HK$ ">HK$</option>
+					<option data-locale="european" value="&euro; ">&euro; </option>
+				</select>
+				<input type="text" maxlength="20" class="" id="demo-number-value" value="" />
+			</p>
+			<p>Result: <strong><span id="demo-number-result">$ 0.00</span></strong></p>
+		</div>
+		
+		<h4>Column formatting:</h4>
+		<div class="well">
+			<p>Edit the values in the table to see how <strong>formatColumn()</strong> keeps them aligned:</p>
+			<table id="demo-column">
+				<tbody>
+					<tr>
+						<td><input type="text" value="1000000" maxlength="20" /></td>
+						<td class="output">$ 1,000,000.00</td>
+					</tr>
+					<tr>
+						<td><input type="text" value="-5000" maxlength="20" /></td>
+						<td class="output">$    -5,000.00</td>
+					</tr>
+					<tr>
+						<td><input type="text" value="0" maxlength="20" /></td>
+						<td class="output">$         0.00</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</section>
+	
+	<section id="instructions">
+		<h2>Instructions / How to use</h2>
+		<p>1. Download the script and put it somewhere, then do this:</p>
+		<pre class="prettyprint">&lt;script src=&quot;path/to/accounting.js&quot;&gt;&lt;/script&gt;
+
+&lt;script type=&quot;text/javascript&quot;&gt;
+	// You can do this now:
+	accounting.formatMoney(5318008);
+&lt;/script&gt;</pre>
+		<p>2. Check out the documentation for full method/parameter info if you get stuck.</p>
+	</section>
+
+	<section id="documentation">	
+		<h2>Documentation</h2>
+		<p>Haven't had a chance to write detailed documentation yet, check back in about 72 hours.</p>
+	</section>
+	
+	<section id="roadmap">	
+		<h2>Roadmap</h2>
+		<h4>Next Version:</h4>
+		<ul>
+			<li>Add several other general and excel-style money formatting methods</li>
+			<li>Add padding parameter to override amount of space between currency symbol and value</li>
+			<li>Add parameter to control digit grouping (allowing 4-digit columns, eg. "CNY 123,4567.89")</li>
+			<li>Implement feedback</li>
+		</ul>
+	</section>
+	
+	<section id="support">	
+		<h2>Feedback / Support</h2>
+		<p>Please create issues on the <a href="https://github.com/josscrowcroft/accounting.js" title="accounting.js Github repository">accounting.js Github repository</a> if you have feedback or need support, or comment on <a href="http://www.josscrowcroft.com" title="Joss">Joss's blog</a>.</p>
+	</section>
+	
+	<section id="download">	
+		<h2>Download</h2>
+		<p>Hold up a sec</p>
+	</section>
+
+	<section id="moar">
+		<br />
+		<hr />
+		<p><a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="josscrowcroft" data-url="http://josscrowcroft.github.com/accounting.js" data-text="accounting.js - JavaScript library for money/currency formatting">Tweet</a> &nbsp; <g:plusone size="medium"></g:plusone></p>
+		<h3>Moar Info</h3>
+		<p><small><strong>accounting.js</strong> was made by <a href="http://www.josscrowcroft.com" title="Joss">Joss</a> (that's me) in Hong Kong, originally for internal use in <a href="http://demandanalytics.com" title="Demand Analytics">Demand Analytics</a>' enterprise application. It seemed to be working pretty well, so I'm releasing it in the hope that other people and apps can make use of and contribute to it.</small></p>
+		<p><small>I'm on them intertweets (<a href="http://twitter.com/josscrowcroft" title="@josscrowcroft on Twitter">@josscrowcroft</a>). Any questions? Just email me <a href="http://www.josscrowcroft.com/contact/" title="Contact Joss">here</a> or post on the <a href="https://github.com/josscrowcroft/accounting.js" title="accounting.js Github repository">accounting.js Github repository</a>.</small></p>
+	</section>
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
+	
+	<script src="accounting.js" type="text/javascript"></script>
+	
+	<script type="text/javascript" src="http://www.josscrowcroft.com/wp-content/themes/classica/js/prettify/prettify.js"></script> 
+	
+	<script type="text/javascript">
+		
+		// demo thangs:
+		jQuery(document).ready(function($) {
+			// Our list of ultra cool numbers:
+			var numbers = [123.5, 3456.49, 777888.99, 12345678, -5432];
+			
+			// Use accounting.js to format the list of numbers several ways:
+			var formatted = accounting.formatColumn(numbers, "$ "),
+			    different = accounting.formatColumn(numbers, "HK$ ", 0),
+			    european  = accounting.formatColumn(numbers, {
+			    	symbol: '&euro; ',
+			    	thousand:'.',
+			    	decimal:',',
+			    	precision:2,
+			    }),
+			    symbolAfter = accounting.formatColumn(numbers, {
+			    	symbol : " GBP",
+			    	symbolAfter : true
+			    });
+			
+			// Concat some nasty demo HTML:
+			for ( var i = 0; i < numbers.length; i++ ) {
+				$('<tr><td>'+numbers[i]+'</td><td>'+formatted[i]+'</td><td>'+different[i]+'</td><td>'+european[i]+'</td><td>'+symbolAfter[i]+'</td></tr>').appendTo('table#demo-table tbody');
+			}
+
+
+			// Try it yourself clicky demo:
+			var $demoValue = $('#demo-number-value'),
+			    $demoSymbol = $('#demo-number-symbol'),
+			    $demoResult = $('#demo-number-result');
+			
+			$demoValue.add($demoSymbol).bind('keydown keyup keypress focus blur paste change', function() {
+			 	var symbol = $demoSymbol.find(':selected').val(),
+			 	    result = accounting.formatMoney(
+			 	    	$demoValue.val(),
+			 	    	symbol,
+			 	    	2,
+			 	    	($demoSymbol.find(':selected').data('locale') === 'european') ? "." : ",",
+			 	    	($demoSymbol.find(':selected').data('locale') === 'european') ? "," : "."
+			 	    );
+				$demoResult.text(result);
+			});
+
+
+			// Try it yourself clicky column/list demo:
+			var $columnValues = $('#demo-column').find('input'),
+			    $columnOutputs = $('#demo-column').find('.output');
+			
+			$columnValues.bind('keydown keyup keypress focus blur paste', function() {
+			 	var list = $.map( $columnValues, function(each) { return $(each).val(); } ),
+			 		formatted = accounting.formatColumn(list, "$ ");
+			 	
+			 	$.each($columnOutputs, function(i, each) {
+			 		$(each).text(formatted[i]);
+			 	});
+			});
+
+		});
+		
+		// prettify:
+		prettyPrint();
+		
+		// twitter:
+		(function(d, t) {
+			var g = d.createElement(t),
+				s = d.getElementsByTagName(t)[0];
+			g.async = true;
+			g.src = 'http://platform.twitter.com/widgets.js';
+			s.parentNode.insertBefore(g, s);
+		})(document, 'script');
+
+		// google plus:
+		window.___gcfg = {lang: 'en-GB'};
+		(function() {
+			var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+			po.src = 'https://apis.google.com/js/plusone.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+		})();
+	</script> 
+</body>
+</html>
