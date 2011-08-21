@@ -1,10 +1,12 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" class="no-js">
 <head>
-  <meta charset="utf-8">
+	<meta charset="utf-8">
 	<title>accounting.js - money-formatting JavaScript library</title>
-
-	<link href="style.css" rel="stylesheet"/>	
+	<link href="style.css" rel="stylesheet"/>
+	<script type="text/javascript">
+		var _gaq = _gaq || []; _gaq.push(['_setAccount', 'UA-17884149-3']); _gaq.push(['_trackPageview']); (function() {var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);})();
+	</script>
 </head>
 
 <body>
@@ -140,7 +142,7 @@ var raw = accounting.unformat(price); // 12345678.9</pre>
 	
 	<section id="download">	
 		<h2>Download</h2>
-		<p>Hold up a sec</p>
+		<p><strong>accounting.js</strong> - Latest version from Github</p>
 	</section>
 
 	<section id="moar">
@@ -151,20 +153,16 @@ var raw = accounting.unformat(price); // 12345678.9</pre>
 		<p><small><strong>accounting.js</strong> was made by <a href="http://www.josscrowcroft.com" title="Joss">Joss</a> (that's me) in Hong Kong, originally for internal use in <a href="http://demandanalytics.com" title="Demand Analytics">Demand Analytics</a>' enterprise application. It seemed to be working pretty well, so I'm releasing it in the hope that other people and apps can make use of and contribute to it.</small></p>
 		<p><small>I'm on them intertweets (<a href="http://twitter.com/josscrowcroft" title="@josscrowcroft on Twitter">@josscrowcroft</a>). Any questions? Just email me <a href="http://www.josscrowcroft.com/contact/" title="Contact Joss">here</a> or post on the <a href="https://github.com/josscrowcroft/accounting.js" title="accounting.js Github repository">accounting.js Github repository</a>.</small></p>
 	</section>
-	
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
-	
-	<script src="accounting.js" type="text/javascript"></script>
-	
-	<script type="text/javascript" src="http://www.josscrowcroft.com/wp-content/themes/classica/js/prettify/prettify.js"></script> 
+
+	<script src="accounting.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+	<script src="http://www.josscrowcroft.com/wp-content/themes/classica/js/prettify/prettify.js"></script> 
 	
 	<script type="text/javascript">
 		
 		// demo thangs:
 		jQuery(document).ready(function($) {
-			// Our list of ultra cool numbers:
 			var numbers = [123.5, 3456.49, 777888.99, 12345678, -5432];
-			
 			// Use accounting.js to format the list of numbers several ways:
 			var formatted = accounting.formatColumn(numbers, "$ "),
 			    different = accounting.formatColumn(numbers, "HK$ ", 0),
@@ -237,6 +235,6 @@ var raw = accounting.unformat(price); // 12345678.9</pre>
 			po.src = 'https://apis.google.com/js/plusone.js';
 			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
 		})();
-	</script> 
+	</script>
 </body>
 </html>
