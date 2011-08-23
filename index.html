@@ -22,7 +22,7 @@
 		<p><strong>accounting.js</strong> is a tiny JavaScript library for number, money and currency formatting, with optional excel-style column rendering (to line up symbols and decimals). It's lightweight, fully localisable and has zero dependencies.</p>
 		<p><a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="josscrowcroft" data-url="http://josscrowcroft.github.com/accounting.js" data-text="accounting.js - JavaScript library for money/currency formatting">Tweet</a> &nbsp; <g:plusone size="medium"></g:plusone></p>
 		<ul>
-			<li><a href="#methods" title="methods">methods</a>
+			<li><a href="#methods" title="library methods overvew">methods &amp; examples</a>
 			<li><a href="#demo" title="demo">demo</a>
 			<li><a href="#instructions" title="instructions">instructions</a>
 			<li><a href="#documentation" title="documentation">documentation</a>
@@ -32,15 +32,15 @@
 			<li><a href="#moar" title="moar info">moar info</a>
 		</ul>
 	</section>
-	
+
 	<section id="methods">
 		<h2>Library Methods</h2>
 		<h4><strong>formatMoney()</strong> - format any number into currency</h4>
 		<p>The most basic function of this library is money-formatting numbers, with currency symbol, precision (places), and thousand/decimal separators:</p>
-		<pre class="prettyprint lang-js">// Default usage and custom precision/symbol :
+		<pre class="prettyprint lang-js">// Default usage:
 accounting.formatMoney(12345678); // $12,345,678.00
 
-// European formatting:
+// European formatting (custom symbol and separators):
 accounting.formatMoney(4999.99, "&euro;", 2, ".", ",")); // &euro;4.999,99
 
 // It works for negative values, too:
@@ -65,20 +65,20 @@ accounting.formatColumn([123.5, 3456.49, 777888.99, 12345678, -5432], "$ ");</pr
 		<h4><strong>formatNumber()</strong> - format a number with custom precision and localisation</h4>
 		<p>The base function of the library, which takes any number or array of numbers, runs <code>accounting.unformat()</code> to remove any formatting, and returns the number(s) formatted with separated thousands and custom precision:</p>
 		<pre class="prettyprint lang-js">accounting.formatNumber(9876543); // 9,876,543</pre>
-		
+
 		<h4><strong>toFixed()</strong> - better rounding for floating point numbers</h4>
 		<p>Implementation of toFixed() that treats floats more like decimal values than binary, fixing inconsistent precision rounding in JavaScript (where some .05 values round up, while others round down):</p>
 		<pre class="prettyprint lang-js">(0.615).toFixed(2); // "0.61"
 accounting.toFixed(0.615, 2); // "0.62"</pre>
-		
+
 		<h4><strong>unformat()</strong> - get a value from any formatted number/currency string</h4>
 		<p>Takes any number and removes all currency formatting:</p>
 		<pre class="prettyprint lang-js">accounting.unformat("GBP &pound; 12,345,678.90"); // 12345678.9</pre>
 	</section>
-	
+
 	<section id="demo">
 		<h2>Demo / Try it out</h2>
-		
+
 		<h4>Money formatting:</h4>
 		<div class="well">
 			<p>Enter any number into the box and choose currency. Uses <code>accounting.formatMoney()</code>:</p>
@@ -93,7 +93,7 @@ accounting.toFixed(0.615, 2); // "0.62"</pre>
 			</p>
 			<p>Result: <strong><span id="demo-number-result">$ 0.00</span></strong></p>
 		</div>
-		
+
 		<h4>Column formatting:</h4>
 		<div class="well">
 			<p>Edit the values in the table to see how <strong>formatColumn()</strong> keeps them aligned:</p>
@@ -115,7 +115,8 @@ accounting.toFixed(0.615, 2); // "0.62"</pre>
 			</table>
 		</div>
 	</section>
-	
+
+
 	<section id="instructions">
 		<h2>Instructions / How to use</h2>
 		<p>1. Download the script and put it somewhere, then do this:</p>
@@ -128,12 +129,84 @@ accounting.toFixed(0.615, 2); // "0.62"</pre>
 		<p>2. Check out the documentation and source-code for full method/parameter info if you get stuck.</p>
 	</section>
 
-	<section id="documentation">	
+
+	<section id="documentation">
 		<h2>Documentation</h2>
-		<p>Check back in 72 hours for docs ... haven't had time to write them yet.</p>
+		<p>Information on the parameters of each method. See <a href="#methods" title="accounting.js library methods">Library Methods</a> above for more examples. Optional parameters are in <code><em>[italics]</em></code>, with the default value indicated.</p>
+
+
+		<h4><strong>formatMoney()</strong></h4>
+		<pre class="prettyprint lang-js">// Standard usage and parameters (returns string):
+accounting.formatMoney(number, <em>[symbol = "$"], [precision = 2], [thousandSep = ","], [decimalSep = "."]</em>)
+
+// Second parameter can be an object:
+accounting.formatMoney(number, <em>[options]</em>)
+
+// Available fields in options object (defaults are given):
+var options = {
+	symbol: "$",
+	precision: 2,
+	thousand: ",",
+	decimal: ".",
+	symbolAfter: false  // if true, symbol comes after the value eg. 10USD
+};
+
+// Example usage:
+accounting.formatMoney(12345678); // $12,345,678.00
+accounting.formatMoney(4999.99, "&euro;", 2, ".", ","); // &euro;4.999,99
+accounting.formatMoney(-500000, "&pound; ", 0); // &pound; -500,000</pre>
+
+
+		<h4><strong>formatColumn()</strong></h4>
+		<pre class="prettyprint lang-js">// Standard usage and parameters (returns array):
+accounting.formatColumn(list<em>, [symbol = "$"], [precision = 2], [thousandSep = ","], [decimalSep = "."]</em>)
+
+// Second parameter can be an object (see formatNumber for available options):
+accounting.formatColumn(list, <em>[options]</em>)
+
+// Example usage (NB. use a space after the symbol to add arbitrary padding to all values):
+var list = [123, 12345];
+accounting.formatColumn(list, "$ ", 0); // ["$    123", "$ 12,345"]
+
+// List of numbers can be a multi-dimensional array (formatColumn is applied recursively):
+var list = [[1, 100], [900, 9]];
+accounting.formatColumn(list); // [["$  1.00", "$100.00"], ["$900.00", "$  9.00"]]</pre>
+
+		<h4><strong>formatNumber()</strong></h4>
+		<pre class="prettyprint lang-js">// Standard usage and parameters (returns string):
+accounting.formatColumn(list<em>, [precision = 0], [thousandSep = ","], [decimalSep = "."]</em>)
+
+// Example usage:
+accounting.formatNumber(9876543); // 9,876,543
+accounting.formatNumber(4999.99, 2, ".", ","); // 4.999,99</pre>
+
+
+		<h4><strong>toFixed()</strong></h4>
+		<pre class="prettyprint lang-js">// Standard usage and parameters (returns string):
+accounting.toFixed(number<em>, [precision = 0]</em>);
+
+// Example usage:
+accounting.toFixed(0.615, 2); // "0.62"
+
+// Compare to regular JS .toFixed() method:
+(0.615).toFixed(2); // "0.61"</pre>
+
+
+		<h4><strong>unformat()</strong></h4>
+		<pre class="prettyprint lang-js">// Standard usage and parameters (returns number):
+accounting.unformat(string<em>, [decimalSep]</em>);
+
+// Example usage:
+accounting.unformat("GBP &pound; 12,345,678.90"); // 12345678.9
+
+// If a non-standard decimal separator was used (eg. a comma) unformat() will need it in order to work out
+// which part of the number is a decimal/float:
+accounting.unformat("&euro; 1.000.000,00", ","); // 1000000</pre>
+
 	</section>
-	
-	<section id="roadmap">	
+
+
+	<section id="roadmap">
 		<h2>Roadmap</h2>
 		<h4>Next Version:</h4>
 		<ul>
@@ -152,13 +225,13 @@ accounting.toFixed(0.615, 2); // "0.62"</pre>
 			<li>Create plugin wrapper for jQuery as a separate script (not in core) to allow eg. <code>$('td.accounting').formatMoney()</code></li>
 		</ul>
 	</section>
-	
-	<section id="support">	
+
+	<section id="support">
 		<h2>Feedback / Support</h2>
 		<p>Please create issues on the <a href="https://github.com/josscrowcroft/accounting.js" title="accounting.js Github repository">accounting.js Github repository</a> if you have feedback or need support, or comment on <a href="http://www.josscrowcroft.com" title="Joss">Joss's blog</a>.</p>
 	</section>
-	
-	<section id="download">	
+
+	<section id="download">
 		<h2>Download</h2>
 		<ul>
 			<li><strong><a href="https://raw.github.com/josscrowcroft/accounting.js/master/accounting.js" title="accounting.js">accounting.js</a></strong> - Latest version from Github (5.2kb)</li>
@@ -178,10 +251,10 @@ accounting.toFixed(0.615, 2); // "0.62"</pre>
 
 	<script src="https://raw.github.com/josscrowcroft/accounting.js/master/accounting.js"></script>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-	<script src="http://www.josscrowcroft.com/wp-content/themes/classica/js/prettify/prettify.js"></script> 
-	
+	<script src="http://www.josscrowcroft.com/wp-content/themes/classica/js/prettify/prettify.js"></script>
+
 	<script type="text/javascript">
-		
+
 		// demo thangs:
 		jQuery(document).ready(function($) {
 			var numbers = [123.5, 3456.49, 777888.99, 12345678, -5432];
@@ -198,7 +271,7 @@ accounting.toFixed(0.615, 2); // "0.62"</pre>
 			    	symbol : " GBP",
 			    	symbolAfter : true
 			    });
-			
+
 			// Concat some nasty demo HTML:
 			for ( var i = 0; i < numbers.length; i++ ) {
 				$('<tr><td>'+numbers[i]+'</td><td>'+formatted[i]+'</td><td>'+different[i]+'</td><td>'+european[i]+'</td><td>'+symbolAfter[i]+'</td></tr>').appendTo('table#demo-table tbody');
@@ -209,7 +282,7 @@ accounting.toFixed(0.615, 2); // "0.62"</pre>
 			var $demoValue = $('#demo-number-value'),
 			    $demoSymbol = $('#demo-number-symbol'),
 			    $demoResult = $('#demo-number-result');
-			
+
 			$demoValue.add($demoSymbol).bind('keydown keyup keypress focus blur paste change', function() {
 			 	var symbol = $demoSymbol.find(':selected').val(),
 			 	    result = accounting.formatMoney(
@@ -226,21 +299,21 @@ accounting.toFixed(0.615, 2); // "0.62"</pre>
 			// Try it yourself clicky column/list demo:
 			var $columnValues = $('#demo-column').find('input'),
 			    $columnOutputs = $('#demo-column').find('.output');
-			
+
 			$columnValues.bind('keydown keyup keypress focus blur paste', function() {
 			 	var list = $.map( $columnValues, function(each) { return $(each).val(); } ),
 			 		formatted = accounting.formatColumn(list, "$ ");
-			 	
+
 			 	$.each($columnOutputs, function(i, each) {
 			 		$(each).text(formatted[i]);
 			 	});
 			});
 
 		});
-		
+
 		// prettify:
 		prettyPrint();
-		
+
 		// twitter:
 		(function(d, t) {
 			var g = d.createElement(t),

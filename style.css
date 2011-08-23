@@ -92,7 +92,6 @@ h5 { font-size:1em; margin-bottom:1em; }
 p, ul, ol { max-width: 580px; }
 ol, ul { padding-left:24px; font-size:0.85em }
 ol#list { font-size:1em }
-a:visited { color:#5bf; }
 a:hover, a:focus { outline:none; color:#e25525 }
 
 section {
