@@ -4,7 +4,11 @@ Check out the plugin homepage (with demos and docs) here: **http://josscrowcroft
 
 ## Changelog
 
+### v0.1.2
+* **formatColumn** now works recursively on nested arrays, eg `accounting.formatColumn( [[1,12,123,1234], [1234,123,12,1]] )`, returning back a matching array with inner columns lined up
+* Another fix for rounding in **formatNumber**: `54324.535` now rounds to ".54" instead of ".53"
+
 ### v0.1.1
-* Added **toFixed** method (`accounting.toFixed(value, precision)`), which treats floats more like decimals for more accurate currency rounding - now, `0.615` rounds up to `$0.62` instead of `$0.61`.
+* Added **toFixed** method (`accounting.toFixed(value, precision)`), which treats floats more like decimals for more accurate currency rounding - now, `0.615` rounds up to `$0.62` instead of `$0.61`
 * Minified version now preserves semicolons
-* Fixed NaN errors when no value in `unformat()` - revisit later on.
+* Fixed NaN errors when no value in **unformat** - revisit later on
