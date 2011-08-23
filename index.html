@@ -137,15 +137,19 @@ accounting.toFixed(0.615, 2); // "0.62"</pre>
 		<h2>Roadmap</h2>
 		<h4>Next Version:</h4>
 		<ul>
-			<li>Add several other general and excel-style money formatting methods</li>
-			<li>Add padding parameter to override amount of space between currency symbol and value</li>
-			<li>Add parameter to control digit grouping (allowing 4-digit columns, eg. "CNY 123,4567.89")</li>
-			<li>Make <code>formatNumber()</code> by default use the same precision as the provided number</li>
-			<li>Implement feedback</li>
+			<li>Add defaults/settings object, to set localisation and formatting parameters.</li>
+			<li>Clear up parameter style and make consistent.</li>
+			<li>Add padding parameter to override amount of space between currency symbol and value.</li>
+			<li>Add choice of rounding method (<code>floor</code>, <code>ceil</code> or <code>round</code>).</li>
+			<li>Make <code>formatNumber()</code> by default use the same precision as the provided number.</li>
+			<li>Implement feedback.</li>
 		</ul>
 		<h4>Later:</h4>
 		<ul>
 			<li>Extend the <code>formatColumn()</code> method to be able to format an entire table (or multi-dimensional array) of numbers, for easier templating.</li>
+			<li>Add several other general and excel-style money formatting methods.</li>
+			<li>Add parameter to control digit grouping (allowing 4-digit columns, eg. "CNY 123,4567.89").</li>
+			<li>Create plugin wrapper for jQuery as a separate script (not in core) to allow eg. <code>$('td.accounting').formatMoney()</code></li>
 		</ul>
 	</section>
 	
