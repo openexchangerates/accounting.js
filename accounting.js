@@ -1,5 +1,5 @@
 /*!
- * accounting.js javascript library v0.1.1
+ * accounting.js javascript library v0.1.2
  * https://josscrowcroft.github.com/accounting.js/
  *
  * Copyright 2011 by Joss Crowcroft
@@ -18,7 +18,7 @@ var accounting = (function () {
 		if (typeof number === "object" && number.length > 1) {
 			for (var i = 0, values = []; i < number.length;
 				values.push(unformat(number[i], decimal)), i++
-			)
+			);
 			return values;
 		}
 		
@@ -62,7 +62,7 @@ var accounting = (function () {
 		if (typeof number === "object" && number.length > 1) {
 			for (var i = 0, values = []; i < number.length;
 				values.push(formatNumber(number[i], precision, thousand, decimal)) && i++
-			)
+			);
 			return values;
 		}
 		
@@ -76,9 +76,9 @@ var accounting = (function () {
 		var negative = number < 0 ? "-" : "",
 		    base = parseInt(toFixed(Math.abs(number || 0), precision), 10) + "",
 		    mod = base.length > 3 ? base.length % 3 : 0;
-		
+
 		// Format the number:
-		return negative + (mod ? base.substr(0, mod) + thousand : "") + base.substr(mod).replace(/(\d{3})(?=\d)/g, "$1" + thousand) + (precision ? decimal + toFixed(Math.abs(number - base), precision).slice(2) : "");
+		return negative + (mod ? base.substr(0, mod) + thousand : "") + base.substr(mod).replace(/(\d{3})(?=\d)/g, "$1" + thousand) + (precision ? decimal + toFixed(Math.abs(number), precision).split('.')[1] : "");
 	}
 
 
@@ -143,28 +143,30 @@ var accounting = (function () {
 		    formatted = [],
 		    i;
 		
-		// Format the numbers according to options, and store the length of
-		// the longest string in the array:
+		// Format the list according to options, store the length of the longest string:
+		// Performs recursive formatting of nested arrays
 		for (i = 0; i < list.length; i++) {
-			formatted.push(formatMoney(list[i], symbol, precision, thousand, decimal));
-			
-			if (formatted[i].length > maxLength) {
-				maxLength = formatted[i].length;
+			if (typeof list[i] === "object") {
+				// Recursively format columns if list is a multi-dimensional array:
+				formatted.push(formatColumn(list[i], symbol, precision, thousand, decimal));
+			} else {
+				// Format this number, push into formatted list and save the length:
+				formatted.push(formatMoney(list[i], symbol, precision, thousand, decimal));
+				if (formatted[i].length > maxLength) {
+					maxLength = formatted[i].length;
+				}
 			}
 		}
 		
 		
-		// Second param can be an object, but symbol is needed for next part:
-		if (typeof symbol === "object") {
-			symbol = symbol.symbol;
-		}
-		if (typeof symbol === undefined) {
-			symbol = "$";
-		}
+		// Second param can be an object, but symbol is needed for next part, so get it:
+		// (tl;dr: `symbol` = "$" [default] if no symbol set, or else `opts.symbol` if set, or else just `symbol`)
+		symbol = (!symbol ? "$" : symbol.symbol ? symbol.symbol : symbol);
 		
 		// Add space between currency symbol and number to pad strings:
 		for (i = 0; i < formatted.length; i++) {
-			if (formatted[i].length < maxLength) {
+			// Only if this is a string (not a nested array):
+			if (typeof formatted[i] === "string" && formatted[i].length < maxLength) {
 				// Match first number in string and add enough padding:
 				formatted[i] = formatted[i].replace(
 					/(-?\d+)/,
