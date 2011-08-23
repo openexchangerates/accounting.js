@@ -1,6 +1,6 @@
 /*!
- * accounting.js javascript library v0.1
- * https://github.com/josscrowcroft/accounting.js
+ * accounting.js javascript library v0.1.1
+ * https://josscrowcroft.github.com/accounting.js/
  *
  * Copyright 2011 by Joss Crowcroft
  * Licensed under GPL v3 | http://www.gnu.org/licenses/gpl-3.0.txt
@@ -33,6 +33,21 @@ var accounting = (function () {
 	
 	
 	/**
+	 * Implementation of toFixed() that treats floats as decimals instead of binary
+	 * 
+	 * Fixes binary rounding issues (eg. (0.615).toFixed(2) === "0.61") that present 
+	 * problems for accounting- and finance-related software.
+	 */
+	function toFixed(value, precision) {
+		precision = isNaN(precision = Math.abs(precision)) ? 0 : precision;
+		var power = Math.pow(10, precision);
+		
+		// Multiply up by precision, round accurately, then divide and use native toFixed():
+		return (Math.round(value * power) / power).toFixed(precision);
+	}
+	
+	
+	/**
 	 * Format a number, with comma-separated thousands and custom precision/decimal places
 	 * 
 	 * Localise by overriding the precision and thousand / decimal separators
@@ -54,11 +69,11 @@ var accounting = (function () {
 		
 		// Do some calc:
 		var negative = number < 0 ? "-" : "",
-		    base = parseInt(number = Math.abs(+number || 0).toFixed(precision), 10) + "",
+		    base = parseInt(toFixed(Math.abs(number || 0), precision), 10) + "",
 		    mod = base.length > 3 ? base.length % 3 : 0;
 		
 		// Format the number:
-		return negative + (mod ? base.substr(0, mod) + thousand : "") + base.substr(mod).replace(/(\d{3})(?=\d)/g, "$1" + thousand) + (precision ? decimal + Math.abs(number - base).toFixed(precision).slice(2) : "");
+		return negative + (mod ? base.substr(0, mod) + thousand : "") + base.substr(mod).replace(/(\d{3})(?=\d)/g, "$1" + thousand) + (precision ? decimal + toFixed(Math.abs(number - base), precision).slice(2) : "");
 	}
 
 
@@ -163,6 +178,7 @@ var accounting = (function () {
 		formatMoney: formatMoney,
 		formatNumber: formatNumber,
 		formatColumn: formatColumn,
+		toFixed: toFixed,
 		unformat: unformat
 	};
 }());
