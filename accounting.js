@@ -33,7 +33,7 @@ var accounting = (function () {
 	
 	
 	/**
-	 * Implementation of toFixed() that treats floats as decimals instead of binary
+	 * Implementation of toFixed() that treats floats more like decimals
 	 * 
 	 * Fixes binary rounding issues (eg. (0.615).toFixed(2) === "0.61") that present 
 	 * problems for accounting- and finance-related software.
