@@ -40,11 +40,14 @@
 		<pre class="prettyprint lang-js">// Default usage:
 accounting.formatMoney(12345678); // $12,345,678.00
 
-// European formatting (custom symbol and separators):
-accounting.formatMoney(4999.99, "&euro;", 2, ".", ",")); // &euro;4.999,99
+// European formatting (custom symbol and separators), optionally using second-param options object:
+accounting.formatMoney(4999.99, "&euro;", ".", ","); // &euro;4.999,99
 
-// It works for negative values, too:
-accounting.formatMoney(-500000, "&pound; ", 0) ); // &pound; -500,000</pre>
+// Negative values are formatted nicely, too:
+accounting.formatMoney(-500000, "&pound; ", 0) ); // &pound; -500,000
+
+// Simple `format` string allows control of symbol position [%v = value, %s = symbol]:
+accounting.formatMoney(5318008, { symbol: "GBP",  format: "%v %s" }); // 5,318,008.00 GBP</pre>
 		<h4><strong>formatColumn()</strong> - format a list of values for column-display</h4>
 		<p>This table demonstrates how <strong>accounting.js</strong> can take a list of numbers and money-format them with padding to line up currency symbols and decimal places (NB: <code>white-space:pre</code> is needed for the browser to render the padded spaces):</p>
 		<table id="demo-table">
@@ -64,7 +67,8 @@ accounting.formatColumn([123.5, 3456.49, 777888.99, 12345678, -5432], "$ ");</pr
 
 		<h4><strong>formatNumber()</strong> - format a number with custom precision and localisation</h4>
 		<p>The base function of the library, which takes any number or array of numbers, runs <code>accounting.unformat()</code> to remove any formatting, and returns the number(s) formatted with separated thousands and custom precision:</p>
-		<pre class="prettyprint lang-js">accounting.formatNumber(9876543); // 9,876,543</pre>
+		<pre class="prettyprint lang-js">accounting.formatNumber(5318008); // 5,318,008
+accounting.formatNumber(9876543.21, 3, " "); // 9 876 543.210</pre>
 
 		<h4><strong>toFixed()</strong> - better rounding for floating point numbers</h4>
 		<p>Implementation of toFixed() that treats floats more like decimal values than binary, fixing inconsistent precision rounding in JavaScript (where some .05 values round up, while others round down):</p>
@@ -73,7 +77,7 @@ accounting.toFixed(0.615, 2); // "0.62"</pre>
 
 		<h4><strong>unformat()</strong> - get a value from any formatted number/currency string</h4>
 		<p>Takes any number and removes all currency formatting:</p>
-		<pre class="prettyprint lang-js">accounting.unformat("GBP &pound; 12,345,678.90"); // 12345678.9</pre>
+		<pre class="prettyprint lang-js">accounting.unformat("&pound; 12,345,678.90 GBP"); // 12345678.9</pre>
 	</section>
 
 	<section id="demo">
@@ -135,31 +139,66 @@ accounting.toFixed(0.615, 2); // "0.62"</pre>
 		<p>Information on the parameters of each method. See <a href="#methods" title="accounting.js library methods">library methods</a> above for more examples. Optional parameters are in <code><em>[italics]</em></code>, with the default value indicated.</p>
 
 
-		<h4><strong>formatMoney()</strong></h4>
+		<h4><strong>accounting.settings</strong></h4>
+		<pre class="prettyprint lang-js">// Settings object that controls default parameters for library methods:
+accounting.settings = {
+	currency: {
+		symbol : "$",   // default currency symbol is '$'
+		format: "%s%v", // this controls string output: %s = symbol, %v = value/number
+		decimal : ".",  // decimal point separator
+		thousand: ",",  // thousands separator
+		precision : 2   // decimal places
+	},
+	number: {
+		precision : 0,  // default precision on numbers is 0
+		thousand: ",",
+		decimal : "."
+	}
+}
+
+// These can be changed externally to edit the library's defaults:
+accounting.settings.currency.format = "%s %v";
+
+// Example using underscore.js - extend default settings (also works with $.extend in jQuery):
+accounting.settings.number = _.defaults({
+	precision: 2,
+	thousand: " "
+}, accounting.settings.number);</pre>
+
+
+		<h4><strong>accounting.formatMoney()</strong></h4>
 		<pre class="prettyprint lang-js">// Standard usage and parameters (returns string):
-accounting.formatMoney(number, <em>[symbol = "$"], [precision = 2], [thousandSep = ","], [decimalSep = "."]</em>)
+accounting.formatMoney(number<em>,[symbol = "$"],[precision = 2],[thousand = ","],[decimal = "."],[format = "%s%v"]</em>)
 
 // Second parameter can be an object:
-accounting.formatMoney(number, <em>[options]</em>)
+accounting.formatMoney(number<em>, [options]</em>)
 
-// Available fields in options object (defaults are given):
+// Available fields in options object, matching `settings.currency`:
 var options = {
-	symbol: "$",
-	precision: 2,
+	symbol : "$",
+	format: "%s%v",
+	decimal : ".",
 	thousand: ",",
-	decimal: ".",
-	symbolAfter: false  // if true, symbol comes after the value eg. 10USD
+	precision : 2
 };
 
 // Example usage:
 accounting.formatMoney(12345678); // $12,345,678.00
 accounting.formatMoney(4999.99, "&euro;", 2, ".", ","); // &euro;4.999,99
-accounting.formatMoney(-500000, "&pound; ", 0); // &pound; -500,000</pre>
+accounting.formatMoney(-500000, "&pound; ", 0); // &pound; -500,000
+
+// Example usage with options object:
+accounting.formatMoney(5318008, {
+	symbol: "GBP",
+	precision: 0,
+	format: "%v %s",
+	thousand: "&middot"
+});</pre>
 
 
-		<h4><strong>formatColumn()</strong></h4>
+		<h4><strong>accounting.formatColumn()</strong></h4>
 		<pre class="prettyprint lang-js">// Standard usage and parameters (returns array):
-accounting.formatColumn(list<em>, [symbol = "$"], [precision = 2], [thousandSep = ","], [decimalSep = "."]</em>)
+accounting.formatColumn(list<em>, [symbol = "$"],[precision = 2],[thousand = ","],[decimal = "."],[format = "%s%v"]</em>)
 
 // Second parameter can be an object (see formatNumber for available options):
 accounting.formatColumn(list, <em>[options]</em>)
@@ -172,29 +211,39 @@ accounting.formatColumn(list, "$ ", 0); // ["$    123", "$ 12,345"]
 var list = [[1, 100], [900, 9]];
 accounting.formatColumn(list); // [["$  1.00", "$100.00"], ["$900.00", "$  9.00"]]</pre>
 
-		<h4><strong>formatNumber()</strong></h4>
+
+		<h4><strong>accounting.formatNumber()</strong></h4>
 		<pre class="prettyprint lang-js">// Standard usage and parameters (returns string):
-accounting.formatColumn(list<em>, [precision = 0], [thousandSep = ","], [decimalSep = "."]</em>)
+accounting.formatNumber(list<em>, [precision = 0], [thousand = ","], [decimal = "."]</em>)
+
+// Second parameter can also be an object matching `settings.number`:
+accounting.formatNumber(list<em>, [object]</em>)
 
 // Example usage:
 accounting.formatNumber(9876543); // 9,876,543
-accounting.formatNumber(4999.99, 2, ".", ","); // 4.999,99</pre>
+accounting.formatNumber(4999.99, 2, ".", ","); // 4.999,99
+
+// Example usage with options object:
+accounting.formatNumber(5318008, {
+	precision : 3,
+	thousand : " "
+});</pre>
 
 
-		<h4><strong>toFixed()</strong></h4>
+		<h4><strong>accounting.toFixed()</strong></h4>
 		<pre class="prettyprint lang-js">// Standard usage and parameters (returns string):
 accounting.toFixed(number<em>, [precision = 0]</em>);
 
 // Example usage:
 accounting.toFixed(0.615, 2); // "0.62"
 
-// Compare to regular JS .toFixed() method:
+// Compare to regular JavaScript `Number.toFixed()` method:
 (0.615).toFixed(2); // "0.61"</pre>
 
 
-		<h4><strong>unformat()</strong></h4>
+		<h4><strong>accounting.unformat()</strong></h4>
 		<pre class="prettyprint lang-js">// Standard usage and parameters (returns number):
-accounting.unformat(string<em>, [decimalSep]</em>);
+accounting.unformat(string<em>, [decimal]</em>);
 
 // Example usage:
 accounting.unformat("GBP &pound; 12,345,678.90"); // 12345678.9
@@ -210,8 +259,8 @@ accounting.unformat("&euro; 1.000.000,00", ","); // 1000000</pre>
 		<h2>Roadmap</h2>
 		<h4>Next Version:</h4>
 		<ul>
-			<li>Add defaults/settings object, to set localisation and formatting parameters.</li>
-			<li>Clear up parameter style and make consistent.</li>
+			<li><s>Add defaults/settings object, to set localisation and formatting parameters.</s></li>
+			<li><s>Extend <code>formatColumn()</code> to be able to format a multi-dimensional array of numbers, for easier templating.</s></li>
 			<li>Add padding parameter to override amount of space between currency symbol and value.</li>
 			<li>Add choice of rounding method (<code>floor</code>, <code>ceil</code> or <code>round</code>).</li>
 			<li>Make <code>formatNumber()</code> by default use the same precision as the provided number.</li>
@@ -219,10 +268,9 @@ accounting.unformat("&euro; 1.000.000,00", ","); // 1000000</pre>
 		</ul>
 		<h4>Later:</h4>
 		<ul>
-			<li>Extend the <code>formatColumn()</code> method to be able to format an entire table (or multi-dimensional array) of numbers, for easier templating.</li>
 			<li>Add several other general and excel-style money formatting methods.</li>
 			<li>Add parameter to control digit grouping (allowing 4-digit columns, eg. "CNY 123,4567.89").</li>
-			<li>Create NPM package if there's demand for it.</li>
+			<li>Create NPM package, if there's demand for it.</li>
 			<li>Create plugin wrapper for jQuery as a separate script (not in core) to allow eg. <code>$('td.accounting').formatMoney()</code></li>
 		</ul>
 	</section>
@@ -251,6 +299,7 @@ accounting.unformat("&euro; 1.000.000,00", ","); // 1000000</pre>
 		<p><small>Any questions? Just email me <a href="http://www.josscrowcroft.com/contact/" title="Contact Joss">here</a> or post on the <a href="https://github.com/josscrowcroft/accounting.js" title="accounting.js Github repository">accounting.js Github repository</a>.</small></p>
 	</section>
 
+
 	<script src="https://raw.github.com/josscrowcroft/accounting.js/master/accounting.js"></script>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 	<script src="http://www.josscrowcroft.com/wp-content/themes/classica/js/prettify/prettify.js"></script>
@@ -266,12 +315,11 @@ accounting.unformat("&euro; 1.000.000,00", ","); // 1000000</pre>
 			    european  = accounting.formatColumn(numbers, {
 			    	symbol: '&euro; ',
 			    	thousand:'.',
-			    	decimal:',',
-			    	precision:2,
+			    	decimal:','
 			    }),
 			    symbolAfter = accounting.formatColumn(numbers, {
-			    	symbol : " GBP",
-			    	symbolAfter : true
+			    	symbol : "GBP",
+			    	format : "%v %s"
 			    });
 
 			// Concat some nasty demo HTML:
@@ -304,7 +352,9 @@ accounting.unformat("&euro; 1.000.000,00", ","); // 1000000</pre>
 
 			$columnValues.bind('keydown keyup keypress focus blur paste', function() {
 			 	var list = $.map( $columnValues, function(each) { return $(each).val(); } ),
-			 		formatted = accounting.formatColumn(list, "$ ");
+			 		formatted = accounting.formatColumn(list, {
+			 			format:"%s %v"
+			 		});
 
 			 	$.each($columnOutputs, function(i, each) {
 			 		$(each).text(formatted[i]);
