@@ -1,5 +1,5 @@
 /*!
- * accounting.js javascript library v0.1.2
+ * accounting.js javascript library v0.1.3
  * https://josscrowcroft.github.com/accounting.js/
  *
  * Copyright 2011 by Joss Crowcroft
@@ -44,7 +44,8 @@ var accounting = (function () {
 	 * problems for accounting- and finance-related software.
 	 */
 	function toFixed(value, precision) {
-		precision = isNaN(precision = Math.abs(precision)) ? 0 : precision;
+		// Default precision (decimal places) is 0:
+		precision = !isNaN(precision = Math.abs(precision)) ? precision : 0;
 		var power = Math.pow(10, precision);
 		
 		// Multiply up by precision, round accurately, then divide and use native toFixed():
@@ -56,21 +57,33 @@ var accounting = (function () {
 	 * Format a number, with comma-separated thousands and custom precision/decimal places
 	 * 
 	 * Localise by overriding the precision and thousand / decimal separators
+	 * 2nd parameter `precision` can be an object matching `settings.number`
 	 */
 	function formatNumber(number, precision, thousand, decimal) {
 		// Resursively format arrays:
 		if (typeof number === "object" && number.length > 1) {
 			for (var i = 0, values = []; i < number.length;
+				// Pass parameters as-is:
 				values.push(formatNumber(number[i], precision, thousand, decimal)) && i++
 			);
 			return values;
 		}
 		
-		// Clean up parameters:
+		// Clean up number:
 		number = unformat(number);
-		precision = isNaN(precision = Math.abs(precision)) ? 0 : precision;
-		thousand = !thousand ? "," : thousand;
-		decimal = !decimal ? "." : decimal;
+		
+		// Second param precision can be an object matching `settings.number`:
+		if ( typeof precision === "object" ) {
+			// Pass object values into parameter vars (these will be checked afterwards):
+			thousand = precision.thousand;
+			decimal = precision.decimal;
+			precision = precision.precision;
+		}
+		
+		// Make sure all parameters were set, or use defaults:
+		thousand = thousand ? thousand : settings.number.thousand;
+		decimal = decimal ? decimal : settings.number.decimal;
+		precision = !isNaN(precision = Math.abs(precision)) ? precision : settings.number.precision;
 		
 		// Do some calc:
 		var negative = number < 0 ? "-" : "",
@@ -85,40 +98,38 @@ var accounting = (function () {
 	/**
 	 * Format a number into currency
 	 * 
-	 * Usage: accounting.formatMoney(number, precision, symbol, thousandsSep, decimalSep)
-	 * defaults: (0, 2, "$", ",", ".")
+	 * Usage: accounting.formatMoney(number, precision, symbol, thousandsSep, decimalSep, format)
+	 * defaults: (0, 2, "$", ",", ".", "%s%v")
 	 * 
-	 * Localise by overriding the precision and thousand / decimal separators
-	 * Second param can be an object with keys matching the param names
+	 * Localise by overriding the symbol, precision, thousand / decimal separators and format
+	 * Second param can be an object matching `settings.currency` which is the easiest way.
+	 * 
+	 * To do: tidy up the parameters
 	 */
-	function formatMoney(number, symbol, precision, thousand, decimal) {
-		var symbolAfter;
+	function formatMoney(number, symbol, precision, thousand, decimal, format) {
 		
-		// Second param can be an object:
+		// Second param can be an object matching `settings.currency`:
 		if (typeof symbol === "object") {
 			precision = symbol.precision;
 			thousand = symbol.thousand;
 			decimal = symbol.decimal;
-			symbolAfter = symbol.symbolAfter;
+			format = symbol.format;
 			symbol = symbol.symbol;
 		}
-
-		// formatMoney's default precision is 2 decimal places:
-		precision = !isNaN(precision = Math.abs(precision)) ? precision : 2;
 		
-		// Default symbol is '$':
-		symbol = symbol !== undefined ? symbol : "$";
-		
-		// Default  symbol position is before value:
-		if (typeof symbolAfter === "undefined") {
-			symbolAfter = false;
-		}
+		// Make sure params were set, or use defaults:
+		// todo: strikes me as a little bit crufty, even though it works well.
+		symbol = symbol ? symbol : settings.currency.symbol;
+		precision = !isNaN(precision = Math.abs(precision)) ? precision : settings.currency.precision;
+		thousand = thousand ? thousand : settings.currency.thousand;
+		decimal = decimal || settings.currency.decimal;
+		format = format || settings.currency.format;
 		
 		// Format the number:
 		var formatted = formatNumber(number, precision, thousand, decimal);
 		
 		// Return with currency symbol added:
-		return symbolAfter ? formatted + symbol : symbol + formatted;
+		return format.replace('%s', symbol).replace('%v', formatted);
 	}
 	
 	
@@ -160,8 +171,8 @@ var accounting = (function () {
 		
 		
 		// Second param can be an object, but symbol is needed for next part, so get it:
-		// (tl;dr: `symbol` = "$" [default] if no symbol set, or else `opts.symbol` if set, or else just `symbol`)
-		symbol = (!symbol ? "$" : symbol.symbol ? symbol.symbol : symbol);
+		// tl;dr: `symbol` = default if no symbol set, or else `opts.symbol` if set, or else just `symbol`
+		symbol = (!symbol ? settings.currency.symbol : symbol.symbol ? symbol.symbol : symbol);
 		
 		// Add space between currency symbol and number to pad strings:
 		for (i = 0; i < formatted.length; i++) {
@@ -180,8 +191,30 @@ var accounting = (function () {
 	}
 	
 	
+	/**
+	 * The library's settings configuration object
+	 * 
+	 * Contains defaults for currency and number formatting
+	 */
+	var settings = {
+		currency: {
+			symbol : "$",   // default currency symbol is '$'
+			format: "%s%v", // this controls string output: %s = symbol, %v = value/number
+			decimal : ".",  // decimal point separator
+			thousand: ",",  // thousands separator
+			precision : 2   // decimal places
+		},
+		number: {
+			precision : 0,  // default precision on numbers is 0
+			thousand: ",",
+			decimal : "."
+		}
+	};
+	
+	
 	// Return the library's API:
 	return {
+		settings: settings,
 		formatMoney: formatMoney,
 		formatNumber: formatNumber,
 		formatColumn: formatColumn,
