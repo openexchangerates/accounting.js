@@ -22,6 +22,9 @@ var accounting = (function () {
 			return values;
 		}
 		
+		// Fails silently (need decent errors):
+		number = number || 0;
+		
 		// Default decimal point is "." but could be set to eg. ",":
 	    decimal = decimal || ".";
 	    
