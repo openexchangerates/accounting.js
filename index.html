@@ -40,8 +40,8 @@
 		<pre class="prettyprint lang-js">// Default usage:
 accounting.formatMoney(12345678); // $12,345,678.00
 
-// European formatting (custom symbol and separators), optionally using second-param options object:
-accounting.formatMoney(4999.99, "&euro;", ".", ","); // &euro;4.999,99
+// European formatting (custom symbol and separators), could also use options object as second param:
+accounting.formatMoney(4999.99, "&euro;", 2, ".", ","); // &euro;4.999,99
 
 // Negative values are formatted nicely, too:
 accounting.formatMoney(-500000, "&pound; ", 0); // &pound; -500,000
