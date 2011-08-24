@@ -13,6 +13,12 @@
 		}
 	});
 
+	JSLitmus.test('unformat() - array', function(count) {
+		while ( count-- ) {
+			accounting.unformat(strings);
+        }
+	});
+
 	JSLitmus.test('toFixed()', function(count) {
 		while ( count-- ) {
 			accounting.toFixed(count*1000, 2);
@@ -28,6 +34,12 @@
 		}
 	});
 
+	JSLitmus.test('formatNumber() - array', function(count) {
+		while ( count-- ) {
+            accounting.formatNumber(numbers);
+        }
+	});
+
 	JSLitmus.test('formatMoney()', function(count) {
 		var i = 0;
 		while ( count-- ) {
@@ -35,6 +47,12 @@
 			i++;
 			i > numbers.length && (i = 0);
 		}
+	});
+
+	JSLitmus.test('formatMoney() - array', function(count) {
+		while ( count-- ) {
+			accounting.formatMoney(numbers);
+        }
 	});
 
 	JSLitmus.test('formatColumn()', function(count) {

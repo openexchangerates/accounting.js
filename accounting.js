@@ -34,6 +34,8 @@ var accounting = (function () {
 
 	/* ===== Internal Helper Methods ===== */
 
+    var toString = Object.prototype.toString;
+
 	/**
 	 * Extends an object with a defaults object, similar to underscore's _.defaults
 	 * 
@@ -59,6 +61,18 @@ var accounting = (function () {
 		return isNaN(val)? base : val;
 	}
 
+    /**
+	 * Check if value is of a certain type, since typeOf isn't reliable (http://javascriptweblog.wordpress.com/2011/08/08/fixing-the-javascript-typeof-operator/)
+	 */
+
+	var isArray = Array.isArray || function (val){
+		return toString.call(val) === '[object Array]';
+	};
+
+	function isObject(val){
+		return toString.call(val) === '[object Object]';
+	}
+    
 
 	/* ===== API Methods ===== */
 
@@ -70,7 +84,7 @@ var accounting = (function () {
 	 */
 	function unformat(number, decimal) {
 		// Recursively unformat arrays:
-		if (typeof number === "object") {
+		if ( isArray(number) ) {
 			for (
 				var i = 0, values = [];
 				i < number.length;
@@ -117,7 +131,7 @@ var accounting = (function () {
 	 */
 	function formatNumber(number, precision, thousand, decimal) {
 		// Resursively format arrays:
-		if (typeof number === "object") {
+		if ( isArray(number) ) {
 			// Call formatNumber on each value, pass parameters as-is:
 			for (
 				var i = 0, values = [];
@@ -132,7 +146,7 @@ var accounting = (function () {
 		var result, opts;
 
 		// Second param precision can be an object matching settings.number:
-		opts = (typeof precision === "object") ? precision : {
+		opts = isObject(precision) ? precision : {
 			precision: precision,
 			thousand : thousand,
 			decimal : decimal
@@ -168,7 +182,7 @@ var accounting = (function () {
 	 */
 	function formatMoney(number, symbol, precision, thousand, decimal, format) {
 		// Resursively format arrays:
-		if (typeof number === "object") {
+		if ( isArray(number) ) {
 			// Call formatNumber on each value, pass parameters as-is:
 			for (
 				var i = 0, values = []; 
@@ -180,7 +194,7 @@ var accounting = (function () {
 		}
 
 		// Second param can be an object matching settings.currency:
-		var opts = (typeof symbol === "object") ? symbol : {
+		var opts = isObject(symbol) ? symbol : {
 			symbol : symbol,
 			precision : precision,
 			thousand : thousand,
@@ -223,7 +237,7 @@ var accounting = (function () {
 		// Format the list according to options, store the length of the longest string:
 		// Performs recursive formatting of nested arrays
 		for (i = 0; i < list.length; i++) {
-			if (typeof list[i] === "object") {
+			if ( isArray(list[i]) ) {
 				// Recursively format columns if list is a multi-dimensional array:
 				formatted.push(formatColumn(list[i], symbol, precision, thousand, decimal));
 			} else {
