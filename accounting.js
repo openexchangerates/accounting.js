@@ -1,6 +1,5 @@
-/* vim: set tabstop=4 softtabstop=4 shiftwidth=4 noexpandtab: */
 /*!
- * accounting.js javascript library v0.1.3+
+ * accounting.js javascript library v0.1.4
  * https://josscrowcroft.github.com/accounting.js/
  *
  * Copyright 2011 by Joss Crowcroft
@@ -8,7 +7,7 @@
  */
 var accounting = (function () {
 	
-	// SETTINGS =======
+	/* ===== SETTINGS ===== */
 
 	/**
 	 * The library's settings configuration object
@@ -17,69 +16,37 @@ var accounting = (function () {
 	 */
 	var settings = {
 		currency: {
-			symbol : "$",	// default currency symbol is '$'
+			symbol : "$",   // default currency symbol is '$'
 			format: "%s%v", // this controls string output: %s = symbol, %v = value/number
-			decimal : ".",	// decimal point separator
-			thousand: ",",	// thousands separator
-			precision : 2	// decimal places
+			decimal : ".",  // decimal point separator
+			thousand: ",",  // thousands separator
+			precision : 2,  // decimal places
+			grouping : 3,   // digit grouping (not implemented yet)
 		},
 		number: {
 			precision : 0,	// default precision on numbers is 0
 			thousand: ",",
-			decimal : "."
+			decimal : ".",
+			grouping : 3, 
 		}
 	};
 
 
-	// HELPERS =======
+	/* ===== HELPERS ===== */
 
 	/**
-	 * Check if value is of a certain type, since typeOf isn't reliable (http://javascriptweblog.wordpress.com/2011/08/08/fixing-the-javascript-typeof-operator/)
+	 * Extends an object with a defaults object
+	 * 
+	 * Used for abstracting parameter handling from API methods
 	 */
-	function isType(val, type){
-		return Object.prototype.toString.call(val) === '[object '+ type +']';
-	}
-
-	function isArray(val){
-		return isType(val, 'Array');
-	}
-
-	function isObject(val){
-		return isType(val, 'Object');
-	}
-
-	/**
-	 * Simplified `Array.map()`
-	 *
-	 * Returns a new Array as a result of calling `fn` on each array value.
-	 */
-	function map(arr, fn, thisVal){
-		var i = 0,
-			n = arr.length,
-			result = [];
-		while(i < n){
-			result[i] = fn.call(thisVal, arr[i], i, arr);
-			i += 1;
-		}
-		return result;
-	}
-
-	/**
-	 * Abstract parameters normalization outside methods increasing code reuse and simplifying logic.
-	 */
-	function normalizeParams(params, base){
+	function defaults(object, defaults) {
 		var key;
-		//use `base` as reference since `params` may not contain all options
-		for(key in base){
-			if(base.hasOwnProperty(key)){ //filter prototype
-				if(key === 'precision'){
-					params[key] = normalizePrecision(params.precision, base.precision);
-				} else {
-					params[key] = params[key] || base[key];
-				}
+		for (key in defaults) {
+			if(defaults.hasOwnProperty(key)){ //filter prototype
+				object[key] = typeof object[key] !== "undefined" ? object[key] : defaults[key];
 			}
 		}
-		return params;
+		return object;
 	}
 
 	function normalizePrecision(val, base){
