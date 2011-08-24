@@ -59,6 +59,22 @@ var accounting = (function () {
 		return isNaN(val)? base : val;
 	}
 
+	/**
+	 * Simplified `Array.map()`
+	 *
+	 * Returns a new Array as a result of calling `fn` on each array value.
+	 */
+	function map(arr, fn, thisVal){
+		var i = 0,
+			n = arr.length,
+			result = [];
+		while(i < n){
+			result[i] = fn.call(thisVal, arr[i], i, arr);
+			i += 1;
+		}
+		return result;
+	}
+    
 
 	/* ===== API Methods ===== */
 
@@ -71,12 +87,9 @@ var accounting = (function () {
 	function unformat(number, decimal) {
 		// Recursively unformat arrays:
 		if (typeof number === "object") {
-			for (
-				var i = 0, values = [];
-				i < number.length;
-				values.push(unformat(number[i], decimal)), i++
-			);
-			return values;
+			return map(number, function(val){
+                return unformat(val, decimal);
+            });
 		}
 
 		// Fails silently (need decent errors):
@@ -118,15 +131,10 @@ var accounting = (function () {
 	function formatNumber(number, precision, thousand, decimal) {
 		// Resursively format arrays:
 		if (typeof number === "object") {
-			// Call formatNumber on each value, pass parameters as-is:
-			for (
-				var i = 0, values = [];
-				i < number.length;
-				values.push(formatNumber(number[i], precision, thousand, decimal)) && i++
-			);
-			// We're done, return it:
-			return values;
-		}
+			return map(number, function(val){
+                return formatNumber(val, precision, thousand, decimal);
+            });
+        }
 
 		// Number isn't an array - do the formatting:
 		var result, opts;
@@ -169,14 +177,9 @@ var accounting = (function () {
 	function formatMoney(number, symbol, precision, thousand, decimal, format) {
 		// Resursively format arrays:
 		if (typeof number === "object") {
-			// Call formatNumber on each value, pass parameters as-is:
-			for (
-				var i = 0, values = []; 
-				i < number.length;
-				values.push(formatMoney(number[i], symbol, precision, thousand, decimal, format)) && i++
-			);
-			// We're done, return it:
-			return values;
+			return map(number, function(val){
+                return formatMoney(val, symbol, precision, thousand, decimal, format);
+            });
 		}
 
 		// Second param can be an object matching settings.currency:
