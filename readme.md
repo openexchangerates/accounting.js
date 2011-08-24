@@ -8,6 +8,7 @@ Check out the plugin homepage (with demos and docs) here: **http://josscrowcroft
 * Added helper method `defaults` to extend an object's empty properties with a defaults object 
 * API methods now use **defaults()** to give more structure to the second-parameter-object method style: parameters are normalised into an `opts` object inside each method
 * Settings object at top of library for readibility
+* **formatMoney** now recursively formats arrays
 * Added Jasmine test suite (thx [millermedeiros](https://github.com/millermedeiros)!)
 
 ### v0.1.3
