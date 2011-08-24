@@ -21,13 +21,13 @@ var accounting = (function () {
 			decimal : ".",  // decimal point separator
 			thousand: ",",  // thousands separator
 			precision : 2,  // decimal places
-			grouping : 3,   // digit grouping (not implemented yet)
+			grouping : 3   // digit grouping (not implemented yet)
 		},
 		number: {
 			precision : 0,	// default precision on numbers is 0
 			grouping : 3,   // digit grouping (not implemented yet)
 			thousand: ",",
-			decimal : ".",
+			decimal : "."
 		}
 	};
 
