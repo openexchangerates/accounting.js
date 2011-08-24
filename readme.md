@@ -4,6 +4,12 @@ Check out the plugin homepage (with demos and docs) here: **http://josscrowcroft
 
 ## Changelog
 
+### v0.1.4
+* Added helper method `defaults` to extend an object's empty properties with a defaults object 
+* API methods now use **defaults()** to give more structure to the second-parameter-object method style: parameters are normalised into an `opts` object inside each method
+* Settings object at top of library for readibility
+* Added Jasmine test suite (thx [millermedeiros](https://github.com/millermedeiros)!)
+
 ### v0.1.3
 * Refactored library codebase to use a configurable settings object for default formatting parameters, which paves the way for plugins later on.
 * Added `format` parameter to control symbol and value position (default `"%s%v"`, or [symbol][value])
