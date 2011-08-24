@@ -265,22 +265,20 @@ accounting.unformat("&euro; 1.000.000,00", ","); // 1000000</pre>
 
 	<section id="roadmap">
 		<h2>Roadmap</h2>
+		<p>See the <a href="https://github.com/josscrowcroft/accounting.js/issues" title="accounting.js issues">Github Issues page</a> for up-to-date progress.</p>
 		<h4>Next Version:</h4>
 		<ul>
-			<li><s>Add defaults/settings object, to set localisation and formatting parameters.</s></li>
-			<li><s>Extend <code>formatColumn()</code> to be able to format a multi-dimensional array of numbers, for easier templating.</s></li>
-			<li>Add padding parameter to override amount of space between currency symbol and value.</li>
-			<li>Add choice of rounding method (<code>floor</code>, <code>ceil</code> or <code>round</code>).</li>
-			<li>Make <code>formatNumber()</code> by default use the same precision as the provided number.</li>
-			<li>Create test suite</li>
+			<li>Add more fine-grained control of formatting, including negatives, digit-grouping and zero-values.</li>
+			<li>Implement `map()` helper method to clean up API methods.</li>
 			<li>Implement feedback.</li>
 		</ul>
 		<h4>Later:</h4>
 		<ul>
+			<li>Add padding parameter to override amount of space between currency symbol and value.</li>
+			<li>Add choice of rounding method for precision (up, down or nearest-neighbour).</li>
 			<li>Add several other general and excel-style money formatting methods.</li>
-			<li>Add parameter to control digit grouping (allowing 4-digit columns, eg. "CNY 123,4567.89").</li>
 			<li>Create NPM package, if there's demand for it.</li>
-			<li>Create plugin wrapper for jQuery as a separate script (not in core) to allow eg. <code>$('td.accounting').formatMoney()</code></li>
+			<li>Create wrapper for jQuery as a separate plugin (not in core) to allow eg. <code>$('td.accounting').formatMoney()</code></li>
 		</ul>
 	</section>
 
