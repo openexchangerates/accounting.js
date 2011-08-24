@@ -84,9 +84,12 @@ describe('formatNumber', function(){
             expect( accounting.formatNumber(98765432.12, 4, '[', ']') ).toBe( '98[765[432]1200' );
         });
 
-        it('should use default separator if null or empty string', function(){
+        it('should use default separators if null', function(){
             expect( accounting.formatNumber(12345.12345, 2, null, null) ).toBe('12,345.12');
-            expect( accounting.formatNumber(12345.12345, 2, '', '') ).toBe('12,345.12');
+        });
+
+        it('should use empty separators if passed as empty string', function(){
+            expect( accounting.formatNumber(12345.12345, 2, '', '') ).toBe('1234512');
         });
 
     });

@@ -3,7 +3,7 @@
 	var numbers = [];
 	for (var i=0; i<1000; i++) numbers.push((Math.random() * (1000*i)));
 	var strings = $.map(numbers, function(num){ return accounting.formatMoney(num*1000, "HK$ "); });
-console.log(numbers);
+
 	JSLitmus.test('unformat()', function(count) {
 		var i = 0;
 		while ( count-- ) {

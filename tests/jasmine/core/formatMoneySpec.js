@@ -16,4 +16,8 @@ describe('formatMoney()', function(){
     
     });
 
+    it('should allow precision to be `0` and not override with default `2`', function(){
+        expect( accounting.formatMoney(5318008, "$", 0) ).toBe( '$5,318,008' );
+    });
+
 });
