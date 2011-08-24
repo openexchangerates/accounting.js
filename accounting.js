@@ -65,9 +65,9 @@ var accounting = (function () {
 	 * Check if value is of a certain type, since typeOf isn't reliable (http://javascriptweblog.wordpress.com/2011/08/08/fixing-the-javascript-typeof-operator/)
 	 */
 
-	function isArray(val){
+	var isArray = Array.isArray || function (val){
 		return toString.call(val) === '[object Array]';
-	}
+	};
 
 	function isObject(val){
 		return toString.call(val) === '[object Object]';
