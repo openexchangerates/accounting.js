@@ -1,5 +1,6 @@
+/* vim: set tabstop=4 softtabstop=4 shiftwidth=4 noexpandtab: */
 /*!
- * accounting.js javascript library v0.1.3
+ * accounting.js javascript library v0.1.3+
  * https://josscrowcroft.github.com/accounting.js/
  *
  * Copyright 2011 by Joss Crowcroft
@@ -7,6 +8,87 @@
  */
 var accounting = (function () {
 	
+	// SETTINGS =======
+
+	/**
+	 * The library's settings configuration object
+	 * 
+	 * Contains defaults for currency and number formatting
+	 */
+	var settings = {
+		currency: {
+			symbol : "$",	// default currency symbol is '$'
+			format: "%s%v", // this controls string output: %s = symbol, %v = value/number
+			decimal : ".",	// decimal point separator
+			thousand: ",",	// thousands separator
+			precision : 2	// decimal places
+		},
+		number: {
+			precision : 0,	// default precision on numbers is 0
+			thousand: ",",
+			decimal : "."
+		}
+	};
+
+
+	// HELPERS =======
+
+	/**
+	 * Check if value is of a certain type, since typeOf isn't reliable (http://javascriptweblog.wordpress.com/2011/08/08/fixing-the-javascript-typeof-operator/)
+	 */
+	function isType(val, type){
+		return Object.prototype.toString.call(val) === '[object '+ type +']';
+	}
+
+	function isArray(val){
+		return isType(val, 'Array');
+	}
+
+	function isObject(val){
+		return isType(val, 'Object');
+	}
+
+	/**
+	 * Simplified `Array.map()`
+	 *
+	 * Returns a new Array as a result of calling `fn` on each array value.
+	 */
+	function map(arr, fn, thisVal){
+		var i = 0,
+			n = arr.length,
+			result = [];
+		while(i < n){
+			result[i] = fn.call(thisVal, arr[i], i, arr);
+			i += 1;
+		}
+		return result;
+	}
+
+	/**
+	 * Abstract parameters normalization outside methods increasing code reuse and simplifying logic.
+	 */
+	function normalizeParams(params, base){
+		var key;
+		//use `base` as reference since `params` may not contain all options
+		for(key in base){
+			if(base.hasOwnProperty(key)){ //filter prototype
+				if(key === 'precision'){
+					params[key] = normalizePrecision(params.precision, base.precision);
+				} else {
+					params[key] = params[key] || base[key];
+				}
+			}
+		}
+		return params;
+	}
+
+	function normalizePrecision(val, base){
+		val = Math.round(Math.abs(val));
+		return isNaN(val)? base : val;
+	}
+
+	// API ======
+
 	/**
 	 * Removes currency formatting from a number or array of numbers, returning numeric values
 	 * 
@@ -14,26 +96,26 @@ var accounting = (function () {
 	 * To do: rewrite this to be a little more elegant and maybe throw useful errors.
 	 */
 	function unformat(number, decimal) {
-		// Recursively unformat arrays:
-		if (typeof number === "object" && number.length > 1) {
-			for (var i = 0, values = []; i < number.length;
-				values.push(unformat(number[i], decimal)), i++
-			);
-			return values;
+		var result;
+
+		if ( isArray(number) ) {
+			result = map(number, function(val){
+				return unformat(val, decimal);
+			});
+		} else {
+			// Fails silently (need decent errors):
+			number = number || 0;
+			decimal = decimal || settings.number.decimal;
+			
+			// Build regex to strip out everything except digits, decimal point and minus sign:
+			var regex = new RegExp('[^0-9-' + decimal + ']', 'g'),
+				unformatted = parseFloat(('' + number).replace(regex, '').replace(decimal, '.'));
+			
+			// This will fail silently which may cause trouble, let's wait and see:
+			result = !isNaN(unformatted) ? unformatted : 0;
 		}
-		
-		// Fails silently (need decent errors):
-		number = number || 0;
-		
-		// Default decimal point is "." but could be set to eg. ",":
-	    decimal = decimal || ".";
-	    
-	    // Build regex to strip out everything except digits, decimal point and minus sign:
-		var regex = new RegExp("[^0-9-" + decimal + "]", ["g"]),
-			unformatted = parseFloat(("" + number).replace(regex, '').replace(decimal, '.'));
-		
-		// This will fail silently which may cause trouble, let's wait and see:
-		return !isNaN(unformatted) ? unformatted : 0;
+
+		return result;
 	}
 	
 	
@@ -44,8 +126,7 @@ var accounting = (function () {
 	 * problems for accounting- and finance-related software.
 	 */
 	function toFixed(value, precision) {
-		// Default precision (decimal places) is 0:
-		precision = !isNaN(precision = Math.abs(precision)) ? precision : 0;
+		precision = normalizePrecision(precision, settings.number.precision);
 		var power = Math.pow(10, precision);
 		
 		// Multiply up by precision, round accurately, then divide and use native toFixed():
@@ -60,38 +141,34 @@ var accounting = (function () {
 	 * 2nd parameter `precision` can be an object matching `settings.number`
 	 */
 	function formatNumber(number, precision, thousand, decimal) {
-		// Resursively format arrays:
-		if (typeof number === "object" && number.length > 1) {
-			for (var i = 0, values = []; i < number.length;
-				// Pass parameters as-is:
-				values.push(formatNumber(number[i], precision, thousand, decimal)) && i++
-			);
-			return values;
-		}
-		
-		// Clean up number:
-		number = unformat(number);
-		
-		// Second param precision can be an object matching `settings.number`:
-		if ( typeof precision === "object" ) {
-			// Pass object values into parameter vars (these will be checked afterwards):
-			thousand = precision.thousand;
-			decimal = precision.decimal;
-			precision = precision.precision;
-		}
-		
-		// Make sure all parameters were set, or use defaults:
-		thousand = thousand ? thousand : settings.number.thousand;
-		decimal = decimal ? decimal : settings.number.decimal;
-		precision = !isNaN(precision = Math.abs(precision)) ? precision : settings.number.precision;
-		
-		// Do some calc:
-		var negative = number < 0 ? "-" : "",
-		    base = parseInt(toFixed(Math.abs(number || 0), precision), 10) + "",
-		    mod = base.length > 3 ? base.length % 3 : 0;
+		var result, config;
 
-		// Format the number:
-		return negative + (mod ? base.substr(0, mod) + thousand : "") + base.substr(mod).replace(/(\d{3})(?=\d)/g, "$1" + thousand) + (precision ? decimal + toFixed(Math.abs(number), precision).split('.')[1] : "");
+		if ( isArray(number) ) {
+			result = map(number, function(val){
+				return formatNumber(val, precision, thousand, decimal);
+			});
+		} else {
+		
+			// Second param precision can be an object matching `settings.number`:
+			config = isObject(precision)? precision : {
+				precision: precision,
+				thousand : thousand,
+				decimal : decimal
+			};
+			config = normalizeParams(config, settings.number);
+
+			number = toFixed(unformat(number), config.precision); //limit/add decimal digits
+			
+			var parts = new RegExp('^(-?\\d{1,3})((?:\\d{3})+)(?:\\.(\\d{'+ config.precision +'}))?$').exec( number ); //separate begin [$1], middle [$2] and decimal digits [$3]
+
+			if(parts){ //number >= 1000 || number <= -1000
+				result = parts[1] + parts[2].replace(/\d{3}/g, config.thousand + '$&') + (parts[3] ? config.decimal + parts[3] : '');
+			} else {
+				result = number.replace('.', config.decimal);
+			}
+		}
+
+		return result;
 	}
 
 
@@ -107,29 +184,21 @@ var accounting = (function () {
 	 * To do: tidy up the parameters
 	 */
 	function formatMoney(number, symbol, precision, thousand, decimal, format) {
-		
+
 		// Second param can be an object matching `settings.currency`:
-		if (typeof symbol === "object") {
-			precision = symbol.precision;
-			thousand = symbol.thousand;
-			decimal = symbol.decimal;
-			format = symbol.format;
-			symbol = symbol.symbol;
-		}
+		var config = isObject(symbol)? symbol : {
+			symbol : symbol,
+			precision : precision,
+			thousand : thousand,
+			decimal : decimal,
+			format : format
+		};
+		config = normalizeParams(config, settings.currency);
 		
-		// Make sure params were set, or use defaults:
-		// todo: strikes me as a little bit crufty, even though it works well.
-		symbol = symbol ? symbol : settings.currency.symbol;
-		precision = !isNaN(precision = Math.abs(precision)) ? precision : settings.currency.precision;
-		thousand = thousand ? thousand : settings.currency.thousand;
-		decimal = decimal || settings.currency.decimal;
-		format = format || settings.currency.format;
-		
-		// Format the number:
-		var formatted = formatNumber(number, precision, thousand, decimal);
+		var formatted = formatNumber(number, config.precision, config.thousand, config.decimal);
 		
 		// Return with currency symbol added:
-		return format.replace('%s', symbol).replace('%v', formatted);
+		return config.format.replace('%s', config.symbol).replace('%v', formatted);
 	}
 	
 	
@@ -151,8 +220,8 @@ var accounting = (function () {
 		}
 		
 		var maxLength = 0,
-		    formatted = [],
-		    i;
+			formatted = [],
+			i;
 		
 		// Format the list according to options, store the length of the longest string:
 		// Performs recursive formatting of nested arrays
@@ -188,28 +257,7 @@ var accounting = (function () {
 		
 		// Send back the list of numbers:			
 		return formatted;
-	}
-	
-	
-	/**
-	 * The library's settings configuration object
-	 * 
-	 * Contains defaults for currency and number formatting
-	 */
-	var settings = {
-		currency: {
-			symbol : "$",   // default currency symbol is '$'
-			format: "%s%v", // this controls string output: %s = symbol, %v = value/number
-			decimal : ".",  // decimal point separator
-			thousand: ",",  // thousands separator
-			precision : 2   // decimal places
-		},
-		number: {
-			precision : 0,  // default precision on numbers is 0
-			thousand: ",",
-			decimal : "."
-		}
-	};
+	}	
 	
 	
 	// Return the library's API:
