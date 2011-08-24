@@ -194,7 +194,11 @@ accounting.formatMoney(5318008, {
 	precision: 0,
 	format: "%v %s",
 	thousand: "&middot"
-});</pre>
+});
+
+// Will recursively format an array of values:
+accounting.formatMoney([123, 456, [78, 9]], "$", 0); // ["$123", "$456", ["$78", "$9"]]</pre>
+
 
 
 		<h4><strong>accounting.formatColumn()</strong></h4>
@@ -215,10 +219,10 @@ accounting.formatColumn(list); // [["$  1.00", "$100.00"], ["$900.00", "$  9.00"
 
 		<h4><strong>accounting.formatNumber()</strong></h4>
 		<pre class="prettyprint lang-js">// Standard usage and parameters (returns string):
-accounting.formatNumber(list<em>, [precision = 0], [thousand = ","], [decimal = "."]</em>)
+accounting.formatNumber(number<em>, [precision = 0], [thousand = ","], [decimal = "."]</em>)
 
 // Second parameter can also be an object matching `settings.number`:
-accounting.formatNumber(list<em>, [object]</em>)
+accounting.formatNumber(number<em>, [object]</em>)
 
 // Example usage:
 accounting.formatNumber(9876543); // 9,876,543
@@ -228,7 +232,10 @@ accounting.formatNumber(4999.99, 2, ".", ","); // 4.999,99
 accounting.formatNumber(5318008, {
 	precision : 3,
 	thousand : " "
-});</pre>
+});
+
+// Will recursively format an array of values:
+accounting.formatNumber([123456, [7890, 123]]); // ["123,456", ["7,890", "123"]]</pre>
 
 
 		<h4><strong>accounting.toFixed()</strong></h4>
