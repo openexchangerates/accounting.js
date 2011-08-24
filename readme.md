@@ -9,7 +9,7 @@ Check out the plugin homepage (with demos and docs) here: **http://josscrowcroft
 * API methods now use **defaults()** to give more structure to the second-parameter-object method style: parameters are normalised into an `opts` object inside each method
 * Settings object at top of library for readibility
 * **formatMoney** now recursively formats arrays
-* Added Jasmine test suite (thx [millermedeiros](https://github.com/millermedeiros)!)
+* Added Jasmine test suite (thx [millermedeiros](https://github.com/millermedeiros)!) and QUnit functionality + speed tests
 
 ### v0.1.3
 * Refactored library codebase to use a configurable settings object for default formatting parameters, which paves the way for plugins later on.
