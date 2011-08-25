@@ -57,18 +57,18 @@ var accounting = (function () {
 	/**
 	 * Check and normalise the value of precision (must be positive integer):
 	 */
-	function checkPrecision(val, base){
+	function checkPrecision(val, base) {
 		val = Math.round(Math.abs(val));
 		return isNaN(val)? base : val;
 	}
 
 	/**
-	 * Simplified `Array.map()`
+	 * Implementation of `Array.map()` for iteration loops
 	 *
-	 * Returns a new Array as a result of calling `fn` on each array value.
+	 * Returns a new Array as a result of calling `iterator` on each array value.
 	 * Defers to native Array.map if available
 	 */
-    function map(obj, iterator, context){
+    function map(obj, iterator, context) {
         var results = [];
         if (obj == null) return results;
 
@@ -94,7 +94,7 @@ var accounting = (function () {
 	function unformat(number, decimal) {
 		// Recursively unformat arrays:
 		if (typeof number === "object") {
-			return map(number, function(val){
+			return map(number, function(val) {
                 return unformat(val, decimal);
             });
 		}
@@ -138,7 +138,7 @@ var accounting = (function () {
 	function formatNumber(number, precision, thousand, decimal) {
 		// Resursively format arrays:
 		if (typeof number === "object") {
-			return map(number, function(val){
+			return map(number, function(val) {
                 return formatNumber(val, precision, thousand, decimal);
             });
         }
