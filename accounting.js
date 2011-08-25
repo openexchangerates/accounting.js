@@ -76,7 +76,7 @@ var accounting = (function () {
         if (nativeMap && obj.map === nativeMap) return obj.map(iterator, context);
 
         // Fallback for native .map:
-        for (var i = 0; i < obj.length; i++ ) {
+        for (var i = 0, n = obj.length; i < n; i++ ) {
             results[i] = iterator.call(context, obj[i], i, obj);
         }
         return results;
@@ -228,11 +228,12 @@ var accounting = (function () {
 
 		var maxLength = 0,
 		    formatted = [],
-		    i;
+		    i,
+			n;
 
 		// Format the list according to options, store the length of the longest string:
 		// Performs recursive formatting of nested arrays
-		for (i = 0; i < list.length; i++) {
+		for (i = 0, n = list.length; i < n; i++) {
 			if (typeof list[i] === "object") {
 				// Recursively format columns if list is a multi-dimensional array:
 				formatted.push(formatColumn(list[i], symbol, precision, thousand, decimal));
@@ -251,7 +252,7 @@ var accounting = (function () {
 		symbol = (!symbol ? settings.currency.symbol : symbol.symbol ? symbol.symbol : symbol);
 
 		// Add space between currency symbol and number to pad strings:
-		for (i = 0; i < formatted.length; i++) {
+		for (i = 0, n = formatted.length; i < n; i++) {
 			// Only if this is a string (not a nested array):
 			if (typeof formatted[i] === "string" && formatted[i].length < maxLength) {
 				// Match first number in string and add enough padding:
