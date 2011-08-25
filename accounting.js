@@ -16,16 +16,16 @@ var accounting = (function () {
 	 */
 	var settings = {
 		currency: {
-			symbol : "$",   // default currency symbol is '$'
+			symbol : "$",	// default currency symbol is '$'
 			format: "%s%v", // this controls string output: %s = symbol, %v = value/number
-			decimal : ".",  // decimal point separator
-			thousand: ",",  // thousands separator
-			precision : 2,  // decimal places
-			grouping : 3    // digit grouping (not implemented yet)
+			decimal : ".",	// decimal point separator
+			thousand: ",",	// thousands separator
+			precision : 2,	// decimal places
+			grouping : 3	// digit grouping (not implemented yet)
 		},
 		number: {
 			precision : 0,	// default precision on numbers is 0
-			grouping : 3,   // digit grouping (not implemented yet)
+			grouping : 3,	// digit grouping (not implemented yet)
 			thousand: ",",
 			decimal : "."
 		}
@@ -35,7 +35,7 @@ var accounting = (function () {
 	/* ===== Internal Helper Methods ===== */
 
 	// Store reference to possibly-available ECMAScript 5 methods for later:
-    var nativeMap = Array.prototype.map;
+	var nativeMap = Array.prototype.map;
 
 	/**
 	 * Extends an object with a defaults object, similar to underscore's _.defaults
@@ -68,20 +68,20 @@ var accounting = (function () {
 	 * Returns a new Array as a result of calling `iterator` on each array value.
 	 * Defers to native Array.map if available
 	 */
-    function map(obj, iterator, context) {
-        var results = [];
-        if (obj == null) return results;
+	function map(obj, iterator, context) {
+		var results = [];
+		if (obj == null) return results;
 
-        // Use native .map method if it exists:
-        if (nativeMap && obj.map === nativeMap) return obj.map(iterator, context);
+		// Use native .map method if it exists:
+		if (nativeMap && obj.map === nativeMap) return obj.map(iterator, context);
 
-        // Fallback for native .map:
-        for (var i = 0, n = obj.length; i < n; i++ ) {
-            results[i] = iterator.call(context, obj[i], i, obj);
-        }
-        return results;
-    }
-    
+		// Fallback for native .map:
+		for (var i = 0, n = obj.length; i < n; i++ ) {
+			results[i] = iterator.call(context, obj[i], i, obj);
+		}
+		return results;
+	}
+	
 
 	/* ===== API Methods ===== */
 
@@ -95,19 +95,19 @@ var accounting = (function () {
 		// Recursively unformat arrays:
 		if (typeof number === "object") {
 			return map(number, function(val) {
-                return unformat(val, decimal);
-            });
+				return unformat(val, decimal);
+			});
 		}
 
 		// Fails silently (need decent errors):
 		number = number || 0;
 
 		// Default decimal point is "." but could be set to eg. ",":
-	    decimal = decimal || ".";
-	    
-	    // Build regex to strip out everything except digits, decimal point and minus sign:
+		decimal = decimal || ".";
+		
+		// Build regex to strip out everything except digits, decimal point and minus sign:
 		var regex = new RegExp("[^0-9-" + decimal + "]", ["g"]),
-		    unformatted = parseFloat(("" + number).replace(regex, '').replace(decimal, '.'));
+			unformatted = parseFloat(("" + number).replace(regex, '').replace(decimal, '.'));
 
 		// This will fail silently which may cause trouble, let's wait and see:
 		return !isNaN(unformatted) ? unformatted : 0;
@@ -139,9 +139,9 @@ var accounting = (function () {
 		// Resursively format arrays:
 		if (typeof number === "object") {
 			return map(number, function(val) {
-                return formatNumber(val, precision, thousand, decimal);
-            });
-        }
+				return formatNumber(val, precision, thousand, decimal);
+			});
+		}
 
 		// Number isn't an array - do the formatting:
 		var result, opts;
@@ -162,8 +162,8 @@ var accounting = (function () {
 
 		// Do some calc:
 		var negative = number < 0 ? "-" : "",
-		    base = parseInt(toFixed(Math.abs(number || 0), opts.precision), 10) + "",
-		    mod = base.length > 3 ? base.length % 3 : 0;
+			base = parseInt(toFixed(Math.abs(number || 0), opts.precision), 10) + "",
+			mod = base.length > 3 ? base.length % 3 : 0;
 
 		// Format the number:
 		return negative + (mod ? base.substr(0, mod) + opts.thousand : "") + base.substr(mod).replace(/(\d{3})(?=\d)/g, "$1" + opts.thousand) + (opts.precision ? opts.decimal + toFixed(Math.abs(number), opts.precision).split('.')[1] : "");
@@ -185,8 +185,8 @@ var accounting = (function () {
 		// Resursively format arrays:
 		if (typeof number === "object") {
 			return map(number, function(val){
-                return formatMoney(val, symbol, precision, thousand, decimal, format);
-            });
+				return formatMoney(val, symbol, precision, thousand, decimal, format);
+			});
 		}
 
 		// Second param can be an object matching settings.currency:
@@ -227,8 +227,8 @@ var accounting = (function () {
 		}
 
 		var maxLength = 0,
-		    formatted = [],
-		    i,
+			formatted = [],
+			i,
 			n;
 
 		// Format the list according to options, store the length of the longest string:
