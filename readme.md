@@ -4,6 +4,9 @@ Check out the plugin homepage (with demos and docs) here: **http://josscrowcroft
 
 ## Changelog
 
+### v0.1.5
+* Added `map()` helper method based on underscore.js's `_.map()`, for array iteration, falls back to native `Array.map` if available.
+
 ### v0.1.4
 * Added helper method `defaults` to extend an object's empty properties with a defaults object 
 * API methods now use **defaults()** to give more structure to the second-parameter-object method style: parameters are normalised into an `opts` object inside each method
