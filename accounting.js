@@ -34,6 +34,9 @@ var accounting = (function () {
 
 	/* ===== Internal Helper Methods ===== */
 
+	// Store reference to possibly-available ECMAScript 5 methods for later:
+    var nativeMap = Array.prototype.map;
+
 	/**
 	 * Extends an object with a defaults object, similar to underscore's _.defaults
 	 * 
@@ -63,17 +66,21 @@ var accounting = (function () {
 	 * Simplified `Array.map()`
 	 *
 	 * Returns a new Array as a result of calling `fn` on each array value.
+	 * Defers to native Array.map if available
 	 */
-	function map(arr, fn, thisVal){
-		var i = 0,
-			n = arr.length,
-			result = [];
-		while(i < n){
-			result[i] = fn.call(thisVal, arr[i], i, arr);
-			i += 1;
-		}
-		return result;
-	}
+    function map(obj, iterator, context){
+        var results = [];
+        if (obj == null) return results;
+
+        // Use native .map method if it exists:
+        if (nativeMap && obj.map === nativeMap) return obj.map(iterator, context);
+
+        // Fallback for native .map:
+        for (var i = 0; i < obj.length; i++ ) {
+            results[i] = iterator.call(context, obj[i], i, obj);
+        }
+        return results;
+    }
     
 
 	/* ===== API Methods ===== */

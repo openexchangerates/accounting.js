@@ -13,9 +13,12 @@
 		}
 	});
 
-	JSLitmus.test('unformat() - array', function(count) {
+	JSLitmus.test('unformat(array)', function(count) {
+		var i = 0;
 		while ( count-- ) {
-			accounting.unformat(strings);
+			accounting.unformat([strings[i], strings[i+1]]);
+			i += 2;
+			i > numbers.length && (i = 0);
         }
 	});
 
@@ -34,9 +37,12 @@
 		}
 	});
 
-	JSLitmus.test('formatNumber() - array', function(count) {
+	JSLitmus.test('formatNumber(array)', function(count) {
+		var i = 0;
 		while ( count-- ) {
-            accounting.formatNumber(numbers);
+            accounting.formatNumber([numbers[i], numbers[i+1]]);
+			i += 2;
+			i > numbers.length && (i = 0);
         }
 	});
 
@@ -49,9 +55,12 @@
 		}
 	});
 
-	JSLitmus.test('formatMoney() - array', function(count) {
+	JSLitmus.test('formatMoney(array)', function(count) {
+		var i = 0;
 		while ( count-- ) {
-			accounting.formatMoney(numbers);
+			accounting.formatMoney([numbers[i], numbers[i+1]]);
+			i += 2;
+			i > numbers.length && (i = 0);
         }
 	});
 
