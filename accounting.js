@@ -56,6 +56,14 @@ var accounting = (function () {
 	}
 
 	/**
+	 * Tests whether supplied parameter is a true object
+	 * from underscore.js, delegates to ECMA5's native Array.isArray
+	 */
+	function isObject(obj) {
+		return toString.call(obj) === '[object Object]';
+	}
+
+	/**
 	 * Extends an object with a defaults object, similar to underscore's _.defaults
 	 * 
 	 * Used for abstracting parameter handling from API methods
