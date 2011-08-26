@@ -290,31 +290,28 @@ var accounting = (function () {
 		if (!list) return [];
 
 		var maxLength = 0,
-			  formatted = [],
-			  i;
+			  formatted = [];
 
 		// Format the list according to options, store the length of the longest string:
-		// Performs recursive formatting of nested arrays
-		for (i = 0; i < list.length; i++) {
-			if (isArray(list[i])) {
+		map(list, function(val, i) {
+			if (isArray(val)) {
 				// Recursively format columns if list is a multi-dimensional array:
-				formatted.push(formatColumn(list[i], symbol, precision, thousand, decimal));
+				formatted.push(formatColumn(val, symbol, precision, thousand, decimal));
 			} else {
 				// Format this number, push into formatted list and save the length:
-				formatted.push(formatMoney(list[i], symbol, precision, thousand, decimal));
+				formatted.push(formatMoney(val, symbol, precision, thousand, decimal));
 				if (formatted[i].length > maxLength) {
 					maxLength = formatted[i].length;
 				}
 			}
-		}
-
+		});
 
 		// Second param can be an object, but symbol is needed for next part, so get it:
 		// tl;dr: `symbol` = default if no symbol set, or else `opts.symbol` if set, or else just `symbol`
 		symbol = (!symbol ? settings.currency.symbol : symbol.symbol ? symbol.symbol : symbol);
 
 		// Add space between currency symbol and number to pad strings:
-		for (i = 0; i < formatted.length; i++) {
+		for (var i = 0, j = formatted.length; i < j; i++) {
 			// Only if this is a string (not a nested array):
 			if (isString(formatted[i]) && formatted[i].length < maxLength) {
 				// Match first number in string and add enough padding:
