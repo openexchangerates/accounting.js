@@ -1,5 +1,5 @@
 /*!
- * accounting.js javascript library v0.1.4
+ * accounting.js javascript library v0.2a
  * https://josscrowcroft.github.com/accounting.js/
  *
  * Copyright 2011 by Joss Crowcroft
@@ -18,10 +18,17 @@ var accounting = (function () {
 		currency: {
 			symbol : "$",   // default currency symbol is '$'
 			format: "%s%v", // this controls string output: %s = symbol, %v = value/number
+/*
+			format: {
+				pos : "%s %v",
+				neg : "%s (%v)",
+				zero : '%s -.--'
+			},
+*/
 			decimal : ".",  // decimal point separator
 			thousand: ",",  // thousands separator
 			precision : 2,  // decimal places
-			grouping : 3	   // digit grouping (not implemented yet)
+			grouping : 3    // digit grouping (not implemented yet)
 		},
 		number: {
 			precision : 0,	// default precision on numbers is 0
@@ -110,6 +117,31 @@ var accounting = (function () {
 	}
 
 
+	/**
+	 * Parses a format string or object and returns format obj for use in rendering
+	 * 
+	 * `format` is either a string with default (positive) format, or object
+	 * containing `pos` (required), `neg` and `zero` values (or a function returning
+	 * either a string or object)
+	 */
+	function checkCurrencyFormat(format) {
+		var defaults = settings.currency.format;
+
+		// Allow function as format parameter (should return string or object):
+		if ( typeof format === "function" ) format = format();
+
+		// Format can be a string, in which case `value` ("%v") must be present:
+		if ( isString( format ) && format.match("%v") ) {
+			// Create and return positive, negative and zero formats:
+			return { pos: format, neg: format.replace("%v", "-%v"), zero:format };
+
+		// If no format, or object is missing valid positive value, use defaults:
+		} else if ( !format || !format.pos || !format.pos.match("%v") ) {
+			// Use defaults:
+			return isString( defaults ) ? { pos: defaults, neg: defaults.replace("%v", "-%v"), zero:defaults } : defaults;
+		}
+	}
+
 	/* ===== API Methods ===== */
 
 	/**
@@ -130,7 +162,7 @@ var accounting = (function () {
 		number = number || 0;
 
 		// Default decimal point is "." but could be set to eg. ",":
-		 decimal = decimal || ".";
+		decimal = decimal || ".";
 
 		 // Build regex to strip out everything except digits, decimal point and minus sign:
 		var regex = new RegExp("[^0-9-" + decimal + "]", ["g"]),
@@ -231,8 +263,14 @@ var accounting = (function () {
 		// Extend opts with the default values in settings.number:
 		opts = defaults(opts, settings.currency);
 
+		// Check format (returns object with `pos`, `neg` and `zero`):
+		opts.format = checkCurrencyFormat(format);
+
+		// Choose which format to use for this value (pos, neg or zero):
+		opts.format = number > 0 ? opts.format.pos : number < 0 ? opts.format.neg : opts.format.zero;
+
 		// Return with currency symbol added:
-		return opts.format.replace('%s', opts.symbol).replace('%v', formatNumber(number, opts.precision, opts.thousand, opts.decimal));
+		return opts.format.replace('%s', opts.symbol).replace('%v', formatNumber(Math.abs(number), opts.precision, opts.thousand, opts.decimal));
 	}
 
 
@@ -249,9 +287,7 @@ var accounting = (function () {
 	 * browsers from collapsing the whitespace in the output strings.
 	 */
 	function formatColumn(list, symbol, precision, thousand, decimal) {
-		if (!list) {
-			return [];
-		}
+		if (!list) return [];
 
 		var maxLength = 0,
 			  formatted = [],
