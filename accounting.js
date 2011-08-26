@@ -36,6 +36,7 @@ var accounting = (function () {
 
 	// Store reference to possibly-available ECMAScript 5 methods for later:
     var nativeMap = Array.prototype.map,
+    	nativeIsArray = Array.isArray,
     	toString = Object.prototype.toString;
 
 	/**
