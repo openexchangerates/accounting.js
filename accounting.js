@@ -201,22 +201,10 @@ var accounting = (function () {
 	 */
 	function formatMoney(number, symbol, precision, thousand, decimal, format) {
 		// Resursively format arrays:
-<<<<<<< HEAD
-		if (typeof number === "object") {
+		if ( isArray(number) ) {
 			return map(number, function(val){
                 return formatMoney(val, symbol, precision, thousand, decimal, format);
             });
-=======
-		if ( isArray(number) ) {
-			// Call formatNumber on each value, pass parameters as-is:
-			for (
-				var i = 0, values = []; 
-				i < number.length;
-				values.push(formatMoney(number[i], symbol, precision, thousand, decimal, format)) && i++
-			);
-			// We're done, return it:
-			return values;
->>>>>>> 9c4e2431ef718af6bee9de5fa22730a5104e53a0
 		}
 
 		// Second param can be an object matching settings.currency:
@@ -283,7 +271,7 @@ var accounting = (function () {
 		// Add space between currency symbol and number to pad strings:
 		for (i = 0; i < formatted.length; i++) {
 			// Only if this is a string (not a nested array):
-			if (typeof formatted[i] === "string" && formatted[i].length < maxLength) {
+			if (isString(formatted[i]) && formatted[i].length < maxLength) {
 				// Match first number in string and add enough padding:
 				formatted[i] = formatted[i].replace(
 					/(-?\d+)/,
