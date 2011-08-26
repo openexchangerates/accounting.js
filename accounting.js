@@ -35,7 +35,24 @@ var accounting = (function () {
 	/* ===== Internal Helper Methods ===== */
 
 	// Store reference to possibly-available ECMAScript 5 methods for later:
-    var nativeMap = Array.prototype.map;
+    var nativeMap = Array.prototype.map,
+    	toString = Object.prototype.toString;
+
+	/**
+	 * Tests whether supplied parameter is a string
+	 * from underscore.js
+	 */
+	function isString(obj) {
+		return !!(obj === '' || (obj && obj.charCodeAt && obj.substr));
+	}
+
+	/**
+	 * Tests whether supplied parameter is a string
+	 * from underscore.js, delegates to ECMA5's native Array.isArray
+	 */
+	function isArray(obj) {
+		return nativeIsArray ? obj.isArray : toString.call(obj) === '[object Array]';
+	}
 
 	/**
 	 * Extends an object with a defaults object, similar to underscore's _.defaults
@@ -52,14 +69,6 @@ var accounting = (function () {
 			}
 		}
 		return object;
-	}
-
-	/**
-	 * Check and normalise the value of precision (must be positive integer):
-	 */
-	function checkPrecision(val, base) {
-		val = Math.round(Math.abs(val));
-		return isNaN(val)? base : val;
 	}
 
 	/**
@@ -82,6 +91,14 @@ var accounting = (function () {
         return results;
     }
     
+	/**
+	 * Check and normalise the value of precision (must be positive integer):
+	 */
+	function checkPrecision(val, base) {
+		val = Math.round(Math.abs(val));
+		return isNaN(val)? base : val;
+	}
+
 
 	/* ===== API Methods ===== */
 
@@ -93,7 +110,7 @@ var accounting = (function () {
 	 */
 	function unformat(number, decimal) {
 		// Recursively unformat arrays:
-		if (typeof number === "object") {
+		if (isArray(number)) {
 			return map(number, function(val) {
                 return unformat(val, decimal);
             });
@@ -137,7 +154,7 @@ var accounting = (function () {
 	 */
 	function formatNumber(number, precision, thousand, decimal) {
 		// Resursively format arrays:
-		if (typeof number === "object") {
+		if (isArray(number)) {
 			return map(number, function(val) {
                 return formatNumber(val, precision, thousand, decimal);
             });
@@ -147,7 +164,7 @@ var accounting = (function () {
 		var result, opts;
 
 		// Second param precision can be an object matching settings.number:
-		opts = (typeof precision === "object") ? precision : {
+		opts = isObject(precision) ? precision : {
 			precision: precision,
 			thousand : thousand,
 			decimal : decimal
@@ -183,14 +200,26 @@ var accounting = (function () {
 	 */
 	function formatMoney(number, symbol, precision, thousand, decimal, format) {
 		// Resursively format arrays:
+<<<<<<< HEAD
 		if (typeof number === "object") {
 			return map(number, function(val){
                 return formatMoney(val, symbol, precision, thousand, decimal, format);
             });
+=======
+		if ( isArray(number) ) {
+			// Call formatNumber on each value, pass parameters as-is:
+			for (
+				var i = 0, values = []; 
+				i < number.length;
+				values.push(formatMoney(number[i], symbol, precision, thousand, decimal, format)) && i++
+			);
+			// We're done, return it:
+			return values;
+>>>>>>> 9c4e2431ef718af6bee9de5fa22730a5104e53a0
 		}
 
 		// Second param can be an object matching settings.currency:
-		var opts = (typeof symbol === "object") ? symbol : {
+		var opts = isObject(symbol) ? symbol : {
 			symbol : symbol,
 			precision : precision,
 			thousand : thousand,
@@ -233,7 +262,7 @@ var accounting = (function () {
 		// Format the list according to options, store the length of the longest string:
 		// Performs recursive formatting of nested arrays
 		for (i = 0; i < list.length; i++) {
-			if (typeof list[i] === "object") {
+			if ( isArray(list[i]) ) {
 				// Recursively format columns if list is a multi-dimensional array:
 				formatted.push(formatColumn(list[i], symbol, precision, thousand, decimal));
 			} else {
