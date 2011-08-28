@@ -68,13 +68,13 @@ var accounting = (function () {
 	 * 
 	 * Used for abstracting parameter handling from API methods
 	 */
-	function defaults(object, defaults) {
+	function defaults(object, defs) {
 		var key;
 		// Iterate over object non-prototype properties:
-		for (key in defaults) {
-			if (defaults.hasOwnProperty(key)) {
+		for (key in defs) {
+			if (defs.hasOwnProperty(key)) {
 				// Replace values with defaults only if undefined (allow empty/zero values):
-				if (object[key] == null) object[key] = defaults[key];
+				if (object[key] == null) object[key] = defs[key];
 			}
 		}
 		return object;
@@ -327,7 +327,7 @@ var accounting = (function () {
 					return formatColumn(val, opts);
 				} else {
 					// Clean up the value
-					val = unformat(val)
+					val = unformat(val);
 					// Choose which format to use for this value (pos, neg or zero):
 					var format = val > 0 ? opts.format.pos : val < 0 ? opts.format.neg : opts.format.zero,
 						// Format this value, push into formatted list and save the length:
