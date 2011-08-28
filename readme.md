@@ -2,9 +2,11 @@
 
 Check out the plugin homepage (with demos and docs) here: **http://josscrowcroft.github.com/accounting.js/**
 
-## To do for v0.2
-* Write tests and update docs/demos for enhanced formatting options
+
+## To do for v0.2.1
+* Write some more tests, docs and demos for new formatting options
 * Do some optimisations for performance bottlenecks
+
 
 ## Changelog
 
