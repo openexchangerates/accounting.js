@@ -2,7 +2,16 @@
 
 Check out the plugin homepage (with demos and docs) here: **http://josscrowcroft.github.com/accounting.js/**
 
+## To do for v0.2
+* Write tests and update docs/demos for enhanced formatting options
+* Do some optimisations for performance bottlenecks
+
 ## Changelog
+
+### v0.2
+* Compleat (non-breaking) rewrite of the formatting system for **formatMoney** and **formatColumn**, to allow more fine-grained control of string output, still easy as pie
+* Separate formats for negative and zero values now supported (optionally) via `accounting.settings.currency.format`
+* Added `isArray`, `isString` and `isObject` helper methods from underscore.js for readability/maintainability
 
 ### v0.1.5
 * Added `map()` helper method based on underscore.js's `_.map()`, for array iteration, falls back to native `Array.map` if available.

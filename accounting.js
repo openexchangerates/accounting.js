@@ -17,11 +17,7 @@ var accounting = (function () {
 	var settings = {
 		currency: {
 			symbol : "$",   // default currency symbol is '$'
-			format: {       // controls output: %s = symbol, %v = value (can be string eg. "%s%v")
-				pos : "%s%v",
-				neg : "%s-%v",
-				zero : "%s-"
-			},
+			format: "%s%v", // controls output: %s = symbol, %v = value (can be object, see docs)
 			decimal : ".",  // decimal point separator
 			thousand: ",",  // thousands separator
 			precision : 2,  // decimal places
