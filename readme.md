@@ -45,12 +45,14 @@ Check out the plugin homepage (with demos and docs) here: **http://josscrowcroft
 ### Still not convinced? Here's a little preview of accounting.formatColumn():
 
 ```html
- Original Number:  | With accounting.js:   | Different settings:   |         Localised:   |   Symbol after value:
- ------------------+-----------------------+-----------------------+----------------------+----------------------
- 123.5             |    $        123.50    |    HK$         124    |   Û        123,50    |           123.50 GBP
- 3456.615          |    $      3,456.62    |    HK$       3,457    |   Û      3.456,62    |         3,456.62 GBP
- 777888.99         |    $    777,888.99    |    HK$     777,889    |   Û    777.888,99    |       777,888.99 GBP
- -5432             |    $     -5,432.00    |    HK$     (5,432)    |   Û     -5.432,00    |        -5,432.00 GBP
- -1234567          |    $ -1,234,567.00    |    HK$ (1,234,567)    |   Û -1.234.567,00    |    -1,234,567.00 GBP
- 0                 |    $          0.00    |    HK$          --    |   Û          0,00    |             0.00 GBP
+ Original Number:   |  With accounting.js:    |  Different settings:    |    Symbol after value:
+ -------------------+-------------------------+-------------------------+-----------------------
+ 123.5              |     $        123.50     |     HK$         124     |            123.50 GBP
+ 3456.615           |     $      3,456.62     |     HK$       3,457     |          3,456.62 GBP
+ 777888.99          |     $    777,888.99     |     HK$     777,889     |        777,888.99 GBP
+ -5432              |     $     -5,432.00     |     HK$     (5,432)     |         -5,432.00 GBP
+ -1234567           |     $ -1,234,567.00     |     HK$ (1,234,567)     |     -1,234,567.00 GBP
+ 0                  |     $          0.00     |     HK$          --     |              0.00 GBP
 ```
+
+There's more on the plugin homepage: **http://josscrowcroft.github.com/accounting.js/**
