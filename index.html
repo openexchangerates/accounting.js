@@ -107,14 +107,17 @@ accounting.toFixed(0.615, 2); // "0.62"</pre>
 					<tr>
 						<td><input type="text" value="1000000" maxlength="20" /></td>
 						<td class="output">$ 1,000,000.00</td>
+						<td class="output2">GBP 1,000,000</td>
 					</tr>
 					<tr>
 						<td><input type="text" value="-5000" maxlength="20" /></td>
 						<td class="output">$    -5,000.00</td>
+						<td class="output2">GBP   (5,000)</td>
 					</tr>
 					<tr>
 						<td><input type="text" value="0" maxlength="20" /></td>
 						<td class="output">$         0.00</td>
+						<td class="output2">GBP        --</td>
 					</tr>
 				</tbody>
 			</table>
@@ -145,7 +148,7 @@ accounting.toFixed(0.615, 2); // "0.62"</pre>
 accounting.settings = {
 	currency: {
 		symbol : "$",   // default currency symbol is '$'
-		format: "%s%v", // this controls string output: %s = symbol, %v = value/number
+		format: "%s%v", // controls output: %s = symbol, %v = value/number (can be object: see below)
 		decimal : ".",  // decimal point separator
 		thousand: ",",  // thousands separator
 		precision : 2   // decimal places
@@ -159,6 +162,13 @@ accounting.settings = {
 
 // These can be changed externally to edit the library's defaults:
 accounting.settings.currency.format = "%s %v";
+
+// Format can be an object, with `pos`, `neg` and `zero`:
+accounting.settings.currency.format = {
+	pos : "%s %v",   // for positive values, eg. "$ 1.00" (required)
+	neg : "%s (%v)", // for negative values, eg. "$ (1.00)" <em>[optional]</em>
+	zero: "%s  -- "  // for zero values, eg. "$  --" <em>[optional]</em>
+};
 
 // Example using underscore.js - extend default settings (also works with $.extend in jQuery):
 accounting.settings.number = _.defaults({
@@ -177,10 +187,10 @@ accounting.formatMoney(number<em>, [options]</em>)
 // Available fields in options object, matching `settings.currency`:
 var options = {
 	symbol : "$",
-	format: "%s%v",
 	decimal : ".",
 	thousand: ",",
-	precision : 2
+	precision : 2,
+	format: "%s%v"
 };
 
 // Example usage:
@@ -192,8 +202,12 @@ accounting.formatMoney(-500000, "&pound; ", 0); // &pound; -500,000
 accounting.formatMoney(5318008, {
 	symbol: "GBP",
 	precision: 0,
-	format: "%v %s",
-	thousand: "&middot"
+	thousand: "&middot",
+	format: {
+		pos : "%s %v",
+		neg : "%s (%v)",
+		zero: "%s  --"
+	}
 });
 
 // Will recursively format an array of values:
@@ -268,13 +282,16 @@ accounting.unformat("&euro; 1.000.000,00", ","); // 1000000</pre>
 		<p>See the <a href="https://github.com/josscrowcroft/accounting.js/issues" title="accounting.js issues">Github Issues page</a> for up-to-date progress.</p>
 		<h4>Next Version:</h4>
 		<ul>
-			<li>Add more fine-grained control of formatting, with negatives, digit-grouping &amp; zero-values.</li>
-			<li>Implement <code>map()</code> helper method to clean up API methods.</li>
-			<li>Implement feedback.</li>
+			<li><s>Add more fine-grained control of formatting, with negatives and zero-values</s></li>
+			<li><s>Implement <code>map()</code> and type-checking helper methods to clean up API methods</s></li>
+			<li>Find performance bottlenecks and work on speed optimisations</li>
+			<li>Write more tests, docs and examples, add FAQ</li>
+			<li>Implement <a href="https://github.com/josscrowcroft/accounting.js/issues/" title="accounting.js issues">feedback</a></li>
 		</ul>
 		<h4>Later:</h4>
 		<ul>
 			<li>Add padding parameter to override amount of space between currency symbol and value.</li>
+			<li>Add digit-grouping control, to allow eg. "$10,0000"</li>
 			<li>Add choice of rounding method for precision (up, down or nearest-neighbour).</li>
 			<li>Add several other general and excel-style money formatting methods.</li>
 			<li>Create NPM package, if there's demand for it.</li>
@@ -290,9 +307,9 @@ accounting.unformat("&euro; 1.000.000,00", ","); // 1000000</pre>
 	<section id="download">
 		<h2>Download</h2>
 		<ul>
-			<li><strong><a href="https://raw.github.com/josscrowcroft/accounting.js/master/accounting.js" title="accounting.js">accounting.js</a></strong> - Latest version from Github (5.2kb)</li>
-			<li><strong><a href="https://raw.github.com/josscrowcroft/accounting.js/master/accounting.min.js" title="accounting.min.js">accounting.min.js</a></strong> - Latest version from Github (1.4kb, minified)</li>
-			<li>Or check out the <a href="https://github.com/josscrowcroft/accounting.js" title="accounting.js Github repository">accounting.js Github repository</a> for more.</li>
+			<li><strong><a href="https://raw.github.com/josscrowcroft/accounting.js/master/accounting.js" title="accounting.js">accounting.js</a></strong> - Latest version from Github (12kb)</li>
+			<li><strong><a href="https://raw.github.com/josscrowcroft/accounting.js/master/accounting.min.js" title="accounting.min.js">accounting.min.js</a></strong> - Latest version from Github (3kb, minified)</li>
+			<li>Or check out the <a href="https://github.com/josscrowcroft/accounting.js" title="accounting.js Github repository">accounting.js Github repository</a> for the full package.</li>
 		</ul>
 	</section>
 
@@ -307,7 +324,7 @@ accounting.unformat("&euro; 1.000.000,00", ","); // 1000000</pre>
 	</section>
 
 
-	<script src="https://raw.github.com/josscrowcroft/accounting.js/master/accounting.js"></script>
+	<script src="https://raw.github.com/josscrowcroft/accounting.js/dev/accounting.js"></script>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 	<script src="http://www.josscrowcroft.com/wp-content/themes/classica/js/prettify/prettify.js"></script>
 
@@ -315,10 +332,18 @@ accounting.unformat("&euro; 1.000.000,00", ","); // 1000000</pre>
 
 		// demo thangs:
 		jQuery(document).ready(function($) {
-			var numbers = [123.5, 3456.49, 777888.99, 12345678, -5432];
+			var numbers = [123.5, 3456.615, 777888.99, -5432, -1234567, 0];
 			// Use accounting.js to format the list of numbers several ways:
 			var formatted = accounting.formatColumn(numbers, "$ "),
-			    different = accounting.formatColumn(numbers, "HK$ ", 0),
+			    different = accounting.formatColumn(numbers, {
+			    	symbol:"HK$",
+			    	precision:0,
+			    	format: {
+			    		pos : "%s %v",
+			    		neg : "%s (%v)",
+			    		zero : "%s --"
+			    	}
+			    }),
 			    european  = accounting.formatColumn(numbers, {
 			    	symbol: '&euro; ',
 			    	thousand:'.',
@@ -355,16 +380,29 @@ accounting.unformat("&euro; 1.000.000,00", ","); // 1000000</pre>
 
 			// Try it yourself clicky column/list demo:
 			var $columnValues = $('#demo-column').find('input'),
-			    $columnOutputs = $('#demo-column').find('.output');
+			    $columnOutputs = $('#demo-column').find('.output'),
+			    $columnOutputs2 = $('#demo-column').find('.output2');
 
 			$columnValues.bind('keydown keyup keypress focus blur paste', function() {
 			 	var list = $.map( $columnValues, function(each) { return $(each).val(); } ),
 			 		formatted = accounting.formatColumn(list, {
-			 			format:"%s %v"
+			 			format : "%s %v"
+			 		}),
+			 		formatted2 = accounting.formatColumn(list, {
+			 			symbol : "GBP",
+			 			precision : 0,
+			 			format : {
+			 				pos : "%s %v",
+			 				neg : "%s (%v)",
+			 				zero: "%s --"
+			 			}
 			 		});
 
 			 	$.each($columnOutputs, function(i, each) {
 			 		$(each).text(formatted[i]);
+			 	});
+			 	$.each($columnOutputs2, function(i, each) {
+			 		$(each).text(formatted2[i]);
 			 	});
 			});
 
