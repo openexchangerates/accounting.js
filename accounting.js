@@ -17,14 +17,11 @@ var accounting = (function () {
 	var settings = {
 		currency: {
 			symbol : "$",   // default currency symbol is '$'
-			format: "%s%v", // this controls string output: %s = symbol, %v = value/number
-/*
-			format: {
-				pos : "%s %v",
-				neg : "%s (%v)",
-				zero : '%s -.--'
+			format: {       // controls output: %s = symbol, %v = value (can be string eg. "%s%v")
+				pos : "%s%v",
+				neg : "%s-%v",
+				zero : "%s-"
 			},
-*/
 			decimal : ".",  // decimal point separator
 			thousand: ",",  // thousands separator
 			precision : 2,  // decimal places
@@ -58,8 +55,8 @@ var accounting = (function () {
 	 * Tests whether supplied parameter is a string
 	 * from underscore.js, delegates to ECMA5's native Array.isArray
 	 */
-	var isArray = nativeIsArray || function(obj) {
-		return toString.call(obj) === '[object Array]';
+	function isArray(obj) {
+		return nativeIsArray ? nativeIsArray(obj) : toString.call(obj) === '[object Array]';
 	}
 
 	/**
@@ -102,7 +99,7 @@ var accounting = (function () {
 		if (nativeMap && obj.map === nativeMap) return obj.map(iterator, context);
 
 		// Fallback for native .map:
-		for (var i = 0, j = obj.length; i < j; i++ ) {
+		for (i = 0, j = obj.length; i < j; i++ ) {
 			results[i] = iterator.call(context, obj[i], i, obj);
 		}
 		return results;
@@ -120,9 +117,11 @@ var accounting = (function () {
 	/**
 	 * Parses a format string or object and returns format obj for use in rendering
 	 * 
-	 * `format` is either a string with default (positive) format, or object
+	 * `format` is either a string with the default (positive) format, or object
 	 * containing `pos` (required), `neg` and `zero` values (or a function returning
 	 * either a string or object)
+	 * 
+	 * Either string or format.pos must contain "%v" (value) to be valid
 	 */
 	function checkCurrencyFormat(format) {
 		var defaults = settings.currency.format;
@@ -132,15 +131,29 @@ var accounting = (function () {
 
 		// Format can be a string, in which case `value` ("%v") must be present:
 		if ( isString( format ) && format.match("%v") ) {
+
 			// Create and return positive, negative and zero formats:
-			return { pos: format, neg: format.replace("%v", "-%v"), zero:format };
+			return {
+				pos: format,
+				neg: format.replace("-", "").replace("%v", "-%v"), 
+				zero:format
+			};
 
 		// If no format, or object is missing valid positive value, use defaults:
 		} else if ( !format || !format.pos || !format.pos.match("%v") ) {
-			// Use defaults:
-			return isString( defaults ) ? { pos: defaults, neg: defaults.replace("%v", "-%v"), zero:defaults } : defaults;
+
+			// If defaults is a string, casts it to an object for faster checking next time:
+			return ( !isString( defaults ) ) ? defaults : settings.currency.format = {
+				pos: defaults,
+				neg: defaults.replace("%v", "-%v"),
+				zero:defaults
+			};
+
 		}
+		// Otherwise, assume format was fine:
+		return format;
 	}
+
 
 	/* ===== API Methods ===== */
 
@@ -161,12 +174,12 @@ var accounting = (function () {
 		// Fails silently (need decent errors):
 		number = number || 0;
 
-		// Default decimal point is "." but could be set to eg. ",":
+		// Default decimal point is "." but could be set to eg. "," in opts:
 		decimal = decimal || ".";
 
 		 // Build regex to strip out everything except digits, decimal point and minus sign:
 		var regex = new RegExp("[^0-9-" + decimal + "]", ["g"]),
-			  unformatted = parseFloat(("" + number).replace(regex, '').replace(decimal, '.'));
+			unformatted = parseFloat(("" + number).replace(regex, '').replace(decimal, '.'));
 
 		// This will fail silently which may cause trouble, let's wait and see:
 		return !isNaN(unformatted) ? unformatted : 0;
@@ -221,8 +234,8 @@ var accounting = (function () {
 
 		// Do some calc:
 		var negative = number < 0 ? "-" : "",
-			  base = parseInt(toFixed(Math.abs(number || 0), opts.precision), 10) + "",
-			  mod = base.length > 3 ? base.length % 3 : 0;
+			base = parseInt(toFixed(Math.abs(number || 0), opts.precision), 10) + "",
+			mod = base.length > 3 ? base.length % 3 : 0;
 
 		// Format the number:
 		return negative + (mod ? base.substr(0, mod) + opts.thousand : "") + base.substr(mod).replace(/(\d{3})(?=\d)/g, "$1" + opts.thousand) + (opts.precision ? opts.decimal + toFixed(Math.abs(number), opts.precision).split('.')[1] : "");
@@ -248,23 +261,24 @@ var accounting = (function () {
 			});
 		}
 
-		// Second param can be an object matching settings.currency:
-		var opts = isObject(symbol) ? symbol : {
-			symbol : symbol,
-			precision : precision,
-			thousand : thousand,
-			decimal : decimal,
-			format : format
-		};
+		// Build options object from second param (if object) or all params, extending defaults:
+		var opts = defaults(
+			(isObject(symbol) ? symbol : {
+				symbol : symbol,
+				precision : precision,
+				thousand : thousand,
+				decimal : decimal,
+				format : format
+			}),
+			settings.currency
+		);
 
-		// Check precision value is ok:
+		// Clean up number and precision:
+		number = unformat(number);
 		opts.precision = checkPrecision(opts.precision);
 
-		// Extend opts with the default values in settings.number:
-		opts = defaults(opts, settings.currency);
-
 		// Check format (returns object with `pos`, `neg` and `zero`):
-		opts.format = checkCurrencyFormat(format);
+		opts.format = checkCurrencyFormat(opts.format);
 
 		// Choose which format to use for this value (pos, neg or zero):
 		opts.format = number > 0 ? opts.format.pos : number < 0 ? opts.format.neg : opts.format.zero;
@@ -286,44 +300,56 @@ var accounting = (function () {
 	 * NB: `white-space:pre` CSS rule is required on the list container to prevent
 	 * browsers from collapsing the whitespace in the output strings.
 	 */
-	function formatColumn(list, symbol, precision, thousand, decimal) {
+	function formatColumn(list, symbol, precision, thousand, decimal, format) {
 		if (!list) return [];
 
+		// Build options object from second param (if object) or all params, extending defaults:
+		var opts = defaults(
+			(isObject(symbol) ? symbol : {
+				symbol : symbol,
+				precision : precision,
+				thousand : thousand,
+				decimal : decimal,
+				format : format
+			}),
+			settings.currency
+		);
+
+		// Check format (returns object with `pos`, `neg` and `zero`), only need 'pos' for now:
+		opts.format = checkCurrencyFormat(opts.format);
+
+		// Clean up precision:
+		opts.precision = checkPrecision(opts.precision);
+
 		var maxLength = 0,
-			  formatted = [];
-
-		// Format the list according to options, store the length of the longest string:
-		map(list, function(val, i) {
-			if (isArray(val)) {
-				// Recursively format columns if list is a multi-dimensional array:
-				formatted.push(formatColumn(val, symbol, precision, thousand, decimal));
-			} else {
-				// Format this number, push into formatted list and save the length:
-				formatted.push(formatMoney(val, symbol, precision, thousand, decimal));
-				if (formatted[i].length > maxLength) {
-					maxLength = formatted[i].length;
+			// Whether to pad at start of string or after currency symbol:
+			padAfterSymbol = opts.format.pos.indexOf("%s") < opts.format.pos.indexOf("%v") ? true : false,
+			// Format the list according to options, store the length of the longest string:
+			formatted = map(list, function(val, i) {
+				if (isArray(val)) {
+					// Recursively format columns if list is a multi-dimensional array:
+					return formatColumn(val, opts);
+				} else {
+					// Clean up the value
+					val = unformat(val)
+					// Choose which format to use for this value (pos, neg or zero):
+					var format = val > 0 ? opts.format.pos : val < 0 ? opts.format.neg : opts.format.zero,
+						// Format this value, push into formatted list and save the length:
+						fVal = format.replace('%s', opts.symbol).replace('%v', formatNumber(Math.abs(val), opts.precision, opts.thousand, opts.decimal));
+					if (fVal.length > maxLength) maxLength = fVal.length;
+					return fVal;
 				}
+			});
+
+		// Pad each number in the list and send back the column of numbers:
+		return map(formatted, function(val, i) {
+			// Only if this is a string (not a nested array, which would have already been padded):
+			if (isString(val) && val.length < maxLength) {
+				// Depending on symbol position, pad after symbol or at index 0:
+				return padAfterSymbol ? val.replace(opts.symbol, opts.symbol+(new Array(maxLength - val.length + 1).join(" "))) : (new Array(maxLength - val.length + 1).join(" ")) + val;
 			}
+			return val;
 		});
-
-		// Second param can be an object, but symbol is needed for next part, so get it:
-		// tl;dr: `symbol` = default if no symbol set, or else `opts.symbol` if set, or else just `symbol`
-		symbol = (!symbol ? settings.currency.symbol : symbol.symbol ? symbol.symbol : symbol);
-
-		// Add space between currency symbol and number to pad strings:
-		for (var i = 0, j = formatted.length; i < j; i++) {
-			// Only if this is a string (not a nested array):
-			if (isString(formatted[i]) && formatted[i].length < maxLength) {
-				// Match first number in string and add enough padding:
-				formatted[i] = formatted[i].replace(
-					/(-?\d+)/,
-					(new Array((maxLength - formatted[i].length) + 1).join(" ")) + "$1"
-				);
-			}
-		}
-
-		// Send back the list of numbers:
-		return formatted;
 	}
 
 
