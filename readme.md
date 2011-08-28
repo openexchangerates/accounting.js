@@ -2,8 +2,9 @@
 
 Check out the plugin homepage (with demos and docs) here: **http://josscrowcroft.github.com/accounting.js/**
 
+---
 
-## To do for v0.2.1
+### To do for v0.2.1
 * Write some more tests, docs and demos for new formatting options
 * Do some optimisations for performance bottlenecks
 
@@ -38,3 +39,18 @@ Check out the plugin homepage (with demos and docs) here: **http://josscrowcroft
 * Added **toFixed** method (`accounting.toFixed(value, precision)`), which treats floats more like decimals for more accurate currency rounding - now, `0.615` rounds up to `$0.62` instead of `$0.61`
 * Minified version now preserves semicolons
 * Fixed NaN errors when no value in **unformat** - revisit later on
+
+---
+
+### Still not convinced? Here's a little preview of accounting.formatColumn():
+
+```html
+ Original Number:  | With accounting.js:   | Different settings:   |         Localised:   |   Symbol after value:
+ ------------------+-----------------------+-----------------------+----------------------+----------------------
+ 123.5             |    $        123.50    |    HK$         124    |   Û        123,50    |           123.50 GBP
+ 3456.615          |    $      3,456.62    |    HK$       3,457    |   Û      3.456,62    |         3,456.62 GBP
+ 777888.99         |    $    777,888.99    |    HK$     777,889    |   Û    777.888,99    |       777,888.99 GBP
+ -5432             |    $     -5,432.00    |    HK$     (5,432)    |   Û     -5.432,00    |        -5,432.00 GBP
+ -1234567          |    $ -1,234,567.00    |    HK$ (1,234,567)    |   Û -1.234.567,00    |    -1,234,567.00 GBP
+ 0                 |    $          0.00    |    HK$          --    |   Û          0,00    |             0.00 GBP
+```
