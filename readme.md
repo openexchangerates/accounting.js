@@ -4,12 +4,15 @@ Check out the plugin homepage (with demos and docs) here: **http://josscrowcroft
 
 ---
 
-### To do for v0.2.1
+### To do for v0.2.2
 * Write some more tests, docs and demos for new formatting options
 * Do some optimisations for performance bottlenecks
 
 
 ## Changelog
+
+### v0.2.1
+* Fixed issue #24 where locally-defined settings object was being modified by **formatMoney** (still an issue in **formatNumber**, to fix)
 
 ### v0.2
 * Compleat (non-breaking) rewrite of the formatting system for **formatMoney** and **formatColumn**, to allow more fine-grained control of string output, still easy as pie

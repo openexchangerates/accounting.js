@@ -1,5 +1,5 @@
 /*!
- * accounting.js javascript library v0.2
+ * accounting.js javascript library v0.2.1
  * https://josscrowcroft.github.com/accounting.js/
  *
  * Copyright 2011 by Joss Crowcroft
@@ -257,30 +257,29 @@ var accounting = (function () {
 			});
 		}
 
+		// Clean up number:
+		number = unformat(number);
+
 		// Build options object from second param (if object) or all params, extending defaults:
 		var opts = defaults(
-			(isObject(symbol) ? symbol : {
-				symbol : symbol,
-				precision : precision,
-				thousand : thousand,
-				decimal : decimal,
-				format : format
-			}),
-			settings.currency
-		);
+				(isObject(symbol) ? symbol : {
+					symbol : symbol,
+					precision : precision,
+					thousand : thousand,
+					decimal : decimal,
+					format : format
+				}),
+				settings.currency
+			),
 
-		// Clean up number and precision:
-		number = unformat(number);
-		opts.precision = checkPrecision(opts.precision);
+			// Check format (returns object with pos, neg and zero):
+			formats = checkCurrencyFormat(opts.format),
 
-		// Check format (returns object with `pos`, `neg` and `zero`):
-		opts.format = checkCurrencyFormat(opts.format);
-
-		// Choose which format to use for this value (pos, neg or zero):
-		opts.format = number > 0 ? opts.format.pos : number < 0 ? opts.format.neg : opts.format.zero;
+			// Choose which format to use for this value:
+			useFormat = number > 0 ? formats.pos : number < 0 ? formats.neg : formats.zero;
 
 		// Return with currency symbol added:
-		return opts.format.replace('%s', opts.symbol).replace('%v', formatNumber(Math.abs(number), opts.precision, opts.thousand, opts.decimal));
+		return useFormat.replace('%s', opts.symbol).replace('%v', formatNumber(Math.abs(number), checkPrecision(opts.precision), opts.thousand, opts.decimal));
 	}
 
 
@@ -301,25 +300,25 @@ var accounting = (function () {
 
 		// Build options object from second param (if object) or all params, extending defaults:
 		var opts = defaults(
-			(isObject(symbol) ? symbol : {
-				symbol : symbol,
-				precision : precision,
-				thousand : thousand,
-				decimal : decimal,
-				format : format
-			}),
-			settings.currency
-		);
+				(isObject(symbol) ? symbol : {
+					symbol : symbol,
+					precision : precision,
+					thousand : thousand,
+					decimal : decimal,
+					format : format
+				}),
+				settings.currency
+			),
 
-		// Check format (returns object with `pos`, `neg` and `zero`), only need 'pos' for now:
-		opts.format = checkCurrencyFormat(opts.format);
+			// Check format (returns object with pos, neg and zero), only need pos for now:
+			formats = checkCurrencyFormat(opts.format),
 
-		// Clean up precision:
-		opts.precision = checkPrecision(opts.precision);
-
-		var maxLength = 0,
 			// Whether to pad at start of string or after currency symbol:
-			padAfterSymbol = opts.format.pos.indexOf("%s") < opts.format.pos.indexOf("%v") ? true : false,
+			padAfterSymbol = formats.pos.indexOf("%s") < formats.pos.indexOf("%v") ? true : false,
+
+			// Store value for the length of the longest string in the column:
+			maxLength = 0,
+
 			// Format the list according to options, store the length of the longest string:
 			formatted = map(list, function(val, i) {
 				if (isArray(val)) {
@@ -328,10 +327,13 @@ var accounting = (function () {
 				} else {
 					// Clean up the value
 					val = unformat(val);
+
 					// Choose which format to use for this value (pos, neg or zero):
-					var format = val > 0 ? opts.format.pos : val < 0 ? opts.format.neg : opts.format.zero,
+					var useFormat = val > 0 ? formats.pos : val < 0 ? formats.neg : formats.zero,
+
 						// Format this value, push into formatted list and save the length:
-						fVal = format.replace('%s', opts.symbol).replace('%v', formatNumber(Math.abs(val), opts.precision, opts.thousand, opts.decimal));
+						fVal = useFormat.replace('%s', opts.symbol).replace('%v', formatNumber(Math.abs(val), checkPrecision(opts.precision), opts.thousand, opts.decimal));
+
 					if (fVal.length > maxLength) maxLength = fVal.length;
 					return fVal;
 				}
