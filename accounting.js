@@ -17,16 +17,16 @@ var accounting = (function () {
 	var settings = {
 		currency: {
 			symbol : "$",   // default currency symbol is '$'
-			format: "%s%v", // controls output: %s = symbol, %v = value (can be object, see docs)
+			format : "%s%v", // controls output: %s = symbol, %v = value (can be object, see docs)
 			decimal : ".",  // decimal point separator
-			thousand: ",",  // thousands separator
+			thousand : ",",  // thousands separator
 			precision : 2,  // decimal places
 			grouping : 3    // digit grouping (not implemented yet)
 		},
 		number: {
 			precision : 0,	// default precision on numbers is 0
 			grouping : 3,   // digit grouping (not implemented yet)
-			thousand: ",",
+			thousand : ",",
 			decimal : "."
 		}
 	};
@@ -130,9 +130,9 @@ var accounting = (function () {
 
 			// Create and return positive, negative and zero formats:
 			return {
-				pos: format,
-				neg: format.replace("-", "").replace("%v", "-%v"), 
-				zero:format
+				pos : format,
+				neg : format.replace("-", "").replace("%v", "-%v"), 
+				zero : format
 			};
 
 		// If no format, or object is missing valid positive value, use defaults:
@@ -140,9 +140,9 @@ var accounting = (function () {
 
 			// If defaults is a string, casts it to an object for faster checking next time:
 			return ( !isString( defaults ) ) ? defaults : settings.currency.format = {
-				pos: defaults,
-				neg: defaults.replace("%v", "-%v"),
-				zero:defaults
+				pos : defaults,
+				neg : defaults.replace("%v", "-%v"),
+				zero : defaults
 			};
 
 		}
