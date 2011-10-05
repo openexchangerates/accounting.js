@@ -4,12 +4,21 @@ Check out the plugin homepage (with demos and docs) here: **http://josscrowcroft
 
 ---
 
-### To do for v0.2.2
+## Roadmap
+
+### v0.2.3
 * Write some more tests, docs and demos for new formatting options
 * Do some optimisations for performance bottlenecks
 
+### v0.3
+* Rewrite library structure similar to underscore.js for use as a npm module
+
 
 ## Changelog
+
+### v0.2.2
+* Fixed same issue as #24 in **formatNumber**
+* Merged branch `gh-pages` and `master` and reshuffled to save hassle
 
 ### v0.2.1
 * Fixed issue #24 where locally-defined settings object was being modified by **formatMoney** (still an issue in **formatNumber**, to fix)
