@@ -1,6 +1,6 @@
 /*!
  * accounting.js javascript library v0.2.2
- * https://josscrowcroft.github.com/accounting.js/
+ * http://josscrowcroft.github.com/accounting.js/
  *
  * Copyright 2011 by Joss Crowcroft
  * Licensed under GPL v3 | http://www.gnu.org/licenses/gpl-3.0.txt

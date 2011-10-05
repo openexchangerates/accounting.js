@@ -18,6 +18,7 @@ Check out the plugin homepage (with demos and docs) here: **http://josscrowcroft
 
 ### v0.2.2
 * Fixed same issue as #24 in **formatNumber**
+* accounting.min.js now uses Google Closure Compiler, shaves 0.3kb+ off previous size
 * Merged branch `gh-pages` and `master` and reshuffled to save hassle
 
 ### v0.2.1
