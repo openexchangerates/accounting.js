@@ -6,12 +6,12 @@ Check out the plugin homepage (with demos and docs) here: **http://josscrowcroft
 
 ## Roadmap
 
-### v0.2.3
-* Write some more tests, docs and demos for new formatting options
-* Do some optimisations for performance bottlenecks
-
 ### v0.3
 * Rewrite library structure similar to underscore.js for use as a npm module
+
+### v0.3+
+* Write some more tests, docs and demos for new formatting options
+* Do some optimisations for performance bottlenecks
 
 
 ## Changelog
