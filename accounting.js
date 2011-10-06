@@ -5,7 +5,7 @@
  * Copyright 2011 by Joss Crowcroft
  * Licensed under GPL v3 | http://www.gnu.org/licenses/gpl-3.0.txt
  */
-var accounting = (function () {
+(function (global) {
 
 	/* ===== Library Settings ===== */
 
@@ -57,7 +57,6 @@ var accounting = (function () {
 
 	/**
 	 * Tests whether supplied parameter is a true object
-	 * from underscore.js, delegates to ECMA5's native Array.isArray
 	 */
 	function isObject(obj) {
 		return toString.call(obj) === '[object Object]';
@@ -349,9 +348,8 @@ var accounting = (function () {
 		});
 	}
 
-
-	// Return the library's API:
-	return {
+	// define library API
+	var accounting = {
 		settings : settings,
 		formatMoney : formatMoney,
 		formatNumber : formatNumber,
@@ -359,4 +357,15 @@ var accounting = (function () {
 		toFixed : toFixed,
 		unformat : unformat
 	};
-}());
+
+	//exports library to multiple environments
+	if(typeof define === 'function' && define.amd){ //AMD
+		define('accounting', [], accounting);
+	} else if (typeof module !== 'undefined' && module.exports){ //node
+		module.exports = accounting;
+	} else { //browser
+		//use string because of Google closure compiler ADVANCED_MODE
+		global['accounting'] = accounting;
+	}
+
+}(this));
