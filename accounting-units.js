@@ -46,4 +46,4 @@ accounting.formatUnits = function(number, base, units, callback) {
 
 	// Apply callback(number, units) to number:
 	return typeof callback === "function" && callback.call([], number, unit) || number + unit;
-}
+};
