@@ -1,9 +1,9 @@
 ( function( $ ){
 	var methods = {
-		init: function( options ) {
-
-		},
-		formatMoney: function() {
+		/*init: function( options ) {
+			//TODO: Some way to initialize the plug-in with defaults.
+		},*/
+		formatMoney: function( options ) {
 			return this.each(function() {
 				$this = $(this);
 
@@ -17,10 +17,10 @@
 				$this.html(formatted);
 			});
 		},
-		formatColumn: function() {
+		formatColumn: function( options ) {
 
 		},
-		formatNumber: function() {
+		formatNumber: function( options ) {
 			return this.each(function() {
 				$this = $(this);
 
@@ -34,7 +34,7 @@
 				$this.html(formatted);
 			});
 		},
-		toFixed: function() {
+		toFixed: function( options ) {
 			return this.each(function() {
 				$this = $(this);
 
@@ -48,7 +48,7 @@
 				$this.html(formatted);
 			});
 		},
-		unformat: function() {
+		unformat: function( options ) {
 			return this.each(function() {
 				$this = $(this);
 
@@ -68,8 +68,8 @@
 		// Method calling logic
 		if ( methods[method] ) {
 			return methods[ method ].apply( this, Array.prototype.slice.call( arguments, 1 ));
-		} else if ( typeof method === 'object' || ! method ) {
-			return methods.init.apply( this, arguments );
+		/*} else if ( typeof method === 'object' || ! method ) {
+			return methods.init.apply( this, arguments );*/
 		} else {
 			$.error( 'Method ' +  method + ' does not exist on jQuery.accounting' );
 		}    
