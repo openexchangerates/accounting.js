@@ -18,7 +18,17 @@
 			});
 		},
 		formatColumn: function( options ) {
-
+			var column = new Array();
+			this.each(function() {
+				var $this = $(this);
+				column.push($this.html());
+			});
+			var formattedColumn = accounting.formatColumn(column);
+			return this.each(function(i) {
+				var $this = $(this);
+				var value = formattedColumn[i];
+				$this.html(value);
+			});
 		},
 		formatNumber: function( options ) {
 			return this.each(function() {
