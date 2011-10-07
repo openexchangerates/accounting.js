@@ -5,7 +5,7 @@
 			var settings = accounting.settings;
 
 			//Merge in our new options
-			settings = $.extend(settings, options);
+			settings = $.extend(true, settings, options);
 
 			//Update library's settings object.
 			accounting.settings = settings;
