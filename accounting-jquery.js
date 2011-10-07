@@ -21,7 +21,7 @@
 				var value = $this.html();
 
 				//Format the value.
-				var formatted = accounting.formatMoney(value);
+				var formatted = accounting.formatMoney(value, options);
 
 				//Apply the formatted value to the element.
 				$this.html(formatted);
@@ -37,7 +37,7 @@
 			});
 
 			//Send it off for formatting.
-			var formattedColumn = accounting.formatColumn(column);
+			var formattedColumn = accounting.formatColumn(column, options);
 
 			//Now set the element's values.
 			return this.each(function(i) {
@@ -54,13 +54,13 @@
 				var value = $this.html();
 
 				//Format the value
-				var formatted = accounting.formatNumber(value);
+				var formatted = accounting.formatNumber(value, options);
 
 				//Apply the formatted value to the element
 				$this.html(formatted);
 			});
 		},
-		toFixed: function( options ) {
+		toFixed: function( precision ) {
 			return this.each(function() {
 				$this = $(this);
 
@@ -68,13 +68,13 @@
 				var value = $this.html();
 
 				//Format the value.
-				var formatted = accounting.toFixed(value);
+				var formatted = accounting.toFixed(value, precision);
 
 				//Apply the formatted value to the element.
 				$this.html(formatted);
 			});
 		},
-		unformat: function( options ) {
+		unformat: function( decimal ) {
 			return this.each(function() {
 				$this = $(this);
 
@@ -82,7 +82,7 @@
 				var value = $this.html();
 
 				//Format the value.
-				var formatted = accounting.unformat(value);
+				var formatted = accounting.unformat(value, decimal);
 
 				//Apply the formatted value to the element.
 				$this.html(formatted);
