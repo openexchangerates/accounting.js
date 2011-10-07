@@ -7,23 +7,29 @@
 			return this.each(function() {
 				$this = $(this);
 
-				//Get value for processing
+				//Get value for processing.
 				var value = $this.html();
 
-				//Format the value
+				//Format the value.
 				var formatted = accounting.formatMoney(value);
 
-				//Apply the formatted value to the element
+				//Apply the formatted value to the element.
 				$this.html(formatted);
 			});
 		},
 		formatColumn: function( options ) {
 			var column = new Array();
+
+			//Collect our values into an array to pass to formatColumn().
 			this.each(function() {
 				var $this = $(this);
 				column.push($this.html());
 			});
+
+			//Send it off for formatting.
 			var formattedColumn = accounting.formatColumn(column);
+
+			//Now set the element's values.
 			return this.each(function(i) {
 				var $this = $(this);
 				var value = formattedColumn[i];
@@ -48,13 +54,13 @@
 			return this.each(function() {
 				$this = $(this);
 
-				//Get value for processing
+				//Get value for processing.
 				var value = $this.html();
 
-				//Format the value
+				//Format the value.
 				var formatted = accounting.toFixed(value);
 
-				//Apply the formatted value to the element
+				//Apply the formatted value to the element.
 				$this.html(formatted);
 			});
 		},
@@ -62,13 +68,13 @@
 			return this.each(function() {
 				$this = $(this);
 
-				//Get value for processing
+				//Get value for processing.
 				var value = $this.html();
 
-				//Format the value
+				//Format the value.
 				var formatted = accounting.unformat(value);
 
-				//Apply the formatted value to the element
+				//Apply the formatted value to the element.
 				$this.html(formatted);
 			});
 		}
