@@ -4,17 +4,15 @@ Check out the plugin homepage (with demos and docs) here: **http://josscrowcroft
 
 ---
 
-## Roadmap
-
-### v0.3
-* Rewrite library structure similar to underscore.js for use as a npm module
-
-### v0.3+
+## Roadmap / to-do
 * Write some more tests, docs and demos for new formatting options
 * Do some optimisations for performance bottlenecks
 
 
 ## Changelog
+
+### v0.3-alpha
+* Rewrote library structure similar to underscore.js for use as a nodeJS/npm and AMD module (test with caution) - now you can go `var accounting = require("./accounting");`. May publish it to npm registry soon.
 
 ### v0.2.2
 * Fixed same issue as #24 in **formatNumber**
@@ -33,7 +31,7 @@ Check out the plugin homepage (with demos and docs) here: **http://josscrowcroft
 * Added `map()` helper method based on underscore.js's `_.map()`, for array iteration, falls back to native `Array.map` if available.
 
 ### v0.1.4
-* Added helper method `defaults` to extend an object's empty properties with a defaults object 
+* Added helper method `defaults` to extend an object's empty properties with a defaults object
 * API methods now use **defaults()** to give more structure to the second-parameter-object method style: parameters are normalised into an `opts` object inside each method
 * Settings object at top of library for readibility
 * **formatMoney** now recursively formats arrays
