@@ -1,40 +1,47 @@
 /*!
- * accounting.js javascript library v0.2.2
+ * accounting.js javascript library v0.3-alpha
  * http://josscrowcroft.github.com/accounting.js/
  *
  * Copyright 2011 by Joss Crowcroft
  * Licensed under GPL v3 | http://www.gnu.org/licenses/gpl-3.0.txt
  */
-(function (global) {
 
-	/* ===== Library Settings ===== */
+(function(root, undefined) {
 
-	/**
-	 * The library's settings configuration object
-	 * 
-	 * Contains default parameters for currency and number formatting
-	 */
-	var settings = {
+	/* --- Setup --- */
+
+	// Create the local library object, to be exported or referenced globally later
+	var lib = {};
+
+	// Current version
+	lib.version = '0.3-alpha';
+
+
+	/* --- Exposed settings --- */
+
+	// The library's settings configuration object. Contains default parameters for
+	// currency and number formatting
+	lib.settings = {
 		currency: {
-			symbol : "$",   // default currency symbol is '$'
-			format : "%s%v", // controls output: %s = symbol, %v = value (can be object, see docs)
-			decimal : ".",  // decimal point separator
-			thousand : ",",  // thousands separator
-			precision : 2,  // decimal places
-			grouping : 3    // digit grouping (not implemented yet)
+			symbol : "$",		// default currency symbol is '$'
+			format : "%s%v",	// controls output: %s = symbol, %v = value (can be object, see docs)
+			decimal : ".",		// decimal point separator
+			thousand : ",",		// thousands separator
+			precision : 2,		// decimal places
+			grouping : 3		// digit grouping (not implemented yet)
 		},
 		number: {
-			precision : 0,	// default precision on numbers is 0
-			grouping : 3,   // digit grouping (not implemented yet)
+			precision : 0,		// default precision on numbers is 0
+			grouping : 3,		// digit grouping (not implemented yet)
 			thousand : ",",
 			decimal : "."
 		}
 	};
 
 
-	/* ===== Internal Helper Methods ===== */
+	/* --- Internal Helper Methods --- */
 
-	// Store reference to possibly-available ECMAScript 5 methods for later:
+	// Store reference to possibly-available ECMAScript 5 methods for later
 	var nativeMap = Array.prototype.map,
 		nativeIsArray = Array.isArray,
 		toString = Object.prototype.toString;
@@ -64,7 +71,7 @@
 
 	/**
 	 * Extends an object with a defaults object, similar to underscore's _.defaults
-	 * 
+	 *
 	 * Used for abstracting parameter handling from API methods
 	 */
 	function defaults(object, defs) {
@@ -101,7 +108,7 @@
 	}
 
 	/**
-	 * Check and normalise the value of precision (must be positive integer):
+	 * Check and normalise the value of precision (must be positive integer)
 	 */
 	function checkPrecision(val, base) {
 		val = Math.round(Math.abs(val));
@@ -111,15 +118,15 @@
 
 	/**
 	 * Parses a format string or object and returns format obj for use in rendering
-	 * 
+	 *
 	 * `format` is either a string with the default (positive) format, or object
 	 * containing `pos` (required), `neg` and `zero` values (or a function returning
 	 * either a string or object)
-	 * 
+	 *
 	 * Either string or format.pos must contain "%v" (value) to be valid
 	 */
 	function checkCurrencyFormat(format) {
-		var defaults = settings.currency.format;
+		var defaults = lib.settings.currency.format;
 
 		// Allow function as format parameter (should return string or object):
 		if ( typeof format === "function" ) format = format();
@@ -130,7 +137,7 @@
 			// Create and return positive, negative and zero formats:
 			return {
 				pos : format,
-				neg : format.replace("-", "").replace("%v", "-%v"), 
+				neg : format.replace("-", "").replace("%v", "-%v"),
 				zero : format
 			};
 
@@ -138,7 +145,7 @@
 		} else if ( !format || !format.pos || !format.pos.match("%v") ) {
 
 			// If defaults is a string, casts it to an object for faster checking next time:
-			return ( !isString( defaults ) ) ? defaults : settings.currency.format = {
+			return ( !isString( defaults ) ) ? defaults : lib.settings.currency.format = {
 				pos : defaults,
 				neg : defaults.replace("%v", "-%v"),
 				zero : defaults
@@ -150,15 +157,15 @@
 	}
 
 
-	/* ===== API Methods ===== */
+	/* --- API Methods --- */
 
 	/**
 	 * Removes currency formatting from a number/array of numbers, returning numeric values
-	 * 
+	 *
 	 * Decimal must be included in the regular expression to match floats (default: ".")
 	 * To do: rewrite this to be a little more elegant and maybe throw useful errors.
 	 */
-	function unformat(number, decimal) {
+	var unformat = lib.unformat = function(number, decimal) {
 		// Recursively unformat arrays:
 		if (isArray(number)) {
 			return map(number, function(val) {
@@ -180,29 +187,27 @@
 		return !isNaN(unformatted) ? unformatted : 0;
 	}
 
-
 	/**
 	 * Implementation of toFixed() that treats floats more like decimals
-	 * 
-	 * Fixes binary rounding issues (eg. (0.615).toFixed(2) === "0.61") that present 
+	 *
+	 * Fixes binary rounding issues (eg. (0.615).toFixed(2) === "0.61") that present
 	 * problems for accounting- and finance-related software.
 	 */
-	function toFixed(value, precision) {
-		precision = checkPrecision(precision, settings.number.precision);
+	var toFixed = lib.toFixed = function(value, precision) {
+		precision = checkPrecision(precision, lib.settings.number.precision);
 		var power = Math.pow(10, precision);
 
 		// Multiply up by precision, round accurately, then divide and use native toFixed():
 		return (Math.round(value * power) / power).toFixed(precision);
 	}
 
-
 	/**
 	 * Format a number, with comma-separated thousands and custom precision/decimal places
-	 * 
+	 *
 	 * Localise by overriding the precision and thousand / decimal separators
 	 * 2nd parameter `precision` can be an object matching `settings.number`
 	 */
-	function formatNumber(number, precision, thousand, decimal) {
+	var formatNumber = lib.formatNumber = function(number, precision, thousand, decimal) {
 		// Resursively format arrays:
 		if (isArray(number)) {
 			return map(number, function(val) {
@@ -219,8 +224,8 @@
 					precision : precision,
 					thousand : thousand,
 					decimal : decimal
-				}), 
-				settings.number
+				}),
+				lib.settings.number
 			),
 
 			// Clean up precision
@@ -235,19 +240,18 @@
 		return negative + (mod ? base.substr(0, mod) + opts.thousand : "") + base.substr(mod).replace(/(\d{3})(?=\d)/g, "$1" + opts.thousand) + (usePrecision ? opts.decimal + toFixed(Math.abs(number), usePrecision).split('.')[1] : "");
 	}
 
-
 	/**
 	 * Format a number into currency
-	 * 
+	 *
 	 * Usage: accounting.formatMoney(number, precision, symbol, thousandsSep, decimalSep, format)
 	 * defaults: (0, 2, "$", ",", ".", "%s%v")
-	 * 
+	 *
 	 * Localise by overriding the symbol, precision, thousand / decimal separators and format
 	 * Second param can be an object matching `settings.currency` which is the easiest way.
-	 * 
+	 *
 	 * To do: tidy up the parameters
 	 */
-	function formatMoney(number, symbol, precision, thousand, decimal, format) {
+	var formatMoney = lib.formatMoney = function(number, symbol, precision, thousand, decimal, format) {
 		// Resursively format arrays:
 		if (isArray(number)) {
 			return map(number, function(val){
@@ -267,7 +271,7 @@
 					decimal : decimal,
 					format : format
 				}),
-				settings.currency
+				lib.settings.currency
 			),
 
 			// Check format (returns object with pos, neg and zero):
@@ -280,20 +284,19 @@
 		return useFormat.replace('%s', opts.symbol).replace('%v', formatNumber(Math.abs(number), checkPrecision(opts.precision), opts.thousand, opts.decimal));
 	}
 
-
 	/**
 	 * Format a list of numbers into an accounting column, padding with whitespace
 	 * to line up currency symbols, thousand separators and decimals places
-	 * 
+	 *
 	 * List should be an array of numbers
 	 * Second parameter can be an object containing keys that match the params
-	 * 
+	 *
 	 * Returns array of accouting-formatted number strings of same length
-	 * 
+	 *
 	 * NB: `white-space:pre` CSS rule is required on the list container to prevent
 	 * browsers from collapsing the whitespace in the output strings.
 	 */
-	function formatColumn(list, symbol, precision, thousand, decimal, format) {
+	lib.formatColumn = function(list, symbol, precision, thousand, decimal, format) {
 		if (!list) return [];
 
 		// Build options object from second param (if object) or all params, extending defaults:
@@ -305,7 +308,7 @@
 					decimal : decimal,
 					format : format
 				}),
-				settings.currency
+				lib.settings.currency
 			),
 
 			// Check format (returns object with pos, neg and zero), only need pos for now:
@@ -321,7 +324,7 @@
 			formatted = map(list, function(val, i) {
 				if (isArray(val)) {
 					// Recursively format columns if list is a multi-dimensional array:
-					return formatColumn(val, opts);
+					return lib.formatColumn(val, opts);
 				} else {
 					// Clean up the value
 					val = unformat(val);
@@ -348,24 +351,38 @@
 		});
 	}
 
-	// define library API
-	var accounting = {
-		settings : settings,
-		formatMoney : formatMoney,
-		formatNumber : formatNumber,
-		formatColumn : formatColumn,
-		toFixed : toFixed,
-		unformat : unformat
-	};
 
-	//exports library to multiple environments
-	if(typeof define === 'function' && define.amd){ //AMD
-		define('accounting', [], accounting);
-	} else if (typeof module !== 'undefined' && module.exports){ //node
-		module.exports = accounting;
-	} else { //browser
-		//use string because of Google closure compiler ADVANCED_MODE
-		global['accounting'] = accounting;
+	/* --- Module Definition --- */
+
+	// Export accounting for CommonJS. If being loaded as an AMD module, define it as such.
+	// Otherwise, just add `accounting` to the global object
+	if (typeof module !== 'undefined' && module.exports) {
+		module.exports = lib;
+		lib.accounting = lib;
+	} else if (typeof define === 'function' && define.amd) {
+		// Return the library as an AMD module:
+		define([], function() {
+			return lib;
+		});
+	} else {
+		// Use accounting.noConflict to restore `accounting` back to its original value.
+		// Returns a reference to the library's `accounting` object;
+		// e.g. `var numbers = accounting.noConflict();`
+		lib.noConflict = (function(oldAccounting) {
+			return function() {
+				// Reset the value of the root's `accounting` variable:
+				root.accounting = oldAccounting;
+				// Delete the noConflict method:
+				lib.noConflict = undefined;
+				// Return reference to the library to re-assign it:
+				return lib;
+			};
+		})(root.accounting);
+
+		// Declare `fx` on the root (global/window) object:
+		root['accounting'] = lib;
 	}
 
+	// Root will be `window` in browser or `global` on the server:
+>>>>>>> master
 }(this));
