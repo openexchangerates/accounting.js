@@ -162,12 +162,12 @@
 	/**
 	 * Takes a string/array of strings, removes all formatting/cruft and returns the raw float value
 	 * alias: accounting.`parse(string)`
-	 * 
+	 *
 	 * Decimal must be included in the regular expression to match floats (default: "."), so if the number
 	 * uses a non-standard decimal separator, provide it as the second argument.
-	 * 
+	 *
 	 * Also matches bracketed negatives (eg. "$ (1.99)" => -1.99)
-	 * 
+	 *
 	 * Doesn't throw any errors (`NaN`s become 0) but this may change in future
 	 */
 	var unformat = lib.unformat = lib.parse = function(number, decimal) {
@@ -195,7 +195,8 @@
 
 		// This will fail silently which may cause trouble, let's wait and see:
 		return !isNaN(unformatted) ? unformatted : 0;
-	}
+	};
+
 
 	/**
 	 * Implementation of toFixed() that treats floats more like decimals
@@ -209,7 +210,8 @@
 
 		// Multiply up by precision, round accurately, then divide and use native toFixed():
 		return (Math.round(value * power) / power).toFixed(precision);
-	}
+	};
+
 
 	/**
 	 * Format a number, with comma-separated thousands and custom precision/decimal places
@@ -248,7 +250,8 @@
 
 		// Format the number:
 		return negative + (mod ? base.substr(0, mod) + opts.thousand : "") + base.substr(mod).replace(/(\d{3})(?=\d)/g, "$1" + opts.thousand) + (usePrecision ? opts.decimal + toFixed(Math.abs(number), usePrecision).split('.')[1] : "");
-	}
+	};
+
 
 	/**
 	 * Format a number into currency
@@ -292,7 +295,8 @@
 
 		// Return with currency symbol added:
 		return useFormat.replace('%s', opts.symbol).replace('%v', formatNumber(Math.abs(number), checkPrecision(opts.precision), opts.thousand, opts.decimal));
-	}
+	};
+
 
 	/**
 	 * Format a list of numbers into an accounting column, padding with whitespace
@@ -359,7 +363,7 @@
 			}
 			return val;
 		});
-	}
+	};
 
 
 	/* --- Module Definition --- */
