@@ -116,6 +116,24 @@
 		val = Math.round(Math.abs(val));
 		return isNaN(val)? base : val;
 	}
+	
+	/**
+	 * Round a value according to the specified strategy and precision.
+	 * Negative precisions map to rounding to the tens or higher.
+	 * e.g. rounding 1535 to the -1 precision would return 1540
+	 */
+	function rounding(val, precision, strategy) {
+		var scaling_factor = Math.pow(10, Math.round(precision));
+		
+		switch(strategy) {
+			case "up":
+				return Math.ceil(val*scaling_factor)/scaling_factor;
+			case "down":
+				return Math.floor(val*scaling_factor)/scaling_factor;
+			default:
+				return Math.round(val*scaling_factor)/scaling_factor;
+		}
+	}
 
 
 	/**
