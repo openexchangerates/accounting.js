@@ -122,7 +122,7 @@
 	 * Negative precisions map to rounding to the tens or higher.
 	 * e.g. rounding 1535 to the -1 precision would return 1540
 	 */
-	function rounding(val, precision, strategy) {
+	function roundStrategy(val, precision, strategy) {
 		var scaling_factor = Math.pow(10, Math.round(precision));
 		
 		switch(strategy) {
@@ -218,7 +218,7 @@
 		precision = checkPrecision(precision, lib.settings.number.precision);
 
 		// Round accurately and use native toFixed():
-		return (rounding(value, precision, strategy).toFixed(precision);
+		return (roundStrategy(value, precision, strategy).toFixed(precision);
 	}
 
 	/**
@@ -253,7 +253,7 @@
 			usePrecision = checkPrecision(opts.precision),
 
 			// Do some calc:
-			number = rounding(number || 0, usePrecision, opts.rounding),
+			number = roundStrategy(number || 0, usePrecision, opts.rounding),
 			negative = number < 0 ? "-" : "",
 			base = parseInt(Math.abs(number || 0), 10) + "",
 			mod = base.length > 3 ? base.length % 3 : 0;
