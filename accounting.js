@@ -23,6 +23,7 @@
 	// currency and number formatting
 	lib.settings = {
 		currency: {
+			rounding: "nearest",// controls rounding method: 'up', 'down', and 'nearest'
 			symbol : "$",		// default currency symbol is '$'
 			format : "%s%v",	// controls output: %s = symbol, %v = value (can be object, see docs)
 			decimal : ".",		// decimal point separator
@@ -31,6 +32,7 @@
 			grouping : 3		// digit grouping (not implemented yet)
 		},
 		number: {
+			rounding: "nearest",// controls rounding method: 'up', 'down', and 'nearest'
 			precision : 0,		// default precision on numbers is 0
 			grouping : 3,		// digit grouping (not implemented yet)
 			thousand : ",",
