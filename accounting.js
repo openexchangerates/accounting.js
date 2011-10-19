@@ -76,6 +76,7 @@
 	 */
 	function defaults(object, defs) {
 		var key;
+		if (object == null) object = {}; //Fix for IE 7
 		// Iterate over object non-prototype properties:
 		for (key in defs) {
 			if (defs.hasOwnProperty(key)) {
