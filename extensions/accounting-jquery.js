@@ -8,91 +8,58 @@
 (function($) {
 	var methods = {
 		settings: function(options) {
-			// Fetch library's settings object.
-			var settings = accounting.settings;
+			// Merge new options into accounting.settings
+			accounting.settings = $.extend(true, accounting.settings, options);
 
-			// Merge in our new options
-			settings = $.extend(true, settings, options);
-
-			// Update library's settings object.
-			accounting.settings = settings;
-
-			// Keep the jQuery chain going.
+			// Return for chaining
 			return this;
 		},
-		formatMoney: function(options) {
+		formatNumber: function(options) {
+			// Apply accounting.formatNumber() to matched elements and return for chaining
 			return this.each(function() {
-				var $this = $(this);
-
-				// Get value for processing.
-				var value = $this.html();
-
-				// Format the value.
-				var formatted = accounting.formatMoney(value, options);
-
-				// Apply the formatted value to the element.
-				$this.html(formatted);
+				$(this).text(
+					accounting.formatNumber($(this).text(), options)
+				);
+			});
+		},
+		formatMoney: function(options) {
+			// Apply accounting.formatMoney() to matched elements and return for chaining
+			return this.each(function() {
+				$(this).text(
+					accounting.formatMoney($(this).text(), options)
+				);
 			});
 		},
 		formatColumn: function(options) {
 			var column = [];
 
-			// Collect our values into an array to pass to formatColumn().
+			// Collect our values into an array to pass to formatColumn()
 			this.each(function() {
-				var $this = $(this);
-				column.push($this.html());
+				column.push($(this).text());
 			});
 
-			// Send it off for formatting.
-			var formattedColumn = accounting.formatColumn(column, options);
+			// Format the column of values
+			column = accounting.formatColumn(column, options);
 
-			// Now set the element's values.
+			// Now set each of the elements' values and return for chaining
 			return this.each(function(i) {
-				var $this = $(this);
-				var value = formattedColumn[i];
-				$this.html(value);
-			});
-		},
-		formatNumber: function(options) {
-			return this.each(function() {
-				var $this = $(this);
-
-				// Get value for processing
-				var value = $this.html();
-
-				// Format the value
-				var formatted = accounting.formatNumber(value, options);
-
-				// Apply the formatted value to the element
-				$this.html(formatted);
+				$(this).text(column[i]);
 			});
 		},
 		toFixed: function(precision) {
+			// Apply accounting.toFixed() to matched elements and return for chaining
 			return this.each(function() {
-				var $this = $(this);
-
-				// Get value for processing.
-				var value = $this.html();
-
-				// Format the value.
-				var formatted = accounting.toFixed(value, precision);
-
-				// Apply the formatted value to the element.
-				$this.html(formatted);
+				$(this).text(
+					accounting.toFixed($(this).text(), precision)
+				);
 			});
 		},
 		unformat: function(decimal) {
+			// Apply accounting.unformat() to matched elements and return for chaining
 			return this.each(function() {
-				var $this = $(this);
-
-				// Get value for processing.
-				var value = $this.html();
-
-				// Format the value.
-				var formatted = accounting.unformat(value, decimal);
-
-				// Apply the formatted value to the element.
-				$this.html(formatted);
+				$(this).text(
+					accounting.unformat($(this).text(), decimal)
+				);
 			});
 		}
 	};
