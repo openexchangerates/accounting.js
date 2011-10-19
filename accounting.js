@@ -210,7 +210,7 @@
 		var power = Math.pow(10, precision);
 
 		// Multiply up by precision, round accurately, then divide and use native toFixed():
-		return (Math.round(value * power) / power).toFixed(precision);
+		return (Math.round(accounting.unformat(value) * power) / power).toFixed(precision);
 	};
 
 
