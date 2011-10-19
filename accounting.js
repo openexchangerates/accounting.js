@@ -78,6 +78,8 @@
 	 */
 	function defaults(object, defs) {
 		var key;
+		object = object || {};
+		defs = defs || {};
 		// Iterate over object non-prototype properties:
 		for (key in defs) {
 			if (defs.hasOwnProperty(key)) {
@@ -180,12 +182,17 @@
 	/* --- API Methods --- */
 
 	/**
-	 * Removes currency formatting from a number/array of numbers, returning numeric values
+	 * Takes a string/array of strings, removes all formatting/cruft and returns the raw float value
+	 * alias: accounting.`parse(string)`
 	 *
-	 * Decimal must be included in the regular expression to match floats (default: ".")
-	 * To do: rewrite this to be a little more elegant and maybe throw useful errors.
+	 * Decimal must be included in the regular expression to match floats (default: "."), so if the number
+	 * uses a non-standard decimal separator, provide it as the second argument.
+	 *
+	 * Also matches bracketed negatives (eg. "$ (1.99)" => -1.99)
+	 *
+	 * Doesn't throw any errors (`NaN`s become 0) but this may change in future
 	 */
-	var unformat = lib.unformat = function(number, decimal) {
+	var unformat = lib.unformat = lib.parse = function(number, decimal) {
 		// Recursively unformat arrays:
 		if (isArray(number)) {
 			return map(number, function(val) {
@@ -201,11 +208,17 @@
 
 		 // Build regex to strip out everything except digits, decimal point and minus sign:
 		var regex = new RegExp("[^0-9-" + decimal + "]", ["g"]),
-			unformatted = parseFloat(("" + number).replace(regex, '').replace(decimal, '.'));
+			unformatted = parseFloat(
+				("" + number)
+				.replace(/\((.*)\)/, "-$1") // replace bracketed values with negatives
+				.replace(regex, '')         // strip out any cruft
+				.replace(decimal, '.')      // make sure decimal point is standard
+			);
 
 		// This will fail silently which may cause trouble, let's wait and see:
 		return !isNaN(unformatted) ? unformatted : 0;
-	}
+	};
+
 
 	/**
 	 * Implementation of toFixed() that treats floats more like decimals
@@ -373,7 +386,7 @@
 			}
 			return val;
 		});
-	}
+	};
 
 
 	/* --- Module Definition --- */

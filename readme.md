@@ -1,10 +1,12 @@
-**accounting.js** is a tiny JavaScript library for number, money and currency formatting, with optional excel-style column rendering (to line up symbols and decimals). It's lightweight, fully localisable and has zero dependencies.
+**accounting.js** is a tiny JavaScript library for number, money and currency formatting, and excel-style column rendering to line up symbols and decimals. It's lightweight, fully localisable and has zero dependencies.
 
 Check out the plugin homepage (with demos and docs) here: **http://josscrowcroft.github.com/accounting.js/**
 
----
+Please checkout / download the latest stable tag before using in a production environment.
+
 
 ## Roadmap / to-do
+
 * Write some more tests, docs and demos for new formatting options
 * Do some optimisations for performance bottlenecks
 
