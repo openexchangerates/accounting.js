@@ -76,6 +76,8 @@
 	 */
 	function defaults(object, defs) {
 		var key;
+		object = object || {};
+		defs = defs || {};
 		// Iterate over object non-prototype properties:
 		for (key in defs) {
 			if (defs.hasOwnProperty(key)) {
