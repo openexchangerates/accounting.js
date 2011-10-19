@@ -231,7 +231,7 @@
 		precision = checkPrecision(precision, lib.settings.number.precision);
 
 		// Round accurately and use native toFixed():
-		return (roundStrategy(value, precision, strategy).toFixed(precision);
+		return roundStrategy(value, precision, strategy).toFixed(precision);
 	}
 
 	/**
