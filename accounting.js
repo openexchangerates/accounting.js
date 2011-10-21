@@ -1,5 +1,5 @@
 /*!
- * accounting.js javascript library v0.3-alpha
+ * accounting.js javascript library v0.3.0
  * http://josscrowcroft.github.com/accounting.js/
  *
  * Copyright 2011 by Joss Crowcroft
@@ -14,7 +14,7 @@
 	var lib = {};
 
 	// Current version
-	lib.version = '0.3-alpha';
+	lib.version = '0.3.0';
 
 
 	/* --- Exposed settings --- */
