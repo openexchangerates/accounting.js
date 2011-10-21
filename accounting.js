@@ -172,16 +172,19 @@
 	 *
 	 * Doesn't throw any errors (`NaN`s become 0) but this may change in future
 	 */
-	var unformat = lib.unformat = lib.parse = function(number, decimal) {
+	var unformat = lib.unformat = lib.parse = function(value, decimal) {
 		// Recursively unformat arrays:
-		if (isArray(number)) {
-			return map(number, function(val) {
+		if (isArray(value)) {
+			return map(value, function(val) {
 				return unformat(val, decimal);
 			});
 		}
 
 		// Fails silently (need decent errors):
-		number = number || 0;
+		value = value || 0;
+
+		// Return the value as-is if it's already a number:
+		if (typeof value === "number") return value;
 
 		// Default decimal point is "." but could be set to eg. "," in opts:
 		decimal = decimal || ".";
@@ -189,7 +192,7 @@
 		 // Build regex to strip out everything except digits, decimal point and minus sign:
 		var regex = new RegExp("[^0-9-" + decimal + "]", ["g"]),
 			unformatted = parseFloat(
-				("" + number)
+				("" + value)
 				.replace(/\((.*)\)/, "-$1") // replace bracketed values with negatives
 				.replace(regex, '')         // strip out any cruft
 				.replace(decimal, '.')      // make sure decimal point is standard
