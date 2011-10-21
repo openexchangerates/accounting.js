@@ -2,19 +2,23 @@
 
 Check out the plugin homepage (with demos and docs) here: **http://josscrowcroft.github.com/accounting.js/**
 
-Please checkout / download the latest stable tag before using in a production environment.
+Please checkout / download the latest stable tag before using in a production environment and report any bugs with your setup info!
 
 
 ## Roadmap / to-do
 
-* Write some more tests, docs and demos for new formatting options
+* Write some more tests, docs and demos
 * Do some optimisations for performance bottlenecks
 
 
 ## Changelog
 
-### v0.3-alpha
-* Rewrote library structure similar to underscore.js for use as a nodeJS/npm and AMD module (test with caution) - now you can go `var accounting = require("./accounting");`. May publish it to npm registry soon.
+### v0.3.0
+* Rewrote library structure similar to underscore.js for use as a nodeJS/npm and AMD module - now you can go `npm install accounting`, and then `var accounting = require("accounting");` in your nodeJS scripts. 
+* It also works with requireJS or any AMD module loader.
+* **unformat** now only attempts to parse the number if it's not already a valid number (to save on processing). It's also aliased as `acounting.parse`
+* Fixed an IE bug in the `defaults` method
+* Numerous other bugfixes and little improvements
 
 ### v0.2.2
 * Fixed same issue as #24 in **formatNumber**
