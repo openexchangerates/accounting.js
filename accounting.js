@@ -375,9 +375,12 @@
 
 	// Export accounting for CommonJS. If being loaded as an AMD module, define it as such.
 	// Otherwise, just add `accounting` to the global object
-	if (typeof module !== 'undefined' && module.exports) {
-		module.exports = lib;
-		lib.accounting = lib;
+	if (typeof exports !== 'undefined') {
+		if (typeof module !== 'undefined' && module.exports) {
+			module.exports = lib;
+			lib.accounting = lib;
+		}
+		exports.accounting = lib;
 	} else if (typeof define === 'function' && define.amd) {
 		// Return the library as an AMD module:
 		define([], function() {
