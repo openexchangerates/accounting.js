@@ -17,7 +17,7 @@
 		formatNumber: function(options) {
 			// Apply accounting.formatNumber() to matched elements and return for chaining
 			return this.each(function() {
-				if ($(this).is('input[type="text"]') || $(this).is('textarea')) {
+				if ($(this).is('input[type="text"]') || $(this).is('input[type="number"]') || $(this).is('textarea')) {
 					$(this).val(
 						accounting.formatNumber($(this).val(), options)
 					);
@@ -32,7 +32,7 @@
 		formatMoney: function(options) {
 			// Apply accounting.formatMoney() to matched elements and return for chaining
 			return this.each(function() {
-				if ($(this).is('input[type="text"]') || $(this).is('textarea')) {
+				if ($(this).is('input[type="text"]') || $(this).is('input[type="number"]') || $(this).is('textarea')) {
 					$(this).val(
 						accounting.formatMoney($(this).val(), options)
 					);
@@ -49,7 +49,7 @@
 
 			// Collect our values into an array to pass to formatColumn()
 			this.each(function() {
-				if ($(this).is('input[type="text"]') || $(this).is('textarea')) {
+				if ($(this).is('input[type="text"]') || $(this).is('input[type="number"]') || $(this).is('textarea')) {
 					column.push($(this).val());
 				}
 				else {
@@ -62,7 +62,7 @@
 
 			// Now set each of the elements' values and return for chaining
 			return this.each(function(i) {
-				if ($(this).is('input[type="text"]') || $(this).is('textarea')) {
+				if ($(this).is('input[type="text"]') || $(this).is('input[type="number"]') || $(this).is('textarea')) {
 					$(this).val(column[i]);
 				}
 				else {
@@ -73,7 +73,7 @@
 		toFixed: function(precision) {
 			// Apply accounting.toFixed() to matched elements and return for chaining
 			return this.each(function() {
-				if ($(this).is('input[type="text"]') || $(this).is('textarea')) {
+				if ($(this).is('input[type="text"]') || $(this).is('input[type="number"]') || $(this).is('textarea')) {
 					$(this).val(
 						accounting.toFixed($(this).val(), precision)
 					);
@@ -88,7 +88,7 @@
 		unformat: function(decimal) {
 			// Apply accounting.unformat() to matched elements and return for chaining
 			return this.each(function() {
-				if ($(this).is('input[type="text"]') || $(this).is('textarea')) {
+				if ($(this).is('input[type="text"]') || $(this).is('input[type="number"]') || $(this).is('textarea')) {
 					$(this).val(
 						accounting.unformat($(this).val(), decimal)
 					);
