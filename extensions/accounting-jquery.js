@@ -17,17 +17,31 @@
 		formatNumber: function(options) {
 			// Apply accounting.formatNumber() to matched elements and return for chaining
 			return this.each(function() {
-				$(this).text(
-					accounting.formatNumber($(this).text(), options)
-				);
+				if ($(this).is('input[type="text"]') || $(this).is('textarea')) {
+					$(this).val(
+						accounting.formatNumber($(this).val(), options)
+					);
+				}
+				else {
+					$(this).text(
+						accounting.formatNumber($(this).text(), options)
+					);
+				}
 			});
 		},
 		formatMoney: function(options) {
 			// Apply accounting.formatMoney() to matched elements and return for chaining
 			return this.each(function() {
-				$(this).text(
-					accounting.formatMoney($(this).text(), options)
-				);
+				if ($(this).is('input[type="text"]') || $(this).is('textarea')) {
+					$(this).val(
+						accounting.formatMoney($(this).val(), options)
+					);
+				}
+				else {
+					$(this).text(
+						accounting.formatMoney($(this).text(), options)
+					);
+				}
 			});
 		},
 		formatColumn: function(options) {
@@ -35,7 +49,12 @@
 
 			// Collect our values into an array to pass to formatColumn()
 			this.each(function() {
-				column.push($(this).text());
+				if ($(this).is('input[type="text"]') || $(this).is('textarea')) {
+					column.push($(this).val());
+				}
+				else {
+					column.push($(this).text());
+				}
 			});
 
 			// Format the column of values
@@ -43,23 +62,42 @@
 
 			// Now set each of the elements' values and return for chaining
 			return this.each(function(i) {
-				$(this).text(column[i]);
+				if ($(this).is('input[type="text"]') || $(this).is('textarea')) {
+					$(this).val(column[i]);
+				}
+				else {
+					$(this).text(column[i]);
+				}
 			});
 		},
 		toFixed: function(precision) {
 			// Apply accounting.toFixed() to matched elements and return for chaining
 			return this.each(function() {
-				$(this).text(
-					accounting.toFixed($(this).text(), precision)
-				);
+				if ($(this).is('input[type="text"]') || $(this).is('textarea')) {
+					$(this).val(
+						accounting.toFixed($(this).val(), precision)
+					);
+				}
+				else {
+					$(this).text(
+						accounting.toFixed($(this).text(), precision)
+					);
+				}
 			});
 		},
 		unformat: function(decimal) {
 			// Apply accounting.unformat() to matched elements and return for chaining
 			return this.each(function() {
-				$(this).text(
-					accounting.unformat($(this).text(), decimal)
-				);
+				if ($(this).is('input[type="text"]') || $(this).is('textarea')) {
+					$(this).val(
+						accounting.unformat($(this).val(), decimal)
+					);
+				}
+				else {
+					$(this).text(
+						accounting.unformat($(this).text(), decimal)
+					);
+				}
 			});
 		}
 	};
