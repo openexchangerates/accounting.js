@@ -1,9 +1,12 @@
 /*!
- * accounting.js javascript library v0.3.0
- * http://josscrowcroft.github.com/accounting.js/
+ * accounting.js v0.3.1
+ * Copyright 2011, Joss Crowcroft
  *
- * Copyright 2011 by Joss Crowcroft
- * Licensed under GPL v3 | http://www.gnu.org/licenses/gpl-3.0.txt
+ * Freely distributable under the MIT license.
+ * Portions of accounting.js are inspired or borrowed from underscore.js
+ *
+ * Full details and documentation:
+ * http://josscrowcroft.github.com/accounting.js/
  */
 
 (function(root, undefined) {
