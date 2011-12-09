@@ -17,7 +17,7 @@
 	var lib = {};
 
 	// Current version
-	lib.version = '0.3.0';
+	lib.version = '0.3.1';
 
 
 	/* --- Exposed settings --- */
