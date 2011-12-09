@@ -377,8 +377,7 @@
 	// Otherwise, just add `accounting` to the global object
 	if (typeof exports !== 'undefined') {
 		if (typeof module !== 'undefined' && module.exports) {
-			module.exports = lib;
-			lib.accounting = lib;
+			exports = module.exports = lib;
 		}
 		exports.accounting = lib;
 	} else if (typeof define === 'function' && define.amd) {
