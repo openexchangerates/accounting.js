@@ -1,9 +1,12 @@
 /*!
- * accounting.js javascript library v0.3.0
- * http://josscrowcroft.github.com/accounting.js/
+ * accounting.js v0.3.1
+ * Copyright 2011, Joss Crowcroft
  *
- * Copyright 2011 by Joss Crowcroft
- * Licensed under GPL v3 | http://www.gnu.org/licenses/gpl-3.0.txt
+ * Freely distributable under the MIT license.
+ * Portions of accounting.js are inspired or borrowed from underscore.js
+ *
+ * Full details and documentation:
+ * http://josscrowcroft.github.com/accounting.js/
  */
 
 (function(root, undefined) {
@@ -375,9 +378,11 @@
 
 	// Export accounting for CommonJS. If being loaded as an AMD module, define it as such.
 	// Otherwise, just add `accounting` to the global object
-	if (typeof module !== 'undefined' && module.exports) {
-		module.exports = lib;
-		lib.accounting = lib;
+	if (typeof exports !== 'undefined') {
+		if (typeof module !== 'undefined' && module.exports) {
+			exports = module.exports = lib;
+		}
+		exports.accounting = lib;
 	} else if (typeof define === 'function' && define.amd) {
 		// Return the library as an AMD module:
 		define([], function() {
