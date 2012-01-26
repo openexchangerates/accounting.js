@@ -264,8 +264,8 @@
 	/**
 	 * Format a number into currency
 	 *
-	 * Usage: accounting.formatMoney(number, precision, symbol, thousandsSep, decimalSep, format)
-	 * defaults: (0, 2, "$", ",", ".", "%s%v")
+	 * Usage: accounting.formatMoney(number, symbol, precision, thousandsSep, decimalSep, format)
+	 * defaults: (0, "$", 2, ",", ".", "%s%v")
 	 *
 	 * Localise by overriding the symbol, precision, thousand / decimal separators and format
 	 * Second param can be an object matching `settings.currency` which is the easiest way.
