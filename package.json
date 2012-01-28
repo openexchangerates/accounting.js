@@ -5,7 +5,7 @@
 	"keywords" : ["accounting", "number", "money", "currency", "format", "utilities"],
 	"author": "Joss Crowcroft <josscrowcroft@gmail.com> (http://www.josscrowcroft.com)",
 	"contributors" : [],
-	"dependencies" : [],
+	"dependencies" : {},
 	"repository" : {"type": "git", "url": "git://github.com/josscrowcroft/accounting.js.git"},
 	"main" : "accounting.js",
 	"version" : "0.3.1"
