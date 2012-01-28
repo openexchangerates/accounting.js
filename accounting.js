@@ -1,5 +1,5 @@
 /*!
- * accounting.js v0.3.1
+ * accounting.js v0.3.2
  * Copyright 2011, Joss Crowcroft
  *
  * Freely distributable under the MIT license.
@@ -17,7 +17,7 @@
 	var lib = {};
 
 	// Current version
-	lib.version = '0.3.1';
+	lib.version = '0.3.2';
 
 
 	/* --- Exposed settings --- */
