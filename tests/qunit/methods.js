@@ -52,7 +52,8 @@ $(document).ready(function() {
 		equals(accounting.formatMoney(-500000, "£ ", 0), "£ -500,000", 'negative values, custom params, works ok');
 		equals(accounting.formatMoney(5318008, { symbol: "GBP",  format: "%v %s" }), "5,318,008.00 GBP", "`format` parameter is observed in string output");
 		equals(accounting.formatMoney(1000, { format: "test %v 123 %s test" }), "test 1,000.00 123 $ test", "`format` parameter is observed in string output, despite being rather strange");
-		
+		equals(accounting.formatMoney(100000, { grouping: 2}), "$10,00,00.00", "Grouping works for currency");
+
 		// Format param is an object:
 		var format = {
 			pos: "%s %v",
