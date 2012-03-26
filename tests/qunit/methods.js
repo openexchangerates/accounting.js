@@ -24,8 +24,17 @@ $(document).ready(function() {
 			thousand : "__",
 			decimal : "--"
 		}), "5__318__008--000", 'Correctly handles custom precision and separators passed in via second param options object');
-
 		
+		// check grouping works as expected
+		equal(accounting.formatNumber(5318008, {
+			grouping : 1
+		}), "5,3,1,8,0,0,8", 'Correctly handles custom grouping passed in via second param options object');
+
+		// check grouping does nothing if larger than number
+		equal(accounting.formatNumber(5318008, {
+			grouping : 9
+		}), "5318008", 'Grouping correctly does nothing if specified grouping size is larger than number');
+
 		// check rounding:
 		equals(accounting.formatNumber(0.615, 2), "0.62", 'Rounds 0.615 up to "0.62" with precision of 2');
 		
