@@ -69,7 +69,7 @@
 	 * Tests whether supplied parameter is a true object
 	 */
 	function isObject(obj) {
-		return toString.call(obj) === '[object Object]';
+		return obj && toString.call(obj) === '[object Object]';
 	}
 
 	/**
