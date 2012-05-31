@@ -7,6 +7,11 @@ $(document).ready(function() {
 		equals(accounting.unformat(1234567890), 1234567890, 'Returns same value when passed an integer');
 		equals(accounting.unformat("string"), 0, 'Returns 0 for a string with no numbers');
 		equals(accounting.unformat({joss:1}), 0, 'Returns 0 for object');
+
+		accounting.settings.number.decimal = ',';
+		equals(accounting.unformat("100,00"), 100, 'Uses decimal separator from settings');
+		equals(accounting.unformat("¤1.000,00"), 1000, 'Uses decimal separator from settings');
+		accounting.settings.number.decimal = '.';
 	});
 
 	test("accounting.toFixed()", function() {
