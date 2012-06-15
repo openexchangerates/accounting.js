@@ -26,6 +26,7 @@
 	// currency and number formatting
 	lib.settings = {
 		currency: {
+			rounding: "nearest",// controls rounding method: 'up', 'down', and 'nearest'
 			symbol : "$",		// default currency symbol is '$'
 			format : "%s%v",	// controls output: %s = symbol, %v = value (can be object, see docs)
 			decimal : ".",		// decimal point separator
@@ -34,6 +35,7 @@
 			grouping : 3		// digit grouping (not implemented yet)
 		},
 		number: {
+			rounding: "nearest",// controls rounding method: 'up', 'down', and 'nearest'
 			precision : 0,		// default precision on numbers is 0
 			grouping : 3,		// digit grouping (not implemented yet)
 			thousand : ",",
@@ -116,8 +118,26 @@
 	 * Check and normalise the value of precision (must be positive integer)
 	 */
 	function checkPrecision(val, base) {
-		val = Math.round(Math.abs(val));
+		val = Math.round(val);
 		return isNaN(val)? base : val;
+	}
+	
+	/**
+	 * Round a value according to the specified strategy and precision.
+	 * Negative precisions map to rounding to the tens or higher.
+	 * e.g. rounding 1535 to the -1 precision would return 1540
+	 */
+	function roundStrategy(val, precision, strategy) {
+		var scaling_factor = Math.pow(10, Math.round(precision));
+		
+		switch(strategy) {
+			case "up":
+				return Math.ceil(val*scaling_factor)/scaling_factor;
+			case "down":
+				return Math.floor(val*scaling_factor)/scaling_factor;
+			default:
+				return Math.round(val*scaling_factor)/scaling_factor;
+		}
 	}
 
 
@@ -213,14 +233,13 @@
 	 * Fixes binary rounding issues (eg. (0.615).toFixed(2) === "0.61") that present
 	 * problems for accounting- and finance-related software.
 	 */
-	var toFixed = lib.toFixed = function(value, precision) {
+	var toFixed = lib.toFixed = function(value, precision, strategy) {
+		var strategy = (strategy) ? strategy : lib.settings.number.rounding;
 		precision = checkPrecision(precision, lib.settings.number.precision);
-		var power = Math.pow(10, precision);
 
-		// Multiply up by precision, round accurately, then divide and use native toFixed():
-		return (Math.round(lib.unformat(value) * power) / power).toFixed(precision);
-	};
-
+		// Round accurately and use native toFixed():
+		return roundStrategy(value, precision, strategy).toFixed(precision);
+	}
 
 	/**
 	 * Format a number, with comma-separated thousands and custom precision/decimal places
@@ -228,11 +247,11 @@
 	 * Localise by overriding the precision and thousand / decimal separators
 	 * 2nd parameter `precision` can be an object matching `settings.number`
 	 */
-	var formatNumber = lib.formatNumber = function(number, precision, thousand, decimal) {
+	var formatNumber = lib.formatNumber = function(number, precision, thousand, decimal, rounding) {
 		// Resursively format arrays:
 		if (isArray(number)) {
 			return map(number, function(val) {
-				return formatNumber(val, precision, thousand, decimal);
+				return formatNumber(val, precision, thousand, decimal, rounding);
 			});
 		}
 
@@ -242,6 +261,7 @@
 		// Build options object from second param (if object) or all params, extending defaults:
 		var opts = defaults(
 				(isObject(precision) ? precision : {
+					rounding : rounding,
 					precision : precision,
 					thousand : thousand,
 					decimal : decimal
@@ -253,14 +273,14 @@
 			usePrecision = checkPrecision(opts.precision),
 
 			// Do some calc:
+			number = roundStrategy(number || 0, usePrecision, opts.rounding),
 			negative = number < 0 ? "-" : "",
-			base = parseInt(toFixed(Math.abs(number || 0), usePrecision), 10) + "",
+			base = parseInt(Math.abs(number || 0), 10) + "",
 			mod = base.length > 3 ? base.length % 3 : 0;
 
 		// Format the number:
-		return negative + (mod ? base.substr(0, mod) + opts.thousand : "") + base.substr(mod).replace(/(\d{3})(?=\d)/g, "$1" + opts.thousand) + (usePrecision ? opts.decimal + toFixed(Math.abs(number), usePrecision).split('.')[1] : "");
-	};
-
+		return negative + (mod ? base.substr(0, mod) + opts.thousand : "") + base.substr(mod).replace(/(\d{3})(?=\d)/g, "$1" + opts.thousand) + ((!isNaN(usePrecision) && usePrecision > 0) ? opts.decimal + toFixed(Math.abs(number), usePrecision).split('.')[1] : "");
+	}
 
 	/**
 	 * Format a number into currency
@@ -273,11 +293,11 @@
 	 *
 	 * To do: tidy up the parameters
 	 */
-	var formatMoney = lib.formatMoney = function(number, symbol, precision, thousand, decimal, format) {
+	var formatMoney = lib.formatMoney = function(number, symbol, precision, thousand, decimal, format, rounding) {
 		// Resursively format arrays:
 		if (isArray(number)) {
 			return map(number, function(val){
-				return formatMoney(val, symbol, precision, thousand, decimal, format);
+				return formatMoney(val, symbol, precision, thousand, decimal, format, rounding);
 			});
 		}
 
@@ -287,6 +307,7 @@
 		// Build options object from second param (if object) or all params, extending defaults:
 		var opts = defaults(
 				(isObject(symbol) ? symbol : {
+					rounding : rounding,
 					symbol : symbol,
 					precision : precision,
 					thousand : thousand,
@@ -303,9 +324,8 @@
 			useFormat = number > 0 ? formats.pos : number < 0 ? formats.neg : formats.zero;
 
 		// Return with currency symbol added:
-		return useFormat.replace('%s', opts.symbol).replace('%v', formatNumber(Math.abs(number), checkPrecision(opts.precision), opts.thousand, opts.decimal));
-	};
-
+		return useFormat.replace('%s', opts.symbol).replace('%v', formatNumber(Math.abs(number), checkPrecision(opts.precision), opts.thousand, opts.decimal, opts.rounding));
+	}
 
 	/**
 	 * Format a list of numbers into an accounting column, padding with whitespace
@@ -319,12 +339,13 @@
 	 * NB: `white-space:pre` CSS rule is required on the list container to prevent
 	 * browsers from collapsing the whitespace in the output strings.
 	 */
-	lib.formatColumn = function(list, symbol, precision, thousand, decimal, format) {
+	lib.formatColumn = function(list, symbol, precision, thousand, decimal, format, rounding) {
 		if (!list) return [];
 
 		// Build options object from second param (if object) or all params, extending defaults:
 		var opts = defaults(
 				(isObject(symbol) ? symbol : {
+					rounding : rounding,
 					symbol : symbol,
 					precision : precision,
 					thousand : thousand,
@@ -356,7 +377,7 @@
 					var useFormat = val > 0 ? formats.pos : val < 0 ? formats.neg : formats.zero,
 
 						// Format this value, push into formatted list and save the length:
-						fVal = useFormat.replace('%s', opts.symbol).replace('%v', formatNumber(Math.abs(val), checkPrecision(opts.precision), opts.thousand, opts.decimal));
+						fVal = useFormat.replace('%s', opts.symbol).replace('%v', formatNumber(Math.abs(val), checkPrecision(opts.precision), opts.thousand, opts.decimal, opts.rounding));
 
 					if (fVal.length > maxLength) maxLength = fVal.length;
 					return fVal;
