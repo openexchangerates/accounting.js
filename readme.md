@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/josscrowcroft/accounting.js.png)](http://travis-ci.org/josscrowcroft/accounting.js)
 **accounting.js** is a tiny JavaScript library for number, money and currency parsing/formatting. It's lightweight and fully localisable, with zero dependencies, and works great as a nodeJS/npm and AMD/requireJS module. 
 
 Check out the **[accounting.js homepage](http://josscrowcroft.github.com/accounting.js/)** for demos and documentation!
