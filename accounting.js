@@ -174,9 +174,18 @@
 	 *
 	 * Also matches bracketed negatives (eg. "$ (1.99)" => -1.99)
 	 *
-	 * Doesn't throw any errors (`NaN`s become 0) but this may change in future
+	 * options:
+	 *   returnNaN: if truthy unformat() will return NaN instead of returning 0
+	 *   in the case of an error.
+	 *
+	 * Doesn't throw any errors (`NaN`s become 0 unless options.returnNaN is truthy)
 	 */
-	var unformat = lib.unformat = lib.parse = function(value, decimal) {
+	var unformat = lib.unformat = lib.parse = function(value, decimal, options) {
+		// parse options
+		var returnNaN = (typeof options == 'object') 
+		                && typeof(options['returnNaN'] != undefined) 
+		                && options.returnNaN;
+
 		// Recursively unformat arrays:
 		if (isArray(value)) {
 			return map(value, function(val) {
@@ -203,7 +212,7 @@
 			);
 
 		// This will fail silently which may cause trouble, let's wait and see:
-		return !isNaN(unformatted) ? unformatted : 0;
+		return isNaN(unformatted) ? (returnNaN ? NaN : 0) : unformatted;
 	};
 
 
