@@ -28,4 +28,9 @@ describe('unformat()', function(){
         expect( vals[2] ).toBe( 12345678.901 );
     });
 
+    it('should return NaN when returnNaN option is truthy', function(){
+	var val = accounting.unformat('abcdefg', '.', {returnNaN: true});
+	expect( isNaN(val) ).toBe(true);
+    });
+
 });
