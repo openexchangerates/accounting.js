@@ -386,7 +386,7 @@
 		exports.accounting = lib;
 	} else if (typeof define === 'function' && define.amd) {
 		// Return the library as an AMD module:
-		define([], function() {
+		define('accounting', [], function() {
 			return lib;
 		});
 	} else {
