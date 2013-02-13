@@ -1,0 +1,12 @@
+{
+	"predef": [
+		"define",
+	],
+	"immed": true,
+	"curly": true,
+	"undef": true,
+	"strict": true,
+	"trailing": true,
+	"eqeqeq": true,
+	"eqnull": true
+}
