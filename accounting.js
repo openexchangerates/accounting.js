@@ -37,7 +37,8 @@
 			precision : 0,		// default precision on numbers is 0
 			grouping : 3,		// digit grouping (not implemented yet)
 			thousand : ",",
-			decimal : "."
+			decimal : ".",
+			strip_insignificant_zeros : false
 		}
 	};
 
@@ -120,6 +121,17 @@
 		return isNaN(val)? base : val;
 	}
 
+	function stripInsignificantZeros(str, decimal) {
+		parts = str.split(decimal);
+
+		decimalPart = parts[1].replace(/0+$/, '')
+
+		if(decimalPart.length > 0) {
+			return parts[0] + decimal + decimalPart;
+		} else {
+			return parts[0];
+		}
+	}
 
 	/**
 	 * Parses a format string or object and returns format obj for use in rendering
@@ -169,7 +181,7 @@
 	 * alias: accounting.`parse(string)`
 	 *
 	 * Decimal must be included in the regular expression to match floats (defaults to
-	 * accounting.settings.number.decimal), so if the number uses a non-standard decimal 
+	 * accounting.settings.number.decimal), so if the number uses a non-standard decimal
 	 * separator, provide it as the second argument.
 	 *
 	 * Also matches bracketed negatives (eg. "$ (1.99)" => -1.99)
@@ -228,11 +240,11 @@
 	 * Localise by overriding the precision and thousand / decimal separators
 	 * 2nd parameter `precision` can be an object matching `settings.number`
 	 */
-	var formatNumber = lib.formatNumber = function(number, precision, thousand, decimal) {
+	var formatNumber = lib.formatNumber = function(number, precision, thousand, decimal, strip_insignificant_zeros) {
 		// Resursively format arrays:
 		if (isArray(number)) {
 			return map(number, function(val) {
-				return formatNumber(val, precision, thousand, decimal);
+				return formatNumber(val, precision, thousand, decimal, strip_insignificant_zeros);
 			});
 		}
 
@@ -244,7 +256,8 @@
 				(isObject(precision) ? precision : {
 					precision : precision,
 					thousand : thousand,
-					decimal : decimal
+					decimal : decimal,
+					strip_insignificant_zeros : strip_insignificant_zeros
 				}),
 				lib.settings.number
 			),
@@ -257,8 +270,9 @@
 			base = parseInt(toFixed(Math.abs(number || 0), usePrecision), 10) + "",
 			mod = base.length > 3 ? base.length % 3 : 0;
 
-		// Format the number:
-		return negative + (mod ? base.substr(0, mod) + opts.thousand : "") + base.substr(mod).replace(/(\d{3})(?=\d)/g, "$1" + opts.thousand) + (usePrecision ? opts.decimal + toFixed(Math.abs(number), usePrecision).split('.')[1] : "");
+		formatted_number = negative + (mod ? base.substr(0, mod) + opts.thousand : "") + base.substr(mod).replace(/(\d{3})(?=\d)/g, "$1" + opts.thousand) + (usePrecision ? opts.decimal + toFixed(Math.abs(number), usePrecision).split('.')[1] : "");
+
+		return (opts.strip_insignificant_zeros ? stripInsignificantZeros(formatted_number, opts.decimal) : formatted_number)
 	};
 
 

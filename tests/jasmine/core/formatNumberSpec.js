@@ -3,7 +3,7 @@ describe('formatNumber', function(){
     describe('rounding and enforce precision', function(){
 
         it('should enforce precision and round values', function(){
-        
+
             expect( accounting.formatNumber(123.456789, 0) ).toBe( '123' );
             expect( accounting.formatNumber(123.456789, 1) ).toBe( '123.5' );
             expect( accounting.formatNumber(123.456789, 2) ).toBe( '123.46' );
@@ -21,7 +21,7 @@ describe('formatNumber', function(){
         });
 
         it('should work for large numbers', function(){
-            
+
             expect( accounting.formatNumber(123456.54321, 0) ).toBe( '123,457' );
             expect( accounting.formatNumber(123456.54321, 1) ).toBe( '123,456.5' );
             expect( accounting.formatNumber(123456.54321, 2) ).toBe( '123,456.54' );
@@ -38,7 +38,7 @@ describe('formatNumber', function(){
         });
 
         it('should work for negative numbers', function(){
-            
+
             expect( accounting.formatNumber(-123456.54321, 0) ).toBe( '-123,457' );
             expect( accounting.formatNumber(-123456.54321, 1) ).toBe( '-123,456.5' );
             expect( accounting.formatNumber(-123456.54321, 2) ).toBe( '-123,456.54' );
@@ -84,6 +84,12 @@ describe('formatNumber', function(){
             expect( accounting.formatNumber(98765432.12, 4, '[', ']') ).toBe( '98[765[432]1200' );
         });
 
+        it('should allow setting thousand and decimal separators a flag indicating whether to strip insignificant zeros', function() {
+            expect( accounting.formatNumber(98765432.120, 3, null, null, true) ).toBe( '98,765,432.12' );
+            expect( accounting.formatNumber(98765432.120, 3, null, null, false) ).toBe( '98,765,432.120' );
+            expect( accounting.formatNumber(98765432.0120, 2, null, null, true) ).toBe( '98,765,432.01' );
+        });
+
         it('should use default separators if null', function(){
             expect( accounting.formatNumber(12345.12345, 2, null, null) ).toBe('12,345.12');
         });
@@ -96,7 +102,7 @@ describe('formatNumber', function(){
 
 
     describe('multiple numbers (array)', function(){
-    
+
         it('should handle an array of numbers', function(){
 
             var vals = accounting.formatNumber([123, 456.78, 1234.123], 2);
@@ -109,7 +115,7 @@ describe('formatNumber', function(){
     });
 
     describe('properties object', function(){
-    
+
         it('should accept a properties object', function(){
 
             var val = accounting.formatNumber(123456789.1234, {
