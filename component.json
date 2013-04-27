@@ -1,0 +1,14 @@
+{
+  "name": "accounting",
+  "repo": "josscrowcroft/accounting.js",
+  "description": "number, money and currency parsing/formatting library",
+  "version": "0.3.2",
+  "keywords": ["accounting", "number", "money", "currency", "format", "utilities"],
+  "dependencies": {},
+  "development": {},
+  "main": "accounting.js",
+  "scripts": [
+    "accounting.js"
+  ],
+  "license": "MIT"
+}
