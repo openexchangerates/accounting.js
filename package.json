@@ -8,5 +8,5 @@
 	"dependencies" : {},
 	"repository" : {"type": "git", "url": "git://github.com/josscrowcroft/accounting.js.git"},
 	"main" : "accounting.js",
-	"version" : "0.3.2"
+	"version" : "0.3.3"
 }

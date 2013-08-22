@@ -1,5 +1,5 @@
 /*!
- * accounting.js v0.3.2
+ * accounting.js v0.3.3
  * Copyright 2011, Joss Crowcroft
  *
  * Freely distributable under the MIT license.
@@ -254,7 +254,7 @@
 
 			// Do some calc:
 			negative = number < 0 ? "-" : "",
-			base = parseInt(toFixed(Math.abs(number || 0), usePrecision), 10) + "",
+			base = parseInt(toFixed(Math.abs(number), usePrecision), 10) + "",
 			mod = base.length > 3 ? base.length % 3 : 0;
 
 		// Format the number:
