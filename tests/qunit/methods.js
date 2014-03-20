@@ -17,11 +17,13 @@ $(document).ready(function() {
 	test("accounting.toFixed()", function() {
 		equals(accounting.toFixed(54321, 5), "54321.00000", 'Performs basic float zero-padding');
 		equals(accounting.toFixed(0.615, 2), "0.62", 'Rounds 0.615 to "0.62" instead of "0.61"');
+		equals(accounting.toFixed(74.725, 2), "74.73", 'Rounds 74.725 to "74.73" instead of "74.72"');
 	});
 
 	test("accounting.formatNumber()", function() {
 		// Check custom precision and separators:
 		equals(accounting.formatNumber(4999.99, 2, ".", ","), "4.999,99", 'Custom precision and decimal/thousand separators are a-ok')
+		equals(accounting.formatNumber(74.725, 2), "74.73", 'Rounds 74.725 to "74.73" instead of "74.72"');
 		
 		// check usage with options object parameter:
 		equal(accounting.formatNumber(5318008, {
