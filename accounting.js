@@ -237,7 +237,7 @@
 		}
 
 		// Clean up number:
-		number = unformat(number);
+		number = unformat(number, decimal);
 
 		// Build options object from second param (if object) or all params, extending defaults:
 		var opts = defaults(
@@ -282,7 +282,7 @@
 		}
 
 		// Clean up number:
-		number = unformat(number);
+		number = unformat(number, decimal);
 
 		// Build options object from second param (if object) or all params, extending defaults:
 		var opts = defaults(
@@ -350,7 +350,7 @@
 					return lib.formatColumn(val, opts);
 				} else {
 					// Clean up the value
-					val = unformat(val);
+					val = unformat(val, decimal);
 
 					// Choose which format to use for this value (pos, neg or zero):
 					var useFormat = val > 0 ? formats.pos : val < 0 ? formats.neg : formats.zero,
