@@ -1,6 +1,6 @@
 **accounting.js** is a tiny JavaScript library for number, money and currency formatting, and excel-style column rendering to line up symbols and decimals. It's lightweight, fully localisable and has zero dependencies.
 
-Check out the plugin homepage (with demos and docs) here: **http://josscrowcroft.github.com/accounting.js/**
+Check out the plugin homepage (with demos and docs) here: **http://openexchangerates.github.io/accounting.js/**
 
 Please checkout / download the latest stable tag before using in a production environment and report any bugs with your setup info!
 
@@ -12,6 +12,9 @@ Please checkout / download the latest stable tag before using in a production en
 
 
 ## Changelog
+
+### v0.4
+* Transfer repository to Open Exchange Rates for ongoing maintenance
 
 ### v0.3.0
 * Rewrote library structure similar to underscore.js for use as a nodeJS/npm and AMD module - now you can go `npm install accounting`, and then `var accounting = require("accounting");` in your nodeJS scripts. 
@@ -72,4 +75,4 @@ Please checkout / download the latest stable tag before using in a production en
  0                  |     $          0.00     |     HK$          --     |              0.00 GBP
 ```
 
-There's more on the plugin homepage: **http://josscrowcroft.github.com/accounting.js/**
+There's more on the plugin homepage: **http://openexchangerates.github.io/accounting.js/**

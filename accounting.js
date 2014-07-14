@@ -1,12 +1,12 @@
 /*!
- * accounting.js v0.3.1
- * Copyright 2011, Joss Crowcroft
+ * accounting.js v0.4
+ * Copyright 2014 Open Exchange Rates
  *
  * Freely distributable under the MIT license.
  * Portions of accounting.js are inspired or borrowed from underscore.js
  *
  * Full details and documentation:
- * http://josscrowcroft.github.com/accounting.js/
+ * http://openexchangerates.github.io/accounting.js/
  */
 
 (function(root, undefined) {
