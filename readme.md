@@ -1,6 +1,6 @@
 **accounting.js** is a tiny JavaScript library for number, money and currency parsing/formatting. It's lightweight and fully localisable, with zero dependencies, and works great as a nodeJS/npm and AMD/requireJS module. 
 
-Check out the **[accounting.js homepage](http://josscrowcroft.github.com/accounting.js/)** for demos and documentation!
+Check out the plugin homepage (with demos and docs) here: **http://openexchangerates.github.io/accounting.js/**
 
 Please checkout/download the latest stable tag before using in production. [Bug reports](https://github.com/josscrowcroft/accounting.js/issues) and pull requests hugely welcome.
 
@@ -17,12 +17,15 @@ Made with love by [@josscrowcroft](http://twitter.com/josscrowcroft) and some ex
 
 ## Changelog
 
+**v0.4**
+* Transfer repository to Open Exchange Rates for ongoing maintenance
+
 **v0.3.2** - Fix package.json dependencies (should be empty object) and tweak comments
 
 **v0.3.0**
-
-* Rewrote library structure similar to underscore.js for use as a **nodeJS/npm** and **AMD/requireJS** module - now you can go `npm install accounting`, and then `var accounting = require("accounting");` in your nodeJS scripts.
-* **unformat** now only attempts to parse the number if it's not already a valid number. Also now aliased as `acounting.parse`
+* Rewrote library structure similar to underscore.js for use as a nodeJS/npm and AMD module - now you can go `npm install accounting`, and then `var accounting = require("accounting");` in your nodeJS scripts. 
+* It also works with requireJS or any AMD module loader.
+* **unformat** now only attempts to parse the number if it's not already a valid number (to save on processing). It's also aliased as `acounting.parse`
 * Fixed an IE bug in the `defaults` method
 
 **v0.2.2** - Fixed same issue as \#Num: #24 in **formatNumber**; switch to Google Closure Compiler for minified version.
@@ -72,4 +75,4 @@ Made with love by [@josscrowcroft](http://twitter.com/josscrowcroft) and some ex
  0                  |     $          0.00     |     HK$          --     |              0.00 GBP
 ```
 
-There's more demos and documentation on the **[accounting.js homepage](http://josscrowcroft.github.com/accounting.js/)**. Enjoy!
+There's more on the plugin homepage: **http://openexchangerates.github.io/accounting.js/**
