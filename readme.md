@@ -4,18 +4,21 @@ Visit the plugin homepage for demos and documentation: **http://openexchangerate
 
 Please checkout or download the latest stable tag before using in production. [Bug reports](https://github.com/openexchangerates/accounting.js/issues) and pull requests are welcome.
 
-Made with love by [@josscrowcroft](http://twitter.com/josscrowcroft) and some excellent [contributors](https://github.com/openexchangerates/accounting.js/contributors).
+Maintained by [Open Exchange Rates](https://openexchangerates.org) and originally by [@josscrowcroft](http://twitter.com/josscrowcroft) and some excellent [contributors](https://github.com/openexchangerates/accounting.js/contributors).
 
 ---
 
 ### Works great with:
 
 * **[money.js](http://openexchangerates.github.com/money.js)** - a tiny (1kb) standalone JavaScript currency conversion library, for web & nodeJS
-* **[open exchange rates](https://openexchangerates.org)** - the free currency conversion data API
+* **[Open Exchange Rates](https://openexchangerates.org)** - the free currency conversion data API
 
 ---
 
 ## Changelog
+
+**v0.4.1**
+* Alias `accounting.formatNumber()` as `accounting.format()`
 
 **v0.4**
 * Transferred repository to Open Exchange Rates for ongoing maintenance
