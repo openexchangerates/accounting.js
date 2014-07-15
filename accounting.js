@@ -1,5 +1,5 @@
 /*!
- * accounting.js v0.4
+ * accounting.js v0.4.1
  * Copyright 2014 Open Exchange Rates
  *
  * Freely distributable under the MIT license.
@@ -166,7 +166,7 @@
 
 	/**
 	 * Takes a string/array of strings, removes all formatting/cruft and returns the raw float value
-	 * alias: accounting.`parse(string)`
+	 * Alias: `accounting.parse(string)`
 	 *
 	 * Decimal must be included in the regular expression to match floats (defaults to
 	 * accounting.settings.number.decimal), so if the number uses a non-standard decimal 
@@ -224,11 +224,12 @@
 
 	/**
 	 * Format a number, with comma-separated thousands and custom precision/decimal places
+	 * Alias: `accounting.format()`
 	 *
 	 * Localise by overriding the precision and thousand / decimal separators
 	 * 2nd parameter `precision` can be an object matching `settings.number`
 	 */
-	var formatNumber = lib.formatNumber = function(number, precision, thousand, decimal) {
+	var formatNumber = lib.formatNumber = lib.format = function(number, precision, thousand, decimal) {
 		// Resursively format arrays:
 		if (isArray(number)) {
 			return map(number, function(val) {
