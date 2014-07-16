@@ -4,27 +4,24 @@ Visit the plugin homepage for demos and documentation: **http://openexchangerate
 
 Please checkout or download the latest stable tag before using in production. [Bug reports](https://github.com/openexchangerates/accounting.js/issues) and pull requests are welcome.
 
-Maintained by [Open Exchange Rates](https://openexchangerates.org) and originally by [@josscrowcroft](http://twitter.com/josscrowcroft) and some excellent [contributors](https://github.com/openexchangerates/accounting.js/contributors).
+Maintained by [Open Exchange Rates](https://openexchangerates.org "Free reliable exchange rates/currency conversion data API") and originally by [@josscrowcroft](http://twitter.com/josscrowcroft) and other [contributors](https://github.com/openexchangerates/accounting.js/contributors).
 
 ---
 
 ### Works great with:
 
-* **[money.js](http://openexchangerates.github.com/money.js)** - a tiny (1kb) standalone JavaScript currency conversion library, for web & nodeJS
-* **[Open Exchange Rates](https://openexchangerates.org)** - the free currency conversion data API
+* **[money.js](http://openexchangerates.github.com/money.js "JavaScript and NodeJS Currency Conversion Library")** - a tiny (1kb) standalone JavaScript currency conversion library, for web & nodeJS
+* **[Open Exchange Rates](https://openexchangerates.org "realtime and historical exchange rates/currency conversion data API")** - the free currency conversion data API
 
 ---
 
 ## Changelog
 
-**v0.4.1**
-* Alias `accounting.formatNumber()` as `accounting.format()`
+**v0.4.1** - Alias `accounting.formatNumber()` as `accounting.format()`
 
-**v0.4**
-* Transferred repository to Open Exchange Rates for ongoing maintenance
+**v0.4** - Transferred repository to Open Exchange Rates for ongoing maintenance
 
-**v0.3.2**
-* Fixed package.json dependencies (should be empty object)
+**v0.3.2** - Fixed package.json dependencies (should be empty object)
 
 **v0.3.0**
 * Rewrote library structure similar to underscore.js for use as a nodeJS/npm and AMD module. Use `npm install accounting` and then `var accounting = require("accounting");` in your nodeJS scripts. 
@@ -33,11 +30,9 @@ Maintained by [Open Exchange Rates](https://openexchangerates.org) and originall
 * `acounting.unformat` now also aliased as `acounting.parse`
 * Fixed an IE bug in the `defaults` method
 
-**v0.2.2**
-* Fixed same issue as \#Num: #24 in **formatNumber**; switch to Google Closure Compiler for minified version.
+**v0.2.2** - Fixed same issue as \#Num: #24 in **formatNumber**; switch to Google Closure Compiler for minified version.
 
-**v0.2.1**
-* Fixed issue \#Num: #24 (locally-defined settings object was being modified by **formatMoney**)
+**v0.2.1** - Fixed issue \#Num: #24 (locally-defined settings object was being modified by **formatMoney**)
 
 **v0.2**
 * Rewrote formatting system for **formatMoney** and **formatColumn** for better control of string output
@@ -62,23 +57,4 @@ Maintained by [Open Exchange Rates](https://openexchangerates.org) and originall
 * Minified version preserves semicolons
 * Fixed `NaN` errors when no value in **unformat**
 
-**v0.1**
-* First version
-
-
----
-
-### Here's a neat little preview of **formatColumn()**:
-
-```html
- Original Number:   |  With accounting.js:    |  Different settings:    |    Symbol after value:
- -------------------+-------------------------+-------------------------+-----------------------
- 123.5              |     $        123.50     |     HK$         124     |            123.50 GBP
- 3456.615           |     $      3,456.62     |     HK$       3,457     |          3,456.62 GBP
- 777888.99          |     $    777,888.99     |     HK$     777,889     |        777,888.99 GBP
- -5432              |     $     -5,432.00     |     HK$     (5,432)     |         -5,432.00 GBP
- -1234567           |     $ -1,234,567.00     |     HK$ (1,234,567)     |     -1,234,567.00 GBP
- 0                  |     $          0.00     |     HK$          --     |              0.00 GBP
-```
-
-There's more on the plugin homepage: **http://openexchangerates.github.io/accounting.js/**
+**v0.1** - First version
