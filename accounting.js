@@ -169,7 +169,7 @@
 	 * Alias: `accounting.parse(string)`
 	 *
 	 * Decimal must be included in the regular expression to match floats (defaults to
-	 * accounting.settings.number.decimal), so if the number uses a non-standard decimal 
+	 * accounting.settings.number.decimal), so if the number uses a non-standard decimal
 	 * separator, provide it as the second argument.
 	 *
 	 * Also matches bracketed negatives (eg. "$ (1.99)" => -1.99)
@@ -339,7 +339,7 @@
 			formats = checkCurrencyFormat(opts.format),
 
 			// Whether to pad at start of string or after currency symbol:
-			padAfterSymbol = formats.pos.indexOf("%s") < formats.pos.indexOf("%v") ? true : false,
+			padAfterSymbol = formats.pos.indexOf("%s") < formats.pos.indexOf("%v"),
 
 			// Store value for the length of the longest string in the column:
 			maxLength = 0,
