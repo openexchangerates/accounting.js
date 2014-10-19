@@ -1,0 +1,33 @@
+{
+  "name": "accounting.js",
+  "main": "accounting.js",
+  "version": "0.4.1",
+  "homepage": "https://github.com/openexchangerates/accounting.js",
+  "authors": [
+    "Open Exchange Rates <info@openexchangerates.org> (https://www.openexchangerates.org)"
+  ],
+  "description": "number, money and currency formatting library",
+  "moduleType": [
+    "amd",
+    "globals",
+    "node"
+  ],
+  "keywords": [
+    "accounting",
+    "number",
+    "money",
+    "currency",
+    "format",
+    "utilities",
+    "finance",
+    "exchange"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
