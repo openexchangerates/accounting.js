@@ -11,5 +11,5 @@
 	"dependencies" : [],
 	"repository" : {"type": "git", "url": "git://github.com/openexchangerates/accounting.js.git"},
 	"main" : "accounting.js",
-	"version" : "0.4.1"
+	"version" : "0.4.2"
 }
