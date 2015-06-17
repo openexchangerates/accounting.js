@@ -17,6 +17,8 @@ Maintained by [Open Exchange Rates](https://openexchangerates.org "Free reliable
 
 ## Changelog
 
+**v0.4.2** - Added bower.json
+
 **v0.4.1** - Alias `accounting.formatNumber()` as `accounting.format()`
 
 **v0.4** - Transferred repository to Open Exchange Rates for ongoing maintenance

@@ -1,5 +1,5 @@
 /*!
- * accounting.js v0.4.1
+ * accounting.js v0.4.2
  * Copyright 2014 Open Exchange Rates
  *
  * Freely distributable under the MIT license.
