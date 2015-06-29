@@ -184,11 +184,11 @@
 			});
 		}
 
-		// Fails silently (need decent errors):
-		value = value || 0;
-
 		// Return the value as-is if it's already a number:
 		if (typeof value === "number") return value;
+
+		// Fails silently (need decent errors):
+		value = value || 0;
 
 		// Default decimal point comes from settings, but could be set to eg. "," in opts:
 		decimal = decimal || lib.settings.number.decimal;
@@ -264,6 +264,13 @@
 
 
 	/**
+	* Check if a number is negative, even if it is negative zero (-0)
+	*/
+	var isNegative = function(number) {
+		return (number < 0) || (number === 0 && (1/number) === -Infinity);
+	};
+
+	/**
 	 * Format a number into currency
 	 *
 	 * Usage: accounting.formatMoney(number, symbol, precision, thousandsSep, decimalSep, format)
@@ -301,7 +308,9 @@
 			formats = checkCurrencyFormat(opts.format),
 
 			// Choose which format to use for this value:
-			useFormat = number > 0 ? formats.pos : number < 0 ? formats.neg : formats.zero;
+			useFormat = !isNegative(number) ?
+					formats.pos :
+					isNegative(number) ? formats.neg : formats.zero;
 
 		// Return with currency symbol added:
 		return useFormat.replace('%s', opts.symbol).replace('%v', formatNumber(Math.abs(number), checkPrecision(opts.precision), opts.thousand, opts.decimal));

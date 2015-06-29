@@ -13,7 +13,7 @@ describe('formatMoney()', function(){
         expect( accounting.formatMoney(-123) ).toBe( '$-123.00' );
         expect( accounting.formatMoney(-123.45) ).toBe( '$-123.45' );
         expect( accounting.formatMoney(-12345.67) ).toBe( '$-12,345.67' );
-    
+        expect( accounting.formatMoney(-0) ).toBe( '$-0.00' );
     });
 
     it('should allow precision to be `0` and not override with default `2`', function(){
