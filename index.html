@@ -2,9 +2,9 @@
 <html lang="en" class="no-js">
 <head>
 	<meta charset="utf-8">
-	<title>accounting.js - format money / currency in JavaScript</title>
+	<title>accounting.js: JavaScript number and currency formatting library</title>
 	<link href="demo-resources/style.css" rel="stylesheet"/>
-	<link rel="canonical" href="http://josscrowcroft.github.com/accounting.js/" />
+	<link rel="canonical" href="http://openexchangerates.github.io/accounting.js/" />
 	<script type="text/javascript">
 		var _gaq = _gaq || [];
 		_gaq.push(['_setAccount', 'UA-17884149-3']);
@@ -20,8 +20,13 @@
 <body>
 	<section>
 		<h1>accounting.js</h1>
-		<p><strong>accounting.js</strong> is a tiny JavaScript library for number, money and currency formatting, with optional excel-style column rendering (to line up symbols and decimals). It's lightweight, fully localisable and has zero dependencies.</p>
-		<p><a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="josscrowcroft" data-url="http://josscrowcroft.github.com/accounting.js" data-text="accounting.js - JavaScript library for money/currency formatting">Tweet</a> &nbsp; <g:plusone size="medium"></g:plusone></p>
+		<p><strong>accounting.js</strong> is a tiny JavaScript library by <a href="https://openexchangerates.org" title="Open Exchange Rates free currency data API" target="_blank">Open Exchange Rates</a>, providing simple and advanced number, money and currency formatting.</p>
+
+		<p>Features custom output formats, parsing/unformatting of numbers, easy localisation and spreadsheet-style column formatting (to line up symbols and decimals).</p>
+
+		<p>It's lightweight, has no dependencies and is suitable for all client-side and server-side JavaScript applications.</p>
+
+		<p><a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="josscrowcroft" data-url="http://openexchangerates.github.io/accounting.js" data-text="accounting.js - JavaScript library for money/currency formatting">Tweet</a> &nbsp; <g:plusone size="medium"></g:plusone></p>
 		<ul>
 			<li><a href="#methods" title="library methods overvew">methods &amp; examples</a>
 			<li><a href="#demo" title="demo">demo</a>
@@ -30,27 +35,34 @@
 			<li><a href="#roadmap" title="roadmap">roadmap</a>
 			<li><a href="#support" title="support">feedback / support</a>
 			<li><a href="#download" title="download">download</a>
-			<li><a href="#moar" title="moar info">moar info</a>
+			<li><a href="#links" title="links">links</a>
 		</ul>
 	</section>
 
 	<section id="methods">
 		<h2>Library Methods</h2>
+
 		<h4><strong>formatMoney()</strong> - format any number into currency</h4>
-		<p>The most basic function of this library is money-formatting numbers, with currency symbol, precision (places), and thousand/decimal separators:</p>
+
+		<p>The most basic library function for formatting numbers as money values, with customisable currency symbol, precision (decimal places), and thousand/decimal separators:</p>
 		<pre class="prettyprint lang-js">// Default usage:
 accounting.formatMoney(12345678); // $12,345,678.00
 
-// European formatting (custom symbol and separators), could also use options object as second param:
+// European formatting (custom symbol and separators), can also use options object as second parameter:
 accounting.formatMoney(4999.99, "&euro;", 2, ".", ","); // &euro;4.999,99
 
-// Negative values are formatted nicely, too:
+// Negative values can be formatted nicely:
 accounting.formatMoney(-500000, "&pound; ", 0); // &pound; -500,000
 
-// Simple `format` string allows control of symbol position [%v = value, %s = symbol]:
+// Simple `format` string allows control of symbol position (%v = value, %s = symbol):
 accounting.formatMoney(5318008, { symbol: "GBP",  format: "%v %s" }); // 5,318,008.00 GBP</pre>
+
+
 		<h4><strong>formatColumn()</strong> - format a list of values for column-display</h4>
-		<p>This table demonstrates how <strong>accounting.js</strong> can take a list of numbers and money-format them with padding to line up currency symbols and decimal places (NB: <code>white-space:pre</code> is needed for the browser to render the padded spaces):</p>
+
+		<p>This table demonstrates how <strong>accounting.js</strong> can take a list of numbers and money-format them with padding to line up currency symbols and decimal places</p>
+		<p>In order for the padded spaces to render correctly, the containing element must be CSS styled with <code>white-space: pre</code> (pre-formatted) - otherwise the browser will squash them into single spaces.</p>
+
 		<table id="demo-table">
 			<thead>
 				<tr>
@@ -66,25 +78,33 @@ accounting.formatMoney(5318008, { symbol: "GBP",  format: "%v %s" }); // 5,318,0
 		<pre class="prettyprint lang-js">// Format list of numbers for display:
 accounting.formatColumn([123.5, 3456.49, 777888.99, 12345678, -5432], "$ ");</pre>
 
+
 		<h4><strong>formatNumber()</strong> - format a number with custom precision and localisation</h4>
+
 		<p>The base function of the library, which takes any number or array of numbers, runs <code>accounting.unformat()</code> to remove any formatting, and returns the number(s) formatted with separated thousands and custom precision:</p>
 		<pre class="prettyprint lang-js">accounting.formatNumber(5318008); // 5,318,008
 accounting.formatNumber(9876543.21, 3, " "); // 9 876 543.210</pre>
 
+
 		<h4><strong>toFixed()</strong> - better rounding for floating point numbers</h4>
+
 		<p>Implementation of toFixed() that treats floats more like decimal values than binary, fixing inconsistent precision rounding in JavaScript (where some .05 values round up, while others round down):</p>
 		<pre class="prettyprint lang-js">(0.615).toFixed(2); // "0.61"
 accounting.toFixed(0.615, 2); // "0.62"</pre>
 
-		<h4><strong>unformat()</strong> - get a value from any formatted number/currency string</h4>
-		<p>Takes any number and removes all currency formatting:</p>
+
+		<h4><strong>unformat()</strong> - parse a value from any formatted number/currency string</h4>
+
+		<p>Takes any number and removes all currency formatting. Aliased as <code>accounting.parse()</code></p>
 		<pre class="prettyprint lang-js">accounting.unformat("&pound; 12,345,678.90 GBP"); // 12345678.9</pre>
 	</section>
 
 	<section id="demo">
 		<h2>Demo / Try it out</h2>
 
+
 		<h4>Money formatting:</h4>
+
 		<div class="well">
 			<p>Enter any number into the box and choose currency. Uses <code>accounting.formatMoney()</code>:</p>
 			<p>
@@ -99,7 +119,9 @@ accounting.toFixed(0.615, 2); // "0.62"</pre>
 			<p>Result: <strong><span id="demo-number-result">$ 0.00</span></strong></p>
 		</div>
 
+
 		<h4>Column formatting:</h4>
+
 		<div class="well">
 			<p>Edit the values in the table to see how <strong>formatColumn()</strong> keeps them aligned:</p>
 			<table id="demo-column">
@@ -126,24 +148,29 @@ accounting.toFixed(0.615, 2); // "0.62"</pre>
 
 
 	<section id="instructions">
-		<h2>Instructions / How to use</h2>
-		<p>1. Download the script and put it somewhere, then do this:</p>
+		<h2>Basic Instructions:</h2>
+
+		<p>1. Download the script and put it somewhere, then reference it in your HTML like so:</p>
 		<pre class="prettyprint">&lt;script src=&quot;path/to/accounting.js&quot;&gt;&lt;/script&gt;
 
 &lt;script type=&quot;text/javascript&quot;&gt;
-	// You can do this now:
+	// Library ready to use:
 	accounting.formatMoney(5318008);
 &lt;/script&gt;</pre>
-		<p>2. Check out the documentation and source-code for full method/parameter info if you get stuck.</p>
+
+		<p>2. See the documentation and source-code for full method/parameter information.</p>
 	</section>
 
 
 	<section id="documentation">
+
 		<h2>Documentation</h2>
+
 		<p>Information on the parameters of each method. See <a href="#methods" title="accounting.js library methods">library methods</a> above for more examples. Optional parameters are in <code><em>[italics]</em></code>, with the default value indicated.</p>
 
 
 		<h4><strong>accounting.settings</strong></h4>
+
 		<pre class="prettyprint lang-js">// Settings object that controls default parameters for library methods:
 accounting.settings = {
 	currency: {
@@ -178,6 +205,7 @@ accounting.settings.number = _.defaults({
 
 
 		<h4><strong>accounting.formatMoney()</strong></h4>
+
 		<pre class="prettyprint lang-js">// Standard usage and parameters (returns string):
 accounting.formatMoney(number<em>,[symbol = "$"],[precision = 2],[thousand = ","],[decimal = "."],[format = "%s%v"]</em>)
 
@@ -216,6 +244,7 @@ accounting.formatMoney([123, 456, [78, 9]], "$", 0); // ["$123", "$456", ["$78",
 
 
 		<h4><strong>accounting.formatColumn()</strong></h4>
+
 		<pre class="prettyprint lang-js">// Standard usage and parameters (returns array):
 accounting.formatColumn(list<em>, [symbol = "$"],[precision = 2],[thousand = ","],[decimal = "."],[format = "%s%v"]</em>)
 
@@ -232,6 +261,7 @@ accounting.formatColumn(list); // [["$  1.00", "$100.00"], ["$900.00", "$  9.00"
 
 
 		<h4><strong>accounting.formatNumber()</strong></h4>
+
 		<pre class="prettyprint lang-js">// Standard usage and parameters (returns string):
 accounting.formatNumber(number<em>, [precision = 0], [thousand = ","], [decimal = "."]</em>)
 
@@ -253,6 +283,7 @@ accounting.formatNumber([123456, [7890, 123]]); // ["123,456", ["7,890", "123"]]
 
 
 		<h4><strong>accounting.toFixed()</strong></h4>
+
 		<pre class="prettyprint lang-js">// Standard usage and parameters (returns string):
 accounting.toFixed(number<em>, [precision = 0]</em>);
 
@@ -264,6 +295,7 @@ accounting.toFixed(0.615, 2); // "0.62"
 
 
 		<h4><strong>accounting.unformat()</strong></h4>
+
 		<pre class="prettyprint lang-js">// Standard usage and parameters (returns number):
 accounting.unformat(string<em>, [decimal]</em>);
 
@@ -279,15 +311,16 @@ accounting.unformat("&euro; 1.000.000,00", ","); // 1000000</pre>
 
 	<section id="roadmap">
 		<h2>Roadmap</h2>
-		<p>See the <a href="https://github.com/josscrowcroft/accounting.js/issues" title="accounting.js issues">Github Issues page</a> for up-to-date progress.</p>
+
 		<h4>Next Version:</h4>
 		<ul>
 			<li><s>Add more fine-grained control of formatting, with negatives and zero-values</s></li>
 			<li><s>Implement <code>map()</code> and type-checking helper methods to clean up API methods</s></li>
 			<li>Find performance bottlenecks and work on speed optimisations</li>
 			<li>Write more tests, docs and examples, add FAQ</li>
-			<li>Implement <a href="https://github.com/josscrowcroft/accounting.js/issues/" title="accounting.js issues">feedback</a></li>
+			<li>Implement <a href="https://github.com/openexchangerates/accounting.js/issues/" title="accounting.js issues">feedback</a></li>
 		</ul>
+
 		<h4>Later:</h4>
 		<ul>
 			<li>Add padding parameter to override amount of space between currency symbol and value.</li>
@@ -297,42 +330,50 @@ accounting.unformat("&euro; 1.000.000,00", ","); // 1000000</pre>
 			<li>Create NPM package, if there's demand for it.</li>
 			<li>Create wrapper for jQuery as a separate plugin (not in core) to allow eg. <code>$('td.accounting').formatMoney()</code></li>
 		</ul>
+
+		<p>See the <a href="https://github.com/openexchangerates/accounting.js/issues" title="accounting.js issues">Github Issues page</a> for currently active issues.</p>
 	</section>
 
 	<section id="support">
 		<h2>Feedback / Support</h2>
-		<p>Please create issues on the <a href="https://github.com/josscrowcroft/accounting.js" title="accounting.js Github repository">accounting.js Github repository</a> if you have feedback or need support, or comment on <a href="http://www.josscrowcroft.com" title="Joss">Joss's blog</a>.</p>
+
+		<p>Please create issues on the <a href="https://github.com/openexchangerates/accounting.js" title="accounting.js Github repository">accounting.js Github repository</a> if you have feedback or need support, or <a href="mailto:info@openexchangerates.org" title="Contact Open Exchange Rates">contact Open Exchange Rates here</a>.</p>
 	</section>
 
 	<section id="download">
 		<h2>Download</h2>
+
 		<ul>
-			<li><strong><a href="https://raw.github.com/josscrowcroft/accounting.js/master/accounting.js" title="accounting.js">accounting.js</a></strong> - Latest version from Github (12kb)</li>
-			<li><strong><a href="https://raw.github.com/josscrowcroft/accounting.js/master/accounting.min.js" title="accounting.min.js">accounting.min.js</a></strong> - Latest version from Github (3kb, minified)</li>
-			<li>Or check out the <a href="https://github.com/josscrowcroft/accounting.js" title="accounting.js Github repository">accounting.js Github repository</a> for the full package.</li>
+			<li><strong><a href="https://raw.github.com/openexchangerates/accounting.js/master/accounting.js" title="accounting.js">accounting.js</a></strong> - Latest version from Github (12kb)</li>
+			<li><strong><a href="https://raw.github.com/openexchangerates/accounting.js/master/accounting.min.js" title="accounting.min.js">accounting.min.js</a></strong> - Latest version from Github (3kb, minified)</li>
+			<li>Or check out the <a href="https://github.com/openexchangerates/accounting.js" title="accounting.js Github repository">accounting.js Github repository</a> for the full package.</li>
 		</ul>
 	</section>
 
-	<section id="moar">
+	<section id="links">
+
+		<h2>Links</h2>
+		<p>accounting.js is maintained by <strong><a href="https://openexchangerates.org" title="Open Exchange Rates free currency data API" target="_blank">Open Exchange Rates</a></strong> - the lightweight currency data API for startups, SMEs and Fortune 500s.</p>
+		<p>Feedback, support or questions? <strong><a href="mailto:info@openexchangerates.org" title="Contact Open Exchange Rates">Contact Open Exchange Rates</a></strong> for guidance.</p>
+		<p>Bugs, issues, suggestions or contributions? Please <strong><a href="https://github.com/openexchangerates/accounting.js" title="accounting.js Github repository">post them here</a></strong>.</p>
+		<p>accounting.js works great with <strong><a href="http://openexchangerates.github.com/money.js" title="money.js - JavaScript currency conversion library">money.js</a></strong> - the tiny (1kb) standalone JavaScript currency conversion library, for web & nodeJS</p>
+
 		<br />
 		<hr />
-		<p><a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="josscrowcroft" data-url="http://josscrowcroft.github.com/accounting.js" data-text="accounting.js - JavaScript library for money/currency formatting">Tweet</a> &nbsp; <g:plusone size="medium"></g:plusone></p>
-		<h3>Moar Info</h3>
-		<p><small><strong>accounting.js</strong> was made by <a href="http://www.josscrowcroft.com" title="Joss">Joss</a> (that's me) in Hong Kong, for internal use in our enterprise analytics application at <a href="http://demandanalytics.com" title="Demand Analytics">Demand Analytics</a>. It seemed to be working pretty well, so I'm releasing it in the hope that other people and apps can make use of and contribute to it.</small></p>
-		<p><small>You can follow me on Twitter at <a href="http://twitter.com/josscrowcroft" title="@josscrowcroft on Twitter">@josscrowcroft</a>, I mostly post about JS, HTML5, startups, Hong Kong and things I've built.</small></p>
-		<p><small>Any questions? Just email me <a href="http://www.josscrowcroft.com/contact/" title="Contact Joss">here</a> or post on the <a href="https://github.com/josscrowcroft/accounting.js" title="accounting.js Github repository">accounting.js Github repository</a>.</small></p>
+		<p><a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="josscrowcroft" data-url="http://openexchangerates.github.io/accounting.js" data-text="accounting.js - JavaScript library for money/currency formatting">Tweet</a> &nbsp; <g:plusone size="medium"></g:plusone></p>
 	</section>
 
 
-	<script src="accounting.js"></script>
+	<script src="accounting.min.js"></script>
 	<script src="demo-resources/js/libs/jquery.min.js"></script>
 	<script src="demo-resources/js/prettify.js"></script>
 
 	<script type="text/javascript">
 
-		// demo thangs:
+		// demo functions:
 		jQuery(document).ready(function($) {
 			var numbers = [123.5, 3456.615, 777888.99, -5432, -1234567, 0];
+
 			// Use accounting.js to format the list of numbers several ways:
 			var formatted = accounting.formatColumn(numbers, "$ "),
 			    different = accounting.formatColumn(numbers, {
@@ -378,7 +419,7 @@ accounting.unformat("&euro; 1.000.000,00", ","); // 1000000</pre>
 			});
 
 
-			// Try it yourself clicky column/list demo:
+			// Try it yourself clicky column formatting demo:
 			var $columnValues = $('#demo-column').find('input'),
 			    $columnOutputs = $('#demo-column').find('.output'),
 			    $columnOutputs2 = $('#demo-column').find('.output2');
