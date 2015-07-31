@@ -17,6 +17,8 @@ Maintained by [Open Exchange Rates](https://openexchangerates.org "Free reliable
 
 ## Changelog
 
+**v0.4.3** - Fixed issue \#Num: #53 toFixed error
+
 **v0.4.2** - Added bower.json
 
 **v0.4.1** - Alias `accounting.formatNumber()` as `accounting.format()`
@@ -26,9 +28,9 @@ Maintained by [Open Exchange Rates](https://openexchangerates.org "Free reliable
 **v0.3.2** - Fixed package.json dependencies (should be empty object)
 
 **v0.3.0**
-* Rewrote library structure similar to underscore.js for use as a nodeJS/npm and AMD module. Use `npm install accounting` and then `var accounting = require("accounting");` in your nodeJS scripts. 
+* Rewrote library structure similar to underscore.js for use as a nodeJS/npm and AMD module. Use `npm install accounting` and then `var accounting = require("accounting");` in your nodeJS scripts.
 * Also works with requireJS or any AMD module loader.
-* **unformat** now only attempts to parse the number if it's not already a valid number. 
+* **unformat** now only attempts to parse the number if it's not already a valid number.
 * `acounting.unformat` now also aliased as `acounting.parse`
 * Fixed an IE bug in the `defaults` method
 
