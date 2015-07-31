@@ -19,7 +19,6 @@ $(document).ready(function() {
 		equals(accounting.toFixed(0.615, 2), "0.62", 'Rounds 0.615 to "0.62" instead of "0.61"');
 		equals(accounting.toFixed(74.725, 2), "74.73", 'Rounds 74.725 to "74.73" instead of "74.72"');
 		equals(accounting.toFixed(158.605, 2), "158.61", 'Rounds 158.605 to "158.61" instead of "158.60"');
-		equals(accounting.toFixed(259.605, 2), "259.61", 'Rounds 74.725 to "74.73" instead of "74.72"');
 	});
 
 	test("accounting.formatNumber()", function() {
