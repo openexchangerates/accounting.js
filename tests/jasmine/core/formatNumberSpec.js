@@ -84,6 +84,12 @@ describe('formatNumber', function(){
             expect( accounting.formatNumber(98765432.12, 4, '[', ']') ).toBe( '98[765[432]1200' );
         });
 
+        it('should allow setting gaussian rounding', function(){
+            expect( accounting.formatNumber(98765432.105, 2, null, null, "gaussian") ).toBe( '98,765,432.10' );
+            expect( accounting.formatNumber(98765432.115, 2, null, null, "gaussian") ).toBe( '98,765,432.12' );
+            expect( accounting.formatNumber(98765432.125, 2, null, null, "gaussian") ).toBe( '98,765,432.12' );
+        });
+
         it('should use default separators if null', function(){
             expect( accounting.formatNumber(12345.12345, 2, null, null) ).toBe('12,345.12');
         });

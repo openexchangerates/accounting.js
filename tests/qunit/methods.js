@@ -17,6 +17,7 @@ $(document).ready(function() {
 	test("accounting.toFixed()", function() {
 		equals(accounting.toFixed(54321, 5), "54321.00000", 'Performs basic float zero-padding');
 		equals(accounting.toFixed(0.615, 2), "0.62", 'Rounds 0.615 to "0.62" instead of "0.61"');
+		equals(accounting.toFixed(0.605, 2, "gaussian"), "0.60", 'Rounds 0.605 to "0.60" as per gaussian rounding');
 	});
 
 	test("accounting.formatNumber()", function() {
@@ -33,6 +34,14 @@ $(document).ready(function() {
 		
 		// check rounding:
 		equals(accounting.formatNumber(0.615, 2), "0.62", 'Rounds 0.615 up to "0.62" with precision of 2');
+		equals(accounting.formatNumber(0.605, 2, null, null ,"gaussian"), "0.60", 'Rounds 0.605 up to "0.60" as per gaussian rounding');
+
+
+		// changing number settings to default gaussian rounding:
+		accounting.settings.number.rounding_type = "gaussian";
+		equals(accounting.formatNumber(0.605, 2), "0.60", 'Rounds 0.605 up to "0.60" as per gaussian rounding');
+		accounting.settings.number.rounding_type = "default";
+
 		
 		// manually and recursively formatted arrays should have same values:
 		var numbers = [8008135, [1234, 5678], 1000];
@@ -48,6 +57,8 @@ $(document).ready(function() {
 		equals(accounting.formatMoney(-500000, "£ ", 0), "£ -500,000", 'negative values, custom params, works ok');
 		equals(accounting.formatMoney(5318008, { symbol: "GBP",  format: "%v %s" }), "5,318,008.00 GBP", "`format` parameter is observed in string output");
 		equals(accounting.formatMoney(1000, { format: "test %v 123 %s test" }), "test 1,000.00 123 $ test", "`format` parameter is observed in string output, despite being rather strange");
+		equals(accounting.formatMoney(1234.605, null, null, null, null, null,"gaussian"), "$1,234.60", "gaussian rounding");
+
 		
 		// Format param is an object:
 		var format = {
@@ -62,6 +73,13 @@ $(document).ready(function() {
 		accounting.settings.currency.format = "%s%v";
 		accounting.formatMoney(0, {format:""});
 		equals(typeof accounting.settings.currency.format, "object", "`settings.currency.format` default string value should be reformatted to an object, the first time it is used");
+
+
+		// changing currency settings to default gaussian rounding:
+		accounting.settings.currency.rounding_type = "gaussian";
+		equals(accounting.formatMoney(1234.605), "$1,234.60", "gaussian rounding");
+		accounting.settings.currency.rounding_type = "default";
+
 	});
 
 
@@ -69,6 +87,11 @@ $(document).ready(function() {
 		// standard usage:
 		var list = [123, 12345];
 		equals(accounting.formatColumn(list, "$ ", 0).toString(), (["$    123", "$ 12,345"]).toString(), "formatColumn works as expected");
+
+
+		// Gaussian rounding type can be specified:
+		var list = [123.535, 123.545];
+		equals(accounting.formatColumn(list, "$ ", null, null, null, null, 'gaussian').toString(), (["$ 123.54", "$ 123.54"]).toString(), "gaussian rounding works as expected");
 
 
 		// multi-dimensional array (formatColumn should be applied recursively):
@@ -89,7 +112,6 @@ $(document).ready(function() {
 			precision: 3
 		});
 		ok((column[0].length === column[2].length && column[1].length === column[2].length), "formatColumn() with 3 random numbers returned strings of matching length, even with a weird custom `format` parameter");
-
 
 
 	});
