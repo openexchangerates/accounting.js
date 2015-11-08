@@ -166,6 +166,7 @@
 	/**
 	 * Gaussian or banker's rounding rounds 0.5 to 0, i.e. the closest even number
 	 * This type of rounding is unbiased and results in more precise average
+	 * Add rounding_type: 'gaussian' in settings to set it as default rounding
 	*/
 	function gaussianRound(value, precision, power) {
 		// Avoid rounding errors:
@@ -233,6 +234,9 @@
 	 *
 	 * Fixes binary rounding issues (eg. (0.615).toFixed(2) === "0.61") that present
 	 * problems for accounting- and finance-related software.
+	 *
+	 * Gaussian or banker's rounding, which is commonly used in banks, can be selected
+	 * as 'rounding_type'
 	 */
 	var toFixed = lib.toFixed = function(value, precision, rounding_type) {
 		precision = checkPrecision(precision, lib.settings.number.precision);
@@ -294,8 +298,8 @@
 	/**
 	 * Format a number into currency
 	 *
-	 * Usage: accounting.formatMoney(number, symbol, precision, thousandsSep, decimalSep, format)
-	 * defaults: (0, "$", 2, ",", ".", "%s%v")
+	 * Usage: accounting.formatMoney(number, symbol, precision, thousandsSep, decimalSep, format, roundingType)
+	 * defaults: (0, "$", 2, ",", ".", "%s%v", "default")
 	 *
 	 * Localise by overriding the symbol, precision, thousand / decimal separators and format
 	 * Second param can be an object matching `settings.currency` which is the easiest way.
