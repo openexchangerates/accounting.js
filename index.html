@@ -174,16 +174,20 @@ accounting.toFixed(0.615, 2); // "0.62"</pre>
 		<pre class="prettyprint lang-js">// Settings object that controls default parameters for library methods:
 accounting.settings = {
 	currency: {
-		symbol : "$",   // default currency symbol is '$'
+		symbol : "$",	// default currency symbol is '$'
 		format: "%s%v", // controls output: %s = symbol, %v = value/number (can be object: see below)
-		decimal : ".",  // decimal point separator
+		decimal : ".", 	// decimal point separator
 		thousand: ",",  // thousands separator
-		precision : 2   // decimal places
+		precision : 2,  // decimal places
+		rounding_type: "default"// default rounding rounds 1.05 to 1.1 ie. rounds up 5
+					// to higher number. "gaussian" rounding, rounds to closest
+					// even, ie. 1.05 rounds to 1.0; useful in banking operations
 	},
 	number: {
 		precision : 0,  // default precision on numbers is 0
 		thousand: ",",
-		decimal : "."
+		decimal : ".",
+		rounding_type: "default"
 	}
 }
 
@@ -207,7 +211,7 @@ accounting.settings.number = _.defaults({
 		<h4><strong>accounting.formatMoney()</strong></h4>
 
 		<pre class="prettyprint lang-js">// Standard usage and parameters (returns string):
-accounting.formatMoney(number<em>,[symbol = "$"],[precision = 2],[thousand = ","],[decimal = "."],[format = "%s%v"]</em>)
+accounting.formatMoney(number<em>,[symbol = "$"],[precision = 2],[thousand = ","],[decimal = "."],[format = "%s%v"], [rounding_type = "default"]</em>)
 
 // Second parameter can be an object:
 accounting.formatMoney(number<em>, [options]</em>)
@@ -218,13 +222,18 @@ var options = {
 	decimal : ".",
 	thousand: ",",
 	precision : 2,
-	format: "%s%v"
+	format: "%s%v",
+	rounding_type: "default"
 };
 
 // Example usage:
 accounting.formatMoney(12345678); // $12,345,678.00
 accounting.formatMoney(4999.99, "&euro;", 2, ".", ","); // &euro;4.999,99
 accounting.formatMoney(-500000, "&pound; ", 0); // &pound; -500,000
+
+// Default vs Gaussian rounding:
+accounting.formatMoney(1500.505); // $1,500.51
+accounting.formatMoney(1500.505, null, null, null, null, null, "gaussian"); // $1,500.50
 
 // Example usage with options object:
 accounting.formatMoney(5318008, {
@@ -246,7 +255,7 @@ accounting.formatMoney([123, 456, [78, 9]], "$", 0); // ["$123", "$456", ["$78",
 		<h4><strong>accounting.formatColumn()</strong></h4>
 
 		<pre class="prettyprint lang-js">// Standard usage and parameters (returns array):
-accounting.formatColumn(list<em>, [symbol = "$"],[precision = 2],[thousand = ","],[decimal = "."],[format = "%s%v"]</em>)
+accounting.formatColumn(list<em>, [symbol = "$"],[precision = 2],[thousand = ","],[decimal = "."],[format = "%s%v"], [rounding_type = "default"]</em>)
 
 // Second parameter can be an object (see formatNumber for available options):
 accounting.formatColumn(list, <em>[options]</em>)
@@ -263,7 +272,7 @@ accounting.formatColumn(list); // [["$  1.00", "$100.00"], ["$900.00", "$  9.00"
 		<h4><strong>accounting.formatNumber()</strong></h4>
 
 		<pre class="prettyprint lang-js">// Standard usage and parameters (returns string):
-accounting.formatNumber(number<em>, [precision = 0], [thousand = ","], [decimal = "."]</em>)
+accounting.formatNumber(number<em>, [precision = 0], [thousand = ","], [decimal = "."], [rounding_type = "default"]</em>)
 
 // Second parameter can also be an object matching `settings.number`:
 accounting.formatNumber(number<em>, [object]</em>)
@@ -271,6 +280,8 @@ accounting.formatNumber(number<em>, [object]</em>)
 // Example usage:
 accounting.formatNumber(9876543); // 9,876,543
 accounting.formatNumber(4999.99, 2, ".", ","); // 4.999,99
+accounting.formatNumber(4999.505, 2, null, null, "gaussian"); // 4,999.50
+
 
 // Example usage with options object:
 accounting.formatNumber(5318008, {
@@ -285,10 +296,11 @@ accounting.formatNumber([123456, [7890, 123]]); // ["123,456", ["7,890", "123"]]
 		<h4><strong>accounting.toFixed()</strong></h4>
 
 		<pre class="prettyprint lang-js">// Standard usage and parameters (returns string):
-accounting.toFixed(number<em>, [precision = 0]</em>);
+accounting.toFixed(number<em>, [precision = 0], [rounding_type = "default"]</em>);
 
 // Example usage:
 accounting.toFixed(0.615, 2); // "0.62"
+accounting.toFixed(0.605, 2, "gaussian"); // "0.60", default would round to "0.61"
 
 // Compare to regular JavaScript `Number.toFixed()` method:
 (0.615).toFixed(2); // "0.61"</pre>
