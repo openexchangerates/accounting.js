@@ -386,13 +386,12 @@
 	var tenerWords = ['', 'Ten ', 'Twenty ', 'Thirty ', 'Forty ', 'Fifty ', 'Sixty ', 'Seventy ', 'Eighty ', 'Ninety '];
 	NumberingSystems = {
 		'Arabic':['', 'Thousand ', 'Million ', 'Billion ','Trillion ', 'Quadrillion ', 'Quintillion '],
-		'Indian':['', 'Hunderd ', 'Thousand ', 'Lakh ', 'Crore ', 'Arab ', 'Kharab ', 'Nil ', 'Padm ', 'Sankh ']
+		'Indian':['', 'Hundred ', 'Thousand ', 'Lakh ', 'Crore ', 'Arab ', 'Kharab ', 'Nil ', 'Padm ', 'Sankh ']
 	};
 
 	lib.toWords = function(number) {
-		number = Number(number) //Get rid of leading and trailing zeroes
+		number = unformat(number, lib.settings.number.decimal) //Get rid of leading and trailing zeroes
 		number = number.toString();
-		number = number.replace(/[\, ]/g,'');
 
 		if (number != parseFloat(number))
 			return 'Not a Number';
