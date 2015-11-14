@@ -297,14 +297,20 @@ accounting.toFixed(0.615, 2); // "0.62"
 		<h4><strong>accounting.unformat()</strong></h4>
 
 		<pre class="prettyprint lang-js">// Standard usage and parameters (returns number):
-accounting.unformat(string<em>, [decimal]</em>);
+accounting.unformat(string<em>, [decimal], [on_filure]</em>);
 
 // Example usage:
 accounting.unformat("GBP &pound; 12,345,678.90"); // 12345678.9
 
 // If a non-standard decimal separator was used (eg. a comma) unformat() will need it in order to work out
 // which part of the number is a decimal/float:
-accounting.unformat("&euro; 1.000.000,00", ","); // 1000000</pre>
+accounting.unformat("&euro; 1.000.000,00", ","); // 1000000
+
+// if passed string is not a number convertible, unformat fails and return 0
+// you can specify on_failure response of your choice for flexibility and avoid ambiguity.
+accounting.unformat("&euro; Not a Number", ","); // 0
+accounting.unformat("&euro; Not a Number", ",", "failed"); // "failed"
+</pre>
 
 	</section>
 

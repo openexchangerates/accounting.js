@@ -7,6 +7,8 @@ $(document).ready(function() {
 		equals(accounting.unformat(1234567890), 1234567890, 'Returns same value when passed an integer');
 		equals(accounting.unformat("string"), 0, 'Returns 0 for a string with no numbers');
 		equals(accounting.unformat({joss:1}), 0, 'Returns 0 for object');
+		equals(accounting.unformat("string", ',', null), null, 'Returns user specified failure response for a string with no numbers');
+		equals(accounting.unformat("string", ',', "failed"), "failed", 'Returns user specified failure response for a string with no numbers');
 
 		accounting.settings.number.decimal = ',';
 		equals(accounting.unformat("100,00"), 100, 'Uses decimal separator from settings');
