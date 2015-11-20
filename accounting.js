@@ -194,13 +194,21 @@
 		decimal = decimal || lib.settings.number.decimal;
 
 		 // Build regex to strip out everything except digits, decimal point and minus sign:
-		var regex = new RegExp("[^0-9-" + decimal + "]", ["g"]),
-			unformatted = parseFloat(
+		var regex = new RegExp("[^0-9-(-)-" + decimal + "]", ["g"]),
+			unformattedValueString =
 				("" + value)
-				.replace(/\((.*)\)/, "-$1") // replace bracketed values with negatives
-				.replace(regex, '')         // strip out any cruft
-				.replace(decimal, '.')      // make sure decimal point is standard
-			);
+				.replace(regex, '')							// strip out any cruft
+				.replace(/\(([-]*\d*[^)]?\d+)\)/g, "-$1") // replace bracketed numeric values with negative, (100.1) = -100.1
+				.replace(/\((.*)\)/, '')				// remove any brackets that do not have numeric value
+				.replace(decimal, '.');					// make sure decimal point is standard
+
+		/**
+		 * Handling -ve number and bracket, eg.
+		 * (-100) = 100, -(100) = 100, --100 = 100
+		 */
+		var negative = (unformattedValueString.match(/-/g) || 2).length % 2,
+			absUnformatted = parseFloat(unformattedValueString.replace(/-/g, '')),
+			unformatted = absUnformatted * ((negative) ? -1 : 1);
 
 		// This will fail silently which may cause trouble, let's wait and see:
 		return !isNaN(unformatted) ? unformatted : 0;
