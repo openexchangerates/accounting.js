@@ -31,12 +31,12 @@
 			decimal : ".",		// decimal point separator
 			thousand : ",",		// thousands separator
 			precision : 2,		// decimal places
-			grouping : 3		// 1 | 2 | 3 ... | 'Indian', 'Arabic' ; Defaults to 'Arabic'
+			grouping : "Arabic"		// 1 | 2 | 3 ... | 'Indian', 'Arabic' ; Defaults to 'Arabic'
 								//	Indian => 1,24,33,242  Arabic => 12,433,242
 		},
 		number: {
 			precision : 0,		// default precision on numbers is 0
-			grouping : 3,		// 1 | 2 | 3 ... | 'Indian' | 'Arabic' ; Defaults to 'Arabic'
+			grouping : "Arabic",		// 1 | 2 | 3 ... | 'Indian' | 'Arabic' ; Defaults to 'Arabic'
 								//	Indian => 1,24,33,242  Arabic => 12,433,242
 			thousand : ",",
 			decimal : "."
@@ -232,21 +232,10 @@
 	 * 2nd parameter `precision` can be an object matching `settings.number`
 	 */
 	var formatNumber = lib.formatNumber = lib.format = function(number, precision, thousand, decimal, grouping) {
-		grouping  = grouping || "Arabic";
-		var groupSize;
-		switch (grouping) {
-			case "Arabic":
-				groupSize =  3; break;
-			case "Indian":
-				groupSize = "Indian"; break;
-			default:
-				groupSize = parseInt(grouping);
-		}
-
 		// Resursively format arrays:
 		if (isArray(number)) {
 			return map(number, function(val) {
-				return formatNumber(val, precision, thousand, decimal);
+				return formatNumber(val, precision, thousand, decimal, grouping);
 			});
 		}
 
@@ -258,7 +247,8 @@
 				(isObject(precision) ? precision : {
 					precision : precision,
 					thousand : thousand,
-					decimal : decimal
+					decimal : decimal,
+					grouping: grouping
 				}),
 				lib.settings.number
 			),
@@ -268,17 +258,10 @@
 
 			// Do some calc:
 			negative = number < 0 ? "-" : "",
+			groupSize = (opts.grouping == "Indian") ? "Indian" : (opts.grouping == "Arabic") ? 3 :  parseInt(opts.grouping),
 			base = parseInt(toFixed(Math.abs(number || 0), usePrecision), 10) + "",
-
-			reverseBase = base.split('').reverse();
-			var retVal;
-			if (reverseBase.length <= 3){
-				retVal = reverseBase
-			}
-			else {
-				retVal = groupNumbers(reverseBase, opts.thousand, groupSize)
-			}
-
+			reverseBase = base.split('').reverse(),
+			retVal = (reverseBase.length <= 3) ? reverseBase : groupNumbers(reverseBase, opts.thousand, groupSize);
 		// Format the number:
 		return negative  +  retVal.reverse().join('') + (usePrecision ? opts.decimal + toFixed(Math.abs(number), usePrecision).split('.')[1] : "");
 	};
@@ -316,7 +299,7 @@
 		// Resursively format arrays:
 		if (isArray(number)) {
 			return map(number, function(val){
-				return formatMoney(val, symbol, precision, thousand, decimal, format);
+				return formatMoney(val, symbol, precision, thousand, decimal, format, grouping);
 			});
 		}
 
@@ -330,7 +313,8 @@
 					precision : precision,
 					thousand : thousand,
 					decimal : decimal,
-					format : format
+					format : format,
+					grouping: grouping
 				}),
 				lib.settings.currency
 			),
@@ -342,7 +326,7 @@
 			useFormat = number > 0 ? formats.pos : number < 0 ? formats.neg : formats.zero;
 
 		// Return with currency symbol added:
-		return useFormat.replace('%s', opts.symbol).replace('%v', formatNumber(Math.abs(number), checkPrecision(opts.precision), opts.thousand, opts.decimal));
+		return useFormat.replace('%s', opts.symbol).replace('%v', formatNumber(Math.abs(number), checkPrecision(opts.precision), opts.thousand, opts.decimal, opts.grouping));
 	};
 
 
