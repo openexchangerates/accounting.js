@@ -31,11 +31,13 @@
 			decimal : ".",		// decimal point separator
 			thousand : ",",		// thousands separator
 			precision : 2,		// decimal places
-			grouping : 3		// digit grouping (not implemented yet)
+			grouping : 3		// 1 | 2 | 3 ... | 'Indian', 'Arabic' ; Defaults to 'Arabic'
+								//	Indian => 1,24,33,242  Arabic => 12,433,242
 		},
 		number: {
 			precision : 0,		// default precision on numbers is 0
-			grouping : 3,		// digit grouping (not implemented yet)
+			grouping : 3,		// 1 | 2 | 3 ... | 'Indian' | 'Arabic' ; Defaults to 'Arabic'
+								//	Indian => 1,24,33,242  Arabic => 12,433,242
 			thousand : ",",
 			decimal : "."
 		}
@@ -229,7 +231,18 @@
 	 * Localise by overriding the precision and thousand / decimal separators
 	 * 2nd parameter `precision` can be an object matching `settings.number`
 	 */
-	var formatNumber = lib.formatNumber = lib.format = function(number, precision, thousand, decimal) {
+	var formatNumber = lib.formatNumber = lib.format = function(number, precision, thousand, decimal, grouping) {
+		grouping  = grouping || "Arabic";
+		var groupSize;
+		switch (grouping) {
+			case "Arabic":
+				groupSize =  3; break;
+			case "Indian":
+				groupSize = "Indian"; break;
+			default:
+				groupSize = parseInt(grouping);
+		}
+
 		// Resursively format arrays:
 		if (isArray(number)) {
 			return map(number, function(val) {
@@ -256,12 +269,36 @@
 			// Do some calc:
 			negative = number < 0 ? "-" : "",
 			base = parseInt(toFixed(Math.abs(number || 0), usePrecision), 10) + "",
-			mod = base.length > 3 ? base.length % 3 : 0;
+
+			reverseBase = base.split('').reverse();
+			var retVal;
+			if (reverseBase.length <= 3){
+				retVal = reverseBase
+			}
+			else {
+				retVal = groupNumbers(reverseBase, opts.thousand, groupSize)
+			}
 
 		// Format the number:
-		return negative + (mod ? base.substr(0, mod) + opts.thousand : "") + base.substr(mod).replace(/(\d{3})(?=\d)/g, "$1" + opts.thousand) + (usePrecision ? opts.decimal + toFixed(Math.abs(number), usePrecision).split('.')[1] : "");
+		return negative  +  retVal.reverse().join('') + (usePrecision ? opts.decimal + toFixed(Math.abs(number), usePrecision).split('.')[1] : "");
 	};
 
+	function groupNumbers(reverseBase,separator, groupSize){
+		separator = separator || lib.settings.number.thousand;
+		startIndex = 0;
+		if (groupSize == "Indian") {
+			reverseBase.splice(3, 0, separator)
+			groupSize = 2;
+			startIndex = 4;
+		}
+		for (i = startIndex; i <= reverseBase.length; i++ ){
+		    i += groupSize;
+		    if (reverseBase[i] != undefined){
+				reverseBase.splice(i, 0, separator)
+		    }
+		}
+		return reverseBase
+	}
 
 	/**
 	 * Format a number into currency
@@ -274,7 +311,8 @@
 	 *
 	 * To do: tidy up the parameters
 	 */
-	var formatMoney = lib.formatMoney = function(number, symbol, precision, thousand, decimal, format) {
+	var formatMoney = lib.formatMoney = function(number, symbol, precision, thousand, decimal, format, grouping) {
+		grouping  = grouping || 'Arabic'
 		// Resursively format arrays:
 		if (isArray(number)) {
 			return map(number, function(val){
