@@ -44,7 +44,7 @@
 
 		<h4><strong>formatMoney()</strong> - format any number into currency</h4>
 
-		<p>The most basic library function for formatting numbers as money values, with customisable currency symbol, precision (decimal places), and thousand/decimal separators:</p>
+		<p>The most basic library function for formatting numbers as money values, with customisable currency symbol, precision (decimal places), thousand/decimal separators and grouping paramaeter (same as in formatNumber)</p>
 		<pre class="prettyprint lang-js">// Default usage:
 accounting.formatMoney(12345678); // $12,345,678.00
 
@@ -55,7 +55,9 @@ accounting.formatMoney(4999.99, "&euro;", 2, ".", ","); // &euro;4.999,99
 accounting.formatMoney(-500000, "&pound; ", 0); // &pound; -500,000
 
 // Simple `format` string allows control of symbol position (%v = value, %s = symbol):
-accounting.formatMoney(5318008, { symbol: "GBP",  format: "%v %s" }); // 5,318,008.00 GBP</pre>
+accounting.formatMoney(5318008, { symbol: "GBP",  format: "%v %s" }); // 5,318,008.00 GBP
+accounting.formatMoney(5318008, { symbol: "GBP",  format: "%v %s", grouping: "Arabic"}); // 5,318,008.00 GBP
+accounting.formatMoney(5318008, { symbol: "Rs",  format: "%s %v", grouping: "Indian"}); // Rs 53,18,008.00</pre>
 
 
 		<h4><strong>formatColumn()</strong> - format a list of values for column-display</h4>
@@ -84,6 +86,13 @@ accounting.formatColumn([123.5, 3456.49, 777888.99, 12345678, -5432], "$ ");</pr
 		<p>The base function of the library, which takes any number or array of numbers, runs <code>accounting.unformat()</code> to remove any formatting, and returns the number(s) formatted with separated thousands and custom precision:</p>
 		<pre class="prettyprint lang-js">accounting.formatNumber(5318008); // 5,318,008
 accounting.formatNumber(9876543.21, 3, " "); // 9 876 543.210</pre>
+		<p>formatNumber() also support grouping of output in 'Indian' and 'Arabic' (default) number sytems. Output can be grouped in groups of custom size.</p>
+		<pre class="prettyprint lang-js">accounting.formatNumber(5318008, {grouping : "Indian"}); // 53,18,008
+accounting.formatNumber(5318008, {grouping : "Arabic"}); // 5,318,008
+//Custom
+accounting.formatNumber(5318008,{grouping: 2}); // 5,31,80,08
+accounting.formatNumber(5318008,{grouping: 4}); // 531,8008
+		</pre>
 
 
 		<h4><strong>toFixed()</strong> - better rounding for floating point numbers</h4>
