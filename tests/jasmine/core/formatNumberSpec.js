@@ -128,5 +128,16 @@ describe('formatNumber', function(){
 
     });
 
+    describe('rounding', function(){
 
+        it('should use round option if provided', function(){
+
+            var val = accounting.formatNumber(123.456789, {
+                precision: 1,
+                round: Math.floor
+            });
+
+            expect( val ).toBe( '123.4' );
+        });
+    });
 });

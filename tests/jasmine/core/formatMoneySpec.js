@@ -20,4 +20,17 @@ describe('formatMoney()', function(){
         expect( accounting.formatMoney(5318008, "$", 0) ).toBe( '$5,318,008' );
     });
 
+    describe('rounding', function(){
+
+        it('should use round option if provided', function(){
+
+            var val = accounting.formatMoney(123.456789, {
+                precision: 2,
+                round: Math.floor
+            });
+
+            expect( val ).toBe( '$123.45' );
+        });
+    });
+
 });

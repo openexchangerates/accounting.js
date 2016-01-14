@@ -37,7 +37,8 @@
 			precision : 0,		// default precision on numbers is 0
 			grouping : 3,		// digit grouping (not implemented yet)
 			thousand : ",",
-			decimal : "."
+			decimal : ".",
+			round: Math.round
 		}
 	};
 
@@ -118,6 +119,11 @@
 	function checkPrecision(val, base) {
 		val = Math.round(Math.abs(val));
 		return isNaN(val)? base : val;
+	}
+
+	function checkRound(val, base) {
+		if (typeof val === "function") return val;
+		return base;
 	}
 
 
@@ -213,12 +219,13 @@
 	 * Fixes binary rounding issues (eg. (0.615).toFixed(2) === "0.61") that present
 	 * problems for accounting- and finance-related software.
 	 */
-	var toFixed = lib.toFixed = function(value, precision) {
+	var toFixed = lib.toFixed = function(value, precision, round) {
 		precision = checkPrecision(precision, lib.settings.number.precision);
+		round = checkRound(round, lib.settings.number.round);
 		var power = Math.pow(10, precision);
 
 		// Multiply up by precision, round accurately, then divide and use native toFixed():
-		return (Math.round(lib.unformat(value) * power) / power).toFixed(precision);
+		return (round(lib.unformat(value) * power) / power).toFixed(precision);
 	};
 
 
@@ -229,11 +236,11 @@
 	 * Localise by overriding the precision and thousand / decimal separators
 	 * 2nd parameter `precision` can be an object matching `settings.number`
 	 */
-	var formatNumber = lib.formatNumber = lib.format = function(number, precision, thousand, decimal) {
+	var formatNumber = lib.formatNumber = lib.format = function(number, precision, thousand, decimal, round) {
 		// Resursively format arrays:
 		if (isArray(number)) {
 			return map(number, function(val) {
-				return formatNumber(val, precision, thousand, decimal);
+				return formatNumber(val, precision, thousand, decimal, round);
 			});
 		}
 
@@ -244,6 +251,7 @@
 		var opts = defaults(
 				(isObject(precision) ? precision : {
 					precision : precision,
+					round: round,
 					thousand : thousand,
 					decimal : decimal
 				}),
@@ -252,14 +260,15 @@
 
 			// Clean up precision
 			usePrecision = checkPrecision(opts.precision),
+			useRound = checkRound(opts.round),
 
 			// Do some calc:
 			negative = number < 0 ? "-" : "",
-			base = parseInt(toFixed(Math.abs(number || 0), usePrecision), 10) + "",
+			base = parseInt(toFixed(Math.abs(number || 0), usePrecision, useRound), 10) + "",
 			mod = base.length > 3 ? base.length % 3 : 0;
 
 		// Format the number:
-		return negative + (mod ? base.substr(0, mod) + opts.thousand : "") + base.substr(mod).replace(/(\d{3})(?=\d)/g, "$1" + opts.thousand) + (usePrecision ? opts.decimal + toFixed(Math.abs(number), usePrecision).split('.')[1] : "");
+		return negative + (mod ? base.substr(0, mod) + opts.thousand : "") + base.substr(mod).replace(/(\d{3})(?=\d)/g, "$1" + opts.thousand) + (usePrecision ? opts.decimal + toFixed(Math.abs(number), usePrecision, useRound).split('.')[1] : "");
 	};
 
 
@@ -274,11 +283,11 @@
 	 *
 	 * To do: tidy up the parameters
 	 */
-	var formatMoney = lib.formatMoney = function(number, symbol, precision, thousand, decimal, format) {
+	var formatMoney = lib.formatMoney = function(number, symbol, precision, thousand, decimal, format, round) {
 		// Resursively format arrays:
 		if (isArray(number)) {
 			return map(number, function(val){
-				return formatMoney(val, symbol, precision, thousand, decimal, format);
+				return formatMoney(val, symbol, precision, thousand, decimal, format, round);
 			});
 		}
 
@@ -290,6 +299,7 @@
 				(isObject(symbol) ? symbol : {
 					symbol : symbol,
 					precision : precision,
+					round: round,
 					thousand : thousand,
 					decimal : decimal,
 					format : format
@@ -304,7 +314,7 @@
 			useFormat = number > 0 ? formats.pos : number < 0 ? formats.neg : formats.zero;
 
 		// Return with currency symbol added:
-		return useFormat.replace('%s', opts.symbol).replace('%v', formatNumber(Math.abs(number), checkPrecision(opts.precision), opts.thousand, opts.decimal));
+		return useFormat.replace('%s', opts.symbol).replace('%v', formatNumber(Math.abs(number), checkPrecision(opts.precision), opts.thousand, opts.decimal, checkRound(opts.round)));
 	};
 
 
@@ -320,7 +330,7 @@
 	 * NB: `white-space:pre` CSS rule is required on the list container to prevent
 	 * browsers from collapsing the whitespace in the output strings.
 	 */
-	lib.formatColumn = function(list, symbol, precision, thousand, decimal, format) {
+	lib.formatColumn = function(list, symbol, precision, thousand, decimal, format, round) {
 		if (!list) return [];
 
 		// Build options object from second param (if object) or all params, extending defaults:
@@ -357,7 +367,7 @@
 					var useFormat = val > 0 ? formats.pos : val < 0 ? formats.neg : formats.zero,
 
 						// Format this value, push into formatted list and save the length:
-						fVal = useFormat.replace('%s', opts.symbol).replace('%v', formatNumber(Math.abs(val), checkPrecision(opts.precision), opts.thousand, opts.decimal));
+						fVal = useFormat.replace('%s', opts.symbol).replace('%v', formatNumber(Math.abs(val), checkPrecision(opts.precision), opts.thousand, opts.decimal, checkRound(opts.round)));
 
 					if (fVal.length > maxLength) maxLength = fVal.length;
 					return fVal;
