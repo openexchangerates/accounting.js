@@ -169,7 +169,7 @@
 	 * Alias: `accounting.parse(string)`
 	 *
 	 * Decimal must be included in the regular expression to match floats (defaults to
-	 * accounting.settings.number.decimal), so if the number uses a non-standard decimal 
+	 * accounting.settings.number.decimal), so if the number uses a non-standard decimal
 	 * separator, provide it as the second argument.
 	 *
 	 * Also matches bracketed negatives (eg. "$ (1.99)" => -1.99)
@@ -194,10 +194,10 @@
 		decimal = decimal || lib.settings.number.decimal;
 
 		 // Build regex to strip out everything except digits, decimal point and minus sign:
-		var regex = new RegExp("[^0-9-" + decimal + "]", ["g"]),
+		var regex = new RegExp("[^0-9-" + decimal + "Ee]", ["g"]),
 			unformatted = parseFloat(
 				("" + value)
-				.replace(/\((.*)\)/, "-$1") // replace bracketed values with negatives
+				.replace(/\((.+)\)/, "-$1") // replace bracketed values with negatives
 				.replace(regex, '')         // strip out any cruft
 				.replace(decimal, '.')      // make sure decimal point is standard
 			);

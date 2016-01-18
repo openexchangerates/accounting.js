@@ -5,6 +5,7 @@ describe('unformat()', function(){
         expect( accounting.unformat('$ 123,456.78') ).toBe( 123456.78 );
         expect( accounting.unformat('&*()$ 123,456') ).toBe( 123456 );
         expect( accounting.unformat(';$@#$%^&123,456.78') ).toBe( 123456.78 );
+        expect( accounting.unformat(';$@#$%^&123,456.78E-19') ).toBe( 123456.78E-19 );
     });
 
     it('should work with negative numbers', function(){
@@ -12,20 +13,24 @@ describe('unformat()', function(){
         expect( accounting.unformat('$ -123,456.78') ).toBe( -123456.78 );
         expect( accounting.unformat('&*()$ -123,456') ).toBe( -123456 );
         expect( accounting.unformat(';$@#$%^&-123,456.78') ).toBe( -123456.78 );
+        expect( accounting.unformat(';$@#$%^&-123,456.78E-17') ).toBe( -123456.78E-17 );
     });
-    
-    it('should accept different decimal separators', function(){    
+
+    it('should accept different decimal separators', function(){
         expect( accounting.unformat('$ 123,456', ',') ).toBe( 123.456 );
         expect( accounting.unformat('$ 123456|78', '|') ).toBe( 123456.78 );
         expect( accounting.unformat('&*()$ 123>456', '>') ).toBe( 123.456 );
         expect( accounting.unformat(';$@#$%^&123,456\'78', '\'') ).toBe( 123456.78 );
+        expect( accounting.unformat(';$@#$%^&123,456\'78E-17', '\'') ).toBe( 123456.78E-17 );
     });
 
     it('should accept an array', function(){
-        var vals = accounting.unformat(['$ 123', '$567.89', 'R$12,345,678.901']);
+        var vals = accounting.unformat(['$ 123', '$567.89', 'R$12,345,678.901', '3.21e-17']);
         expect( vals[0] ).toBe( 123 );
         expect( vals[1] ).toBe( 567.89 );
         expect( vals[2] ).toBe( 12345678.901 );
+        expect( vals[3] ).toBe( 3.21e-17 );
+
     });
 
 });
