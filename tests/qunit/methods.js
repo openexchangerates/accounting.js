@@ -10,7 +10,7 @@ $(document).ready(function() {
 
 		accounting.settings.number.decimal = ',';
 		equals(accounting.unformat("100,00"), 100, 'Uses decimal separator from settings');
-		equals(accounting.unformat("¤1.000,00"), 1000, 'Uses decimal separator from settings');
+		equals(accounting.unformat("Â¤1.000,00"), 1000, 'Uses decimal separator from settings');
 		accounting.settings.number.decimal = '.';
 	});
 
@@ -20,6 +20,16 @@ $(document).ready(function() {
 	});
 
 	test("accounting.formatNumber()", function() {
+		//format ussing Indian Number Format
+		equals(accounting.formatNumber(34243424.435, 2, ",", ".", "Indian"), "3,42,43,424.44", 'format numbers in Indian Number system')
+		//format ussing Arabic Number Format
+		equals(accounting.formatNumber(34243424.435, 2, ",", ".", "Arabic"), "34,243,424.44", 'format numbers in Arabic Number system')
+		//allow for custom grouping
+		equals(accounting.formatNumber(34243424.435, 2, ",", ".", 4), "3424,3424.44", 'allows for custom grouping')
+		//allow for custom grouping
+		equals(accounting.formatNumber(34243424.435, 2, ",", ".", "4"), "3424,3424.44", 'allows for custom grouping')
+		//picks up grouping value from options object
+		equals(accounting.formatNumber(34243424.435, {grouping: "Indian"}), "3,42,43,424", 'picks grouping value from options object')
 		// Check custom precision and separators:
 		equals(accounting.formatNumber(4999.99, 2, ".", ","), "4.999,99", 'Custom precision and decimal/thousand separators are a-ok')
 		
@@ -45,7 +55,7 @@ $(document).ready(function() {
 	test("accounting.formatMoney()", function() {
 		equals(accounting.formatMoney(12345678), "$12,345,678.00", "Default usage with default parameters is ok");
 		equals(accounting.formatMoney(4999.99, "$ ", 2, ".", ","), "$ 4.999,99", 'custom formatting via straight params works ok');
-		equals(accounting.formatMoney(-500000, "£ ", 0), "£ -500,000", 'negative values, custom params, works ok');
+		equals(accounting.formatMoney(-500000, "Â£ ", 0), "Â£ -500,000", 'negative values, custom params, works ok');
 		equals(accounting.formatMoney(5318008, { symbol: "GBP",  format: "%v %s" }), "5,318,008.00 GBP", "`format` parameter is observed in string output");
 		equals(accounting.formatMoney(1000, { format: "test %v 123 %s test" }), "test 1,000.00 123 $ test", "`format` parameter is observed in string output, despite being rather strange");
 		
