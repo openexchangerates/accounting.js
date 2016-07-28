@@ -17,6 +17,7 @@ describe('formatNumber', function(){
 
             expect( accounting.formatNumber(0.615, 2) ).toBe( '0.62' );
             expect( accounting.formatNumber(0.614, 2) ).toBe( '0.61' );
+            expect( accounting.formatNumber(8.325, 2) ).toBe( '8.33' );
 
         });
 

@@ -215,10 +215,29 @@
 	 */
 	var toFixed = lib.toFixed = function(value, precision) {
 		precision = checkPrecision(precision, lib.settings.number.precision);
-		var power = Math.pow(10, precision);
+		var unformattedValue = lib.unformat(value).toString();
 
-		// Multiply up by precision, round accurately, then divide and use native toFixed():
-		return (Math.round(lib.unformat(value) * power) / power).toFixed(precision);
+		var number = unformattedValue.split(".");
+		var integer = number[0];
+
+		var mantissa = number.length > 1 ? number[1] : "";
+		if(mantissa.length < precision) {
+			var diff = precision - mantissa.length;
+			for(var i=0; i<diff; i++)
+				mantissa += "0";
+		}
+		
+		var x = parseInt(mantissa[precision]);
+		var newMantissa = mantissa.substr(0,precision);
+		var newValue = newMantissa.length > 0 ? [integer,newMantissa].join('.') : integer;
+
+		if(x > 4) {
+			var idx = newValue.length-1;
+			var lastNumber = Number(newValue[idx]) + 1;
+			newValue = newValue.substr(0,idx) + lastNumber;
+		}
+
+		return newValue;
 	};
 
 
