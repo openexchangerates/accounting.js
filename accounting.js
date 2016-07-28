@@ -229,17 +229,21 @@
 		
 		var x = parseInt(mantissa[precision]);
 		var newMantissa = mantissa.substr(0,precision);
-		var newValue = newMantissa.length > 0 ? [integer,newMantissa].join('.') : integer;
+		var fullNumber = Number([integer,newMantissa].join(""));
 
 		if(x > 4) {
-			var idx = newValue.length-1;
-			var lastNumber = Number(newValue[idx]) + 1;
-			newValue = newValue.substr(0,idx) + lastNumber;
+			fullNumber += 1;
 		}
 
+		var newValue = fullNumber.toString();
+
+		if(precision == 0)
+			return newValue;
+
+		var dotIdx = newValue.length - precision;
+		newValue = (newValue.slice(0,dotIdx)||0) + '.' + (newValue.slice(dotIdx)||0); 
 		return newValue;
 	};
-
 
 	/**
 	 * Format a number, with comma-separated thousands and custom precision/decimal places
