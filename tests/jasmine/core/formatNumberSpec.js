@@ -3,7 +3,8 @@ describe('formatNumber', function(){
     describe('rounding and enforce precision', function(){
 
         it('should enforce precision and round values', function(){
-        
+
+            expect( accounting.formatNumber(0, 2) ).toBe( '0.00' );
             expect( accounting.formatNumber(123.456789, 0) ).toBe( '123' );
             expect( accounting.formatNumber(123.456789, 1) ).toBe( '123.5' );
             expect( accounting.formatNumber(123.456789, 2) ).toBe( '123.46' );

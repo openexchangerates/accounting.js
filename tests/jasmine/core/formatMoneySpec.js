@@ -2,6 +2,7 @@ describe('formatMoney()', function(){
     
     it('should work for small numbers', function(){
     
+        expect( accounting.formatMoney(0) ).toBe( '$0.00' );
         expect( accounting.formatMoney(123) ).toBe( '$123.00' );
         expect( accounting.formatMoney(123.45) ).toBe( '$123.45' );
         expect( accounting.formatMoney(12345.67) ).toBe( '$12,345.67' );

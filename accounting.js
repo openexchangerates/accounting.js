@@ -217,6 +217,10 @@
 		precision = checkPrecision(precision, lib.settings.number.precision);
 		var unformattedValue = lib.unformat(value).toString();
 
+		if(unformattedValue == 0) {
+			return Number(0).toFixed(precision);
+		}
+
 		var number = unformattedValue.split(".");
 		var integer = number[0];
 
