@@ -321,7 +321,7 @@
 	 * browsers from collapsing the whitespace in the output strings.
 	 */
 	lib.formatColumn = function(list, symbol, precision, thousand, decimal, format) {
-		if (!list) return [];
+		if (!list || isString(list)) return [];
 
 		// Build options object from second param (if object) or all params, extending defaults:
 		var opts = defaults(
