@@ -1,5 +1,5 @@
 /*!
- * accounting.js v0.4.2
+ * accounting.js v0.4.3
  * Copyright 2014 Open Exchange Rates
  *
  * Freely distributable under the MIT license.
@@ -169,7 +169,7 @@
 	 * Alias: `accounting.parse(string)`
 	 *
 	 * Decimal must be included in the regular expression to match floats (defaults to
-	 * accounting.settings.number.decimal), so if the number uses a non-standard decimal 
+	 * accounting.settings.number.decimal), so if the number uses a non-standard decimal
 	 * separator, provide it as the second argument.
 	 *
 	 * Also matches bracketed negatives (eg. "$ (1.99)" => -1.99)
@@ -218,7 +218,7 @@
 		var power = Math.pow(10, precision);
 
 		// Multiply up by precision, round accurately, then divide and use native toFixed():
-		return (Math.round(lib.unformat(value) * power) / power).toFixed(precision);
+		return (Math.round(lib.unformat(value + 0.00000001) * power) / power).toFixed(precision);
 	};
 
 

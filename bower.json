@@ -6,5 +6,5 @@
   "keywords"    : ["accounting", "number", "money", "currency", "format", "utilities", "finance", "exchange"],
   "main"        : "accounting.js",
   "name"        : "accounting",
-  "version"     : "0.4.2"
+  "version"     : "0.4.3"
 }

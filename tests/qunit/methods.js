@@ -17,12 +17,15 @@ $(document).ready(function() {
 	test("accounting.toFixed()", function() {
 		equals(accounting.toFixed(54321, 5), "54321.00000", 'Performs basic float zero-padding');
 		equals(accounting.toFixed(0.615, 2), "0.62", 'Rounds 0.615 to "0.62" instead of "0.61"');
+		equals(accounting.toFixed(74.725, 2), "74.73", 'Rounds 74.725 to "74.73" instead of "74.72"');
+		equals(accounting.toFixed(158.605, 2), "158.61", 'Rounds 158.605 to "158.61" instead of "158.60"');
 	});
 
 	test("accounting.formatNumber()", function() {
 		// Check custom precision and separators:
 		equals(accounting.formatNumber(4999.99, 2, ".", ","), "4.999,99", 'Custom precision and decimal/thousand separators are a-ok')
-		
+		equals(accounting.formatNumber(74.725, 2), "74.73", 'Rounds 74.725 to "74.73" instead of "74.72"');
+
 		// check usage with options object parameter:
 		equal(accounting.formatNumber(5318008, {
 			precision : 3,
@@ -30,10 +33,10 @@ $(document).ready(function() {
 			decimal : "--"
 		}), "5__318__008--000", 'Correctly handles custom precision and separators passed in via second param options object');
 
-		
+
 		// check rounding:
 		equals(accounting.formatNumber(0.615, 2), "0.62", 'Rounds 0.615 up to "0.62" with precision of 2');
-		
+
 		// manually and recursively formatted arrays should have same values:
 		var numbers = [8008135, [1234, 5678], 1000];
 		var formattedManually = [accounting.formatNumber(8008135), [accounting.formatNumber(1234), accounting.formatNumber(5678)], accounting.formatNumber(1000)];
@@ -48,7 +51,7 @@ $(document).ready(function() {
 		equals(accounting.formatMoney(-500000, "£ ", 0), "£ -500,000", 'negative values, custom params, works ok');
 		equals(accounting.formatMoney(5318008, { symbol: "GBP",  format: "%v %s" }), "5,318,008.00 GBP", "`format` parameter is observed in string output");
 		equals(accounting.formatMoney(1000, { format: "test %v 123 %s test" }), "test 1,000.00 123 $ test", "`format` parameter is observed in string output, despite being rather strange");
-		
+
 		// Format param is an object:
 		var format = {
 			pos: "%s %v",
@@ -58,7 +61,7 @@ $(document).ready(function() {
 		equals(accounting.formatMoney(0, { symbol: "GBP",  format:format}), "GBP  --", "`format` parameter provided given as an object with `zero` format, correctly observed in string output");
 		equals(accounting.formatMoney(-1000, { symbol: "GBP",  format:format}), "GBP (1,000.00)", "`format` parameter provided given as an object with `neg` format, correctly observed in string output");
 		equals(accounting.formatMoney(1000, { symbol: "GBP",  format:{neg:"--%v %s"}}), "GBP1,000.00", "`format` parameter provided, but only `neg` value provided - positive value should be formatted by default format (%s%v)");
-		
+
 		accounting.settings.currency.format = "%s%v";
 		accounting.formatMoney(0, {format:""});
 		equals(typeof accounting.settings.currency.format, "object", "`settings.currency.format` default string value should be reformatted to an object, the first time it is used");
@@ -93,5 +96,5 @@ $(document).ready(function() {
 
 
 	});
-	
+
 });
