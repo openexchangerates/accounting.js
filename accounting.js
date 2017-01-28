@@ -197,7 +197,7 @@
 		var regex = new RegExp("[^0-9-" + decimal + "]", ["g"]),
 			unformatted = parseFloat(
 				("" + value)
-				.replace(/\((.*)\)/, "-$1") // replace bracketed values with negatives
+				.replace(/\((?=\d+)(.*)\)/, "-$1") // replace bracketed values with negatives
 				.replace(regex, '')         // strip out any cruft
 				.replace(decimal, '.')      // make sure decimal point is standard
 			);

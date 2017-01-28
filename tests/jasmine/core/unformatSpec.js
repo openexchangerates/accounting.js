@@ -11,6 +11,7 @@ describe('unformat()', function(){
         expect( accounting.unformat('$ -123,456') ).toBe( -123456 );
         expect( accounting.unformat('$ -123,456.78') ).toBe( -123456.78 );
         expect( accounting.unformat('&*()$ -123,456') ).toBe( -123456 );
+        expect( accounting.unformat('&*()$(123,456)A$@P') ).toBe( -123456 );
         expect( accounting.unformat(';$@#$%^&-123,456.78') ).toBe( -123456.78 );
     });
     
