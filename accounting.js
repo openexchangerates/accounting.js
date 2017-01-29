@@ -215,12 +215,39 @@
 	 */
 	var toFixed = lib.toFixed = function(value, precision) {
 		precision = checkPrecision(precision, lib.settings.number.precision);
-		var power = Math.pow(10, precision);
+		var unformattedValue = lib.unformat(value).toString();
 
-		// Multiply up by precision, round accurately, then divide and use native toFixed():
-		return (Math.round(lib.unformat(value) * power) / power).toFixed(precision);
+		if(unformattedValue == 0) {
+			return Number(0).toFixed(precision);
+		}
+
+		var number = unformattedValue.split(".");
+		var integer = number[0];
+
+		var mantissa = number.length > 1 ? number[1] : "";
+		if(mantissa.length < precision) {
+			var diff = precision - mantissa.length;
+			for(var i=0; i<diff; i++)
+				mantissa += "0";
+		}
+		
+		var x = parseInt(mantissa[precision]);
+		var newMantissa = mantissa.substr(0,precision);
+		var fullNumber = Number([integer,newMantissa].join(""));
+
+		if(x > 4) {
+			fullNumber += 1;
+		}
+
+		var newValue = fullNumber.toString();
+
+		if(precision == 0)
+			return newValue;
+
+		var dotIdx = newValue.length - precision;
+		newValue = (newValue.slice(0,dotIdx)||0) + '.' + (newValue.slice(dotIdx)||0); 
+		return newValue;
 	};
-
 
 	/**
 	 * Format a number, with comma-separated thousands and custom precision/decimal places

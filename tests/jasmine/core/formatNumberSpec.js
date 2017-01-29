@@ -3,7 +3,8 @@ describe('formatNumber', function(){
     describe('rounding and enforce precision', function(){
 
         it('should enforce precision and round values', function(){
-        
+
+            expect( accounting.formatNumber(0, 2) ).toBe( '0.00' );
             expect( accounting.formatNumber(123.456789, 0) ).toBe( '123' );
             expect( accounting.formatNumber(123.456789, 1) ).toBe( '123.5' );
             expect( accounting.formatNumber(123.456789, 2) ).toBe( '123.46' );
@@ -11,12 +12,16 @@ describe('formatNumber', function(){
             expect( accounting.formatNumber(123.456789, 4) ).toBe( '123.4568' );
             expect( accounting.formatNumber(123.456789, 5) ).toBe( '123.45679' );
 
+            expect( accounting.formatNumber(129.9, 0) ).toBe( '130' );
+            expect( accounting.formatNumber(129.99, 1) ).toBe( '130.0' );
+
         });
 
-        it('should fix floting point rounding error', function(){
+        it('should fix floating point rounding error', function(){
 
             expect( accounting.formatNumber(0.615, 2) ).toBe( '0.62' );
             expect( accounting.formatNumber(0.614, 2) ).toBe( '0.61' );
+            expect( accounting.formatNumber(8.325, 2) ).toBe( '8.33' );
 
         });
 
