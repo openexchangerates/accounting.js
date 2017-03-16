@@ -85,7 +85,7 @@
 		for (key in defs) {
 			if (defs.hasOwnProperty(key)) {
 				// Replace values with defaults only if undefined (allow empty/zero values):
-				if (object[key] == null) object[key] = defs[key];
+				if (object[key] === null) object[key] = defs[key];
 			}
 		}
 		return object;
@@ -407,7 +407,7 @@
 		})(root.accounting);
 
 		// Declare `fx` on the root (global/window) object:
-		root['accounting'] = lib;
+		root.accounting = lib;
 	}
 
 	// Root will be `window` in browser or `global` on the server:
