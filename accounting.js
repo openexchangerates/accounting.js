@@ -31,7 +31,12 @@
 			decimal : ".",		// decimal point separator
 			thousand : ",",		// thousands separator
 			precision : 2,		// decimal places
-			grouping : 3		// digit grouping (not implemented yet)
+			grouping : 3,		// digit grouping (not implemented yet)
+
+			 //convert numbers to words
+			majorCurrency: "Dollars",
+			minorCurrency: "Cents",
+			numberingSystem: "Arabic"	// only 'Arabic' and 'Indian' Supported
 		},
 		number: {
 			precision : 0,		// default precision on numbers is 0
@@ -375,6 +380,137 @@
 			return val;
 		});
 	};
+
+	/* ----------- number to words --------- */
+	var digitWords = ['Zero ', 'One ', 'Two ', 'Three ', 'Four ', 'Five ', 'Six ', 'Seven ', 'Eight ', 'Nine '];
+	var teenWords = ['', 'Eleven ', 'Twelve ', 'Thirteen ', 'Fourteen ', 'Fifteen ', 'Sixteen ', 'Seventeen ', 'Eighteen ', 'Nineteen '];
+	var tenerWords = ['', 'Ten ', 'Twenty ', 'Thirty ', 'Forty ', 'Fifty ', 'Sixty ', 'Seventy ', 'Eighty ', 'Ninety '];
+	NumberingSystems = {
+		'Arabic':['', 'Thousand ', 'Million ', 'Billion ','Trillion ', 'Quadrillion ', 'Quintillion '],
+		'Indian':['', 'Hundred ', 'Thousand ', 'Lakh ', 'Crore ', 'Arab ', 'Kharab ', 'Nil ', 'Padm ', 'Sankh ']
+	};
+
+	lib.toWords = function(number) {
+		number = unformat(number, lib.settings.number.decimal) //Get rid of leading and trailing zeroes
+		number = number.toString();
+
+		if (number != parseFloat(number))
+			return 'Not a Number';
+
+		var decimalIndex =  number.indexOf('.');
+		if (decimalIndex == -1)
+			decimalIndex = number.length;
+
+		if (decimalIndex > 18)
+			return 'Number is too large. Can not process.';
+
+		switch(lib.settings.currency.numberingSystem) {
+			case 'Arabic':
+				return toArabicWordRepresentation(number, decimalIndex)
+				break;
+			case 'Indian':
+				return toIndianWordRepresentation(number, decimalIndex)
+				break;
+			default:
+				return 'NumberingSystem ' + lib.settings.currency.numberingSystem + ' not supported.';
+		};
+	};
+
+	var toArabicWordRepresentation = function(number, decimalIndex){
+		digits = number.split('');
+		var stringRepresentation = "";
+		systemIndex = 0
+		for (var i = decimalIndex - 1; i >= 0; i--) {
+			if (digits[i] == 0){
+				if(Number(digits[i-1]) !== 0 && Number(digits[i-2]) !== 0){
+					stringRepresentation = NumberingSystems.Arabic[systemIndex] + stringRepresentation
+				}
+			}
+			else{
+				if (digits[i-1] == 1) {
+					stringRepresentation = NumberingSystems.Arabic[systemIndex] + stringRepresentation
+				}
+				else{
+					stringRepresentation = digitWords[digits[i]] + NumberingSystems.Arabic[systemIndex] + stringRepresentation;
+				}
+			}
+
+			i--;
+			if (digits[i] !== undefined)
+				if (digits[i] == 1)
+					stringRepresentation = teenWords[digits[i+1]] + stringRepresentation;
+				else
+					stringRepresentation = tenerWords[digits[i]] + stringRepresentation;
+
+			i--;
+			if (digits[i] != undefined)
+				if (digits[i] != 0)
+					stringRepresentation = digitWords[digits[i]] + 'Hundred ' + stringRepresentation;
+			systemIndex++;
+		}
+
+		return toWordHelper(stringRepresentation, digits, decimalIndex)
+	}
+
+	var toIndianWordRepresentation = function(number, decimalIndex){
+		digits = number.split('');
+		var stringRepresentation = "";
+		systemIndex = 0;
+
+		for (var i = decimalIndex - 1; i >= 0; i--) {
+			if (systemIndex == 1){
+				if (digits[i] != 0)
+					stringRepresentation = digitWords[digits[i]] + NumberingSystems.Indian[systemIndex] + stringRepresentation
+				systemIndex++
+				continue
+			}
+
+			if (digits[i] == 0){
+				if(Number(digits[i-1]) !== 0 && Number(digits[i-2]) !== 0){
+					stringRepresentation = NumberingSystems.Indian[systemIndex] + stringRepresentation
+				}
+			}
+			else{
+				if (digits[i-1] == 1) {
+					stringRepresentation = NumberingSystems.Indian[systemIndex] + stringRepresentation
+				}
+				else{
+					stringRepresentation = digitWords[digits[i]] + NumberingSystems.Indian[systemIndex] + stringRepresentation;
+				}
+			}
+
+			i--;
+			if (digits[i] != undefined)
+				if (digits[i] == 1)
+					stringRepresentation = teenWords[digits[i+1]] + stringRepresentation;
+				else
+					stringRepresentation = tenerWords[digits[i]] + stringRepresentation;
+
+			systemIndex++;
+		}
+
+		return toWordHelper(stringRepresentation, digits, decimalIndex)
+	}
+
+	var toWordHelper = function(stringRepresentation, digits, decimalIndex){
+
+		if (stringRepresentation === "")
+			stringRepresentation = "Zero ";
+
+		stringRepresentation = stringRepresentation + lib.settings.currency.majorCurrency
+
+		if (decimalIndex != digits.length) {
+			stringRepresentation += ' and ';
+
+			for (var i = decimalIndex + 1; i < digits.length; i++)
+				stringRepresentation += digitWords[digits[i]];
+
+			stringRepresentation  +=  lib.settings.currency.minorCurrency;
+		}
+		return stringRepresentation + ' Only';
+	}
+
+	/* ------------ End number to words -------------- */
 
 
 	/* --- Module Definition --- */

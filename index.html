@@ -306,6 +306,26 @@ accounting.unformat("GBP &pound; 12,345,678.90"); // 12345678.9
 // which part of the number is a decimal/float:
 accounting.unformat("&euro; 1.000.000,00", ","); // 1000000</pre>
 
+
+		<h4><strong>accounting.toWords()</strong></h4>
+
+		<pre class="prettyprint lang-js">// Standard usage and parameters (returns String):
+accounting.toWords(string);
+accounting.toWords(number);
+
+//Check default settings in settings.currency
+// Example usage:
+accounting.toWords("1234567")	//"One Million Two Hundred Thirty Four Thousand Five Hundred Sixty Seven Dollars Only"
+accounting.toWords(1234567.35)		//"One Million Two Hundred Thirty Four Thousand Five Hundred Sixty Seven Dollars and Three Five Cents Only"
+
+accounting.settings.currency.majorCurrency = "Rupees";
+accounting.settings.currency.minorCurrency = "Paise";
+accounting.settings.currency.numberingSystem = 'Indian';
+accounting.toWords("1234567")	//"Twelve Lakh Thirty Four Thousand Five Hundred Sixty Seven Rupees Only"
+accounting.toWords(1234567.35)	//Twelve Lakh Thirty Four Thousand Five Hundred Sixty Seven Rupees and Three Five Paise Only"
+</pre>
+
+
 	</section>
 
 

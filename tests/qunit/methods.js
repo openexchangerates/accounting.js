@@ -93,5 +93,26 @@ $(document).ready(function() {
 
 
 	});
+
+	test("accounting.toWords()", function(){
+		equals(accounting.toWords("1234567"), "One Million Two Hundred Thirty Four Thousand Five Hundred Sixty Seven Dollars Only", "Converts numbers to words with default settings.");
+		equals(accounting.toWords("1234567.35"), "One Million Two Hundred Thirty Four Thousand Five Hundred Sixty Seven Dollars and Three Five Cents Only", "Converts numbers to words with default settings.");
+
+		//user defined settings
+		accounting.settings.currency.majorCurrency = "Rupees";
+		accounting.settings.currency.minorCurrency = "Paise";
+		accounting.settings.currency.numberingSystem = 'Indian';
+		equals(accounting.toWords("1234567"), "Twelve Lakh Thirty Four Thousand Five Hundred Sixty Seven Rupees Only", "Converts numbers to words with custom settings.");
+		equals(accounting.toWords("1234567.35"), "Twelve Lakh Thirty Four Thousand Five Hundred Sixty Seven Rupees and Three Five Paise Only", "Converts numbers to words with custom settings.");
+		accounting.settings.currency.majorCurrency = "Dollars";
+		accounting.settings.currency.minorCurrency = "Cents";
+		accounting.settings.currency.numberingSystem = 'Arabic';
+
+		accounting.settings.number.decimal = ','
+		equals(accounting.toWords("1234567,35"), "One Million Two Hundred Thirty Four Thousand Five Hundred Sixty Seven Dollars and Three Five Cents Only", "Converts numbers to words with default settings, picks decimal from settings.");
+		equals(accounting.toWords("123,4567,35"), "One Hundred Twenty Three Dollars and Four Five Six Seven Cents Only", "Converts numbers to words with default settings, picks decimal from settings.");
+		accounting.settings.number.decimal = '.'
+
+	});
 	
 });
