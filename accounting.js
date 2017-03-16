@@ -215,10 +215,11 @@
 	 */
 	var toFixed = lib.toFixed = function(value, precision) {
 		precision = checkPrecision(precision, lib.settings.number.precision);
-		var power = Math.pow(10, precision);
 
-		// Multiply up by precision, round accurately, then divide and use native toFixed():
-		return (Math.round(lib.unformat(value) * power) / power).toFixed(precision);
+		var exponentialForm = Number(lib.unformat(value) + 'e' + precision);
+		var rounded = Math.round(exponentialForm);
+		var finalResult = Number(rounded + 'e-' + precision).toFixed(precision);
+		return finalResult;
 	};
 
 

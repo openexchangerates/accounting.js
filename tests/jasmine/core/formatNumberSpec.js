@@ -13,10 +13,11 @@ describe('formatNumber', function(){
 
         });
 
-        it('should fix floting point rounding error', function(){
+        it('should fix floating point rounding error', function(){
 
             expect( accounting.formatNumber(0.615, 2) ).toBe( '0.62' );
             expect( accounting.formatNumber(0.614, 2) ).toBe( '0.61' );
+            expect( accounting.formatNumber(1.005, 2) ).toBe( '1.01');
 
         });
 
