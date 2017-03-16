@@ -55,6 +55,13 @@ describe('formatNumber', function(){
 
         });
 
+        it('should round negative numbers away from zero', function() {
+
+            expect( accounting.formatNumber(-1.5, 0) ).toBe( '-2' );
+            expect( accounting.formatNumber(-1.005, 2) ).toBe( '-1.01' );
+
+        })
+
     });
 
 

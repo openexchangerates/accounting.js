@@ -215,10 +215,12 @@
 	 */
 	var toFixed = lib.toFixed = function(value, precision) {
 		precision = checkPrecision(precision, lib.settings.number.precision);
-
-		var exponentialForm = Number(lib.unformat(value) + 'e' + precision);
-		var rounded = Math.round(exponentialForm);
-		var finalResult = Number(rounded + 'e-' + precision).toFixed(precision);
+		value = unformat(value);
+		var negative = value < 0 ? '-' : '';
+		
+		var exponentialForm = Number(value + 'e' + precision);
+		var rounded = Math.round(Math.abs(exponentialForm));
+		var finalResult = Number(negative + rounded + 'e-' + precision).toFixed(precision);
 		return finalResult;
 	};
 
