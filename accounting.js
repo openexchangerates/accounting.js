@@ -381,7 +381,8 @@
 
 	// Export accounting for CommonJS. If being loaded as an AMD module, define it as such.
 	// Otherwise, just add `accounting` to the global object
-	if (typeof exports !== 'undefined') {
+	var hasModule = (typeof module !== 'undefined' && module && module.exports);
+	if (hasModule) {
 		if (typeof module !== 'undefined' && module.exports) {
 			exports = module.exports = lib;
 		}
