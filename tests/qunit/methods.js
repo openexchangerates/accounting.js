@@ -20,6 +20,16 @@ $(document).ready(function() {
 	});
 
 	test("accounting.formatNumber()", function() {
+		//format ussing Indian Number Format
+		equals(accounting.formatNumber(34243424.435, 2, ",", ".", "Indian"), "3,42,43,424.44", 'format numbers in Indian Number system')
+		//format ussing Arabic Number Format
+		equals(accounting.formatNumber(34243424.435, 2, ",", ".", "Arabic"), "34,243,424.44", 'format numbers in Arabic Number system')
+		//allow for custom grouping
+		equals(accounting.formatNumber(34243424.435, 2, ",", ".", 4), "3424,3424.44", 'allows for custom grouping')
+		//allow for custom grouping
+		equals(accounting.formatNumber(34243424.435, 2, ",", ".", "4"), "3424,3424.44", 'allows for custom grouping')
+		//picks up grouping value from options object
+		equals(accounting.formatNumber(34243424.435, {grouping: "Indian"}), "3,42,43,424", 'picks grouping value from options object')
 		// Check custom precision and separators:
 		equals(accounting.formatNumber(4999.99, 2, ".", ","), "4.999,99", 'Custom precision and decimal/thousand separators are a-ok')
 		
