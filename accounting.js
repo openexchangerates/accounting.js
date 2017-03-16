@@ -176,7 +176,9 @@
 	 *
 	 * Doesn't throw any errors (`NaN`s become 0) but this may change in future
 	 */
-	var unformat = lib.unformat = lib.parse = function(value, decimal) {
+	var unformat = lib.unformat = lib.parse = function(value, decimal, failure_result) {
+		if (failure_result === undefined)
+			failure_result = 0;
 		// Recursively unformat arrays:
 		if (isArray(value)) {
 			return map(value, function(val) {
@@ -203,7 +205,7 @@
 			);
 
 		// This will fail silently which may cause trouble, let's wait and see:
-		return !isNaN(unformatted) ? unformatted : 0;
+		return !isNaN(unformatted) ? unformatted : failure_result;
 	};
 
 
