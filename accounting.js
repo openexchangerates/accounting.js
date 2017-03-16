@@ -366,11 +366,21 @@
 			});
 
 		// Pad each number in the list and send back the column of numbers:
+		negFormat = opts.format.neg;
 		return map(formatted, function(val, i) {
 			// Only if this is a string (not a nested array, which would have already been padded):
 			if (isString(val) && val.length < maxLength) {
+
+				/**
+				 * Pad positive values differently if negative values are formatted, eg.
+				 * $     123.45
+				 * $   (1,23.45)
+				 * so that numbers are aligned
+				 */
+				var bracketPadding = (negFormat && list[i] > 0) ? negFormat.substring(negFormat.indexOf("v") + 1, negFormat.length).length : 0;
+
 				// Depending on symbol position, pad after symbol or at index 0:
-				return padAfterSymbol ? val.replace(opts.symbol, opts.symbol+(new Array(maxLength - val.length + 1).join(" "))) : (new Array(maxLength - val.length + 1).join(" ")) + val;
+				return padAfterSymbol ? val.replace(opts.symbol, opts.symbol+(new Array(maxLength - val.length + 1 - bracketPadding).join(" "))) : (new Array(maxLength - val.length + 1 - bracketPadding).join(" ")) + val;
 			}
 			return val;
 		});
