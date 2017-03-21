@@ -216,12 +216,20 @@
 	var toFixed = lib.toFixed = function(value, precision) {
 		precision = checkPrecision(precision, lib.settings.number.precision);
 		value = unformat(value);
+
+		// Save sign so that we can round the absolute value later
 		var negative = value < 0 ? '-' : '';
-		
-		var exponentialForm = Number(value + 'e' + precision);
-		var rounded = Math.round(Math.abs(exponentialForm));
-		var finalResult = Number(negative + rounded + 'e-' + precision).toFixed(precision);
-		return finalResult;
+
+		// Convert value to exponential and split it into an array
+		var exponentialArray = value.toExponential().split('e');
+
+		// Add precision to exponent, and put it back together as an exponential value
+		// and round the absolute value (so that negative values round away from zero)
+		var rounded = Math.round(Math.abs(exponentialArray[0] + 'e' + (Number(exponentialArray[1]) + precision)));
+
+		// Divide, add sign, convert to number, and return with native toFixed()
+		var finalResult = Number(negative + rounded / Math.pow(10, precision));
+		return finalResult.toFixed(precision);
 	};
 
 

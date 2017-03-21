@@ -60,7 +60,15 @@ describe('formatNumber', function(){
             expect( accounting.formatNumber(-1.5, 0) ).toBe( '-2' );
             expect( accounting.formatNumber(-1.005, 2) ).toBe( '-1.01' );
 
-        })
+        });
+
+        it('should work for exponential notation', function() {
+
+            expect( accounting.formatNumber(2.7755575615628914e-17, 0) ).toBe( '0' );
+            expect( accounting.formatNumber(1.2345678e+4, 0) ).toBe( '12,346' );
+            expect( accounting.formatNumber(1.2345678e+4, 2) ).toBe( '12,345.68' );
+
+        });
 
     });
 
