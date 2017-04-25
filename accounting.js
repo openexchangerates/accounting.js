@@ -32,13 +32,14 @@
 			thousand : ",",		// thousands separator
 			precision : 2,		// decimal places
 			grouping : 3,		// digit grouping (not implemented yet)
-			round: 0
+			round : 0
 		},
 		number: {
 			precision : 0,		// default precision on numbers is 0
 			grouping : 3,		// digit grouping (not implemented yet)
 			thousand : ",",
-			decimal : "."
+			decimal : ".",
+			round : 0
 		}
 	};
 
@@ -243,11 +244,11 @@
 	 * Localise by overriding the precision and thousand / decimal separators
 	 * 2nd parameter `precision` can be an object matching `settings.number`
 	 */
-	var formatNumber = lib.formatNumber = lib.format = function(number, precision, thousand, decimal) {
+	var formatNumber = lib.formatNumber = lib.format = function(number, precision, thousand, decimal, round) {
 		// Resursively format arrays:
 		if (isArray(number)) {
 			return map(number, function(val) {
-				return formatNumber(val, precision, thousand, decimal);
+				return formatNumber(val, precision, thousand, decimal,round);
 			});
 		}
 
@@ -259,7 +260,8 @@
 				(isObject(precision) ? precision : {
 					precision : precision,
 					thousand : thousand,
-					decimal : decimal
+					decimal : decimal,
+					round : round
 				}),
 				lib.settings.number
 			),
@@ -288,7 +290,7 @@
 	 *
 	 * To do: tidy up the parameters
 	 */
-	var formatMoney = lib.formatMoney = function(number, symbol, precision, thousand, decimal, format) {
+	var formatMoney = lib.formatMoney = function(number, symbol, precision, thousand, decimal, format, round) {
 		// Resursively format arrays:
 		if (isArray(number)) {
 			return map(number, function(val){
@@ -306,7 +308,8 @@
 					precision : precision,
 					thousand : thousand,
 					decimal : decimal,
-					format : format
+					format : format,
+					round : round
 				}),
 				lib.settings.currency
 			),
@@ -334,7 +337,7 @@
 	 * NB: `white-space:pre` CSS rule is required on the list container to prevent
 	 * browsers from collapsing the whitespace in the output strings.
 	 */
-	lib.formatColumn = function(list, symbol, precision, thousand, decimal, format) {
+	lib.formatColumn = function(list, symbol, precision, thousand, decimal, format, round) {
 		if (!list || !isArray(list)) return [];
 
 		// Build options object from second param (if object) or all params, extending defaults:
@@ -344,7 +347,8 @@
 					precision : precision,
 					thousand : thousand,
 					decimal : decimal,
-					format : format
+					format : format,
+					round: round
 				}),
 				lib.settings.currency
 			),
