@@ -31,13 +31,15 @@
 			decimal : ".",		// decimal point separator
 			thousand : ",",		// thousands separator
 			precision : 2,		// decimal places
-			grouping : 3		// digit grouping (not implemented yet)
+			grouping : 3,		// digit grouping (not implemented yet)
+			round : 0
 		},
 		number: {
 			precision : 0,		// default precision on numbers is 0
 			grouping : 3,		// digit grouping (not implemented yet)
 			thousand : ",",
-			decimal : "."
+			decimal : ".",
+			round : 0
 		}
 	};
 
@@ -169,7 +171,7 @@
 	 * Alias: `accounting.parse(string)`
 	 *
 	 * Decimal must be included in the regular expression to match floats (defaults to
-	 * accounting.settings.number.decimal), so if the number uses a non-standard decimal 
+	 * accounting.settings.number.decimal), so if the number uses a non-standard decimal
 	 * separator, provide it as the second argument.
 	 *
 	 * Also matches bracketed negatives (eg. "$ (1.99)" => -1.99)
@@ -208,16 +210,28 @@
 
 
 	/**
-	 * Implementation of toFixed() that treats floats more like decimals
+	 * Implementation of xed() that treats floats more like decimals
 	 *
-	 * Fixes binary rounding issues (eg. (0.615).toFixed(2) === "0.61") that present
+	 * Fixes binary rounding issues (eg. (0.615).xed(2) === "0.61") that present
 	 * problems for accounting- and finance-related software.
 	 */
-	var toFixed = lib.toFixed = function(value, precision) {
+	var toFixed = lib.toFixed = function(value, precision, round) {
 		precision = checkPrecision(precision, lib.settings.number.precision);
 
 		var exponentialForm = Number(lib.unformat(value) + 'e' + precision);
-		var rounded = Math.round(exponentialForm);
+		var roundMethod
+
+		if (round > 0) {
+			roundMethod = Math.ceil
+		}
+		else if (round < 0) {
+			roundMethod = Math.floor
+		}
+		else {
+			roundMethod = Math.round
+		}
+
+		var rounded = roundMethod(exponentialForm);
 		var finalResult = Number(rounded + 'e-' + precision).toFixed(precision);
 		return finalResult;
 	};
@@ -230,11 +244,11 @@
 	 * Localise by overriding the precision and thousand / decimal separators
 	 * 2nd parameter `precision` can be an object matching `settings.number`
 	 */
-	var formatNumber = lib.formatNumber = lib.format = function(number, precision, thousand, decimal) {
+	var formatNumber = lib.formatNumber = lib.format = function(number, precision, thousand, decimal, round) {
 		// Resursively format arrays:
 		if (isArray(number)) {
 			return map(number, function(val) {
-				return formatNumber(val, precision, thousand, decimal);
+				return formatNumber(val, precision, thousand, decimal,round);
 			});
 		}
 
@@ -246,7 +260,8 @@
 				(isObject(precision) ? precision : {
 					precision : precision,
 					thousand : thousand,
-					decimal : decimal
+					decimal : decimal,
+					round : round
 				}),
 				lib.settings.number
 			),
@@ -256,11 +271,11 @@
 
 			// Do some calc:
 			negative = number < 0 ? "-" : "",
-			base = parseInt(toFixed(Math.abs(number || 0), usePrecision), 10) + "",
+			base = parseInt(toFixed(Math.abs(number || 0), usePrecision, opts.round), 10) + "",
 			mod = base.length > 3 ? base.length % 3 : 0;
 
 		// Format the number:
-		return negative + (mod ? base.substr(0, mod) + opts.thousand : "") + base.substr(mod).replace(/(\d{3})(?=\d)/g, "$1" + opts.thousand) + (usePrecision ? opts.decimal + toFixed(Math.abs(number), usePrecision).split('.')[1] : "");
+		return negative + (mod ? base.substr(0, mod) + opts.thousand : "") + base.substr(mod).replace(/(\d{3})(?=\d)/g, "$1" + opts.thousand) + (usePrecision ? opts.decimal + toFixed(Math.abs(number), usePrecision, opts.round).split('.')[1] : "");
 	};
 
 
@@ -275,11 +290,11 @@
 	 *
 	 * To do: tidy up the parameters
 	 */
-	var formatMoney = lib.formatMoney = function(number, symbol, precision, thousand, decimal, format) {
+	var formatMoney = lib.formatMoney = function(number, symbol, precision, thousand, decimal, format, round) {
 		// Resursively format arrays:
 		if (isArray(number)) {
 			return map(number, function(val){
-				return formatMoney(val, symbol, precision, thousand, decimal, format);
+				return formatMoney(val, symbol, precision, thousand, decimal, format, round);
 			});
 		}
 
@@ -293,7 +308,8 @@
 					precision : precision,
 					thousand : thousand,
 					decimal : decimal,
-					format : format
+					format : format,
+					round : round
 				}),
 				lib.settings.currency
 			),
@@ -305,7 +321,7 @@
 			useFormat = number > 0 ? formats.pos : number < 0 ? formats.neg : formats.zero;
 
 		// Return with currency symbol added:
-		return useFormat.replace('%s', opts.symbol).replace('%v', formatNumber(Math.abs(number), checkPrecision(opts.precision), opts.thousand, opts.decimal));
+		return useFormat.replace('%s', opts.symbol).replace('%v', formatNumber(Math.abs(number), checkPrecision(opts.precision), opts.thousand, opts.decimal, opts.round));
 	};
 
 
@@ -321,7 +337,7 @@
 	 * NB: `white-space:pre` CSS rule is required on the list container to prevent
 	 * browsers from collapsing the whitespace in the output strings.
 	 */
-	lib.formatColumn = function(list, symbol, precision, thousand, decimal, format) {
+	lib.formatColumn = function(list, symbol, precision, thousand, decimal, format, round) {
 		if (!list || !isArray(list)) return [];
 
 		// Build options object from second param (if object) or all params, extending defaults:
@@ -331,7 +347,8 @@
 					precision : precision,
 					thousand : thousand,
 					decimal : decimal,
-					format : format
+					format : format,
+					round: round
 				}),
 				lib.settings.currency
 			),
@@ -358,7 +375,7 @@
 					var useFormat = val > 0 ? formats.pos : val < 0 ? formats.neg : formats.zero,
 
 						// Format this value, push into formatted list and save the length:
-						fVal = useFormat.replace('%s', opts.symbol).replace('%v', formatNumber(Math.abs(val), checkPrecision(opts.precision), opts.thousand, opts.decimal));
+						fVal = useFormat.replace('%s', opts.symbol).replace('%v', formatNumber(Math.abs(val), checkPrecision(opts.precision), opts.thousand, opts.decimal, opts.round));
 
 					if (fVal.length > maxLength) maxLength = fVal.length;
 					return fVal;
