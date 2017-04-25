@@ -31,7 +31,8 @@
 			decimal : ".",		// decimal point separator
 			thousand : ",",		// thousands separator
 			precision : 2,		// decimal places
-			grouping : 3		// digit grouping (not implemented yet)
+			grouping : 3,		// digit grouping (not implemented yet)
+			round: 0
 		},
 		number: {
 			precision : 0,		// default precision on numbers is 0
@@ -169,7 +170,7 @@
 	 * Alias: `accounting.parse(string)`
 	 *
 	 * Decimal must be included in the regular expression to match floats (defaults to
-	 * accounting.settings.number.decimal), so if the number uses a non-standard decimal 
+	 * accounting.settings.number.decimal), so if the number uses a non-standard decimal
 	 * separator, provide it as the second argument.
 	 *
 	 * Also matches bracketed negatives (eg. "$ (1.99)" => -1.99)
@@ -208,16 +209,28 @@
 
 
 	/**
-	 * Implementation of toFixed() that treats floats more like decimals
+	 * Implementation of xed() that treats floats more like decimals
 	 *
-	 * Fixes binary rounding issues (eg. (0.615).toFixed(2) === "0.61") that present
+	 * Fixes binary rounding issues (eg. (0.615).xed(2) === "0.61") that present
 	 * problems for accounting- and finance-related software.
 	 */
-	var toFixed = lib.toFixed = function(value, precision) {
+	var toFixed = lib.toFixed = function(value, precision, round) {
 		precision = checkPrecision(precision, lib.settings.number.precision);
 
 		var exponentialForm = Number(lib.unformat(value) + 'e' + precision);
-		var rounded = Math.round(exponentialForm);
+		var roundMethod
+
+		if (round > 0) {
+			roundMethod = Math.ceil
+		}
+		else if (round < 0) {
+			roundMethod = Math.floor
+		}
+		else {
+			roundMethod = Math.round
+		}
+
+		var rounded = roundMethod(exponentialForm);
 		var finalResult = Number(rounded + 'e-' + precision).toFixed(precision);
 		return finalResult;
 	};
@@ -256,11 +269,11 @@
 
 			// Do some calc:
 			negative = number < 0 ? "-" : "",
-			base = parseInt(toFixed(Math.abs(number || 0), usePrecision), 10) + "",
+			base = parseInt(toFixed(Math.abs(number || 0), usePrecision, opts.round), 10) + "",
 			mod = base.length > 3 ? base.length % 3 : 0;
 
 		// Format the number:
-		return negative + (mod ? base.substr(0, mod) + opts.thousand : "") + base.substr(mod).replace(/(\d{3})(?=\d)/g, "$1" + opts.thousand) + (usePrecision ? opts.decimal + toFixed(Math.abs(number), usePrecision).split('.')[1] : "");
+		return negative + (mod ? base.substr(0, mod) + opts.thousand : "") + base.substr(mod).replace(/(\d{3})(?=\d)/g, "$1" + opts.thousand) + (usePrecision ? opts.decimal + toFixed(Math.abs(number), usePrecision, opts.round).split('.')[1] : "");
 	};
 
 
