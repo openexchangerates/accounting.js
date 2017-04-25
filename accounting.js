@@ -294,7 +294,7 @@
 		// Resursively format arrays:
 		if (isArray(number)) {
 			return map(number, function(val){
-				return formatMoney(val, symbol, precision, thousand, decimal, format);
+				return formatMoney(val, symbol, precision, thousand, decimal, format, round);
 			});
 		}
 
@@ -321,7 +321,7 @@
 			useFormat = number > 0 ? formats.pos : number < 0 ? formats.neg : formats.zero;
 
 		// Return with currency symbol added:
-		return useFormat.replace('%s', opts.symbol).replace('%v', formatNumber(Math.abs(number), checkPrecision(opts.precision), opts.thousand, opts.decimal));
+		return useFormat.replace('%s', opts.symbol).replace('%v', formatNumber(Math.abs(number), checkPrecision(opts.precision), opts.thousand, opts.decimal, opts.round));
 	};
 
 
@@ -375,7 +375,7 @@
 					var useFormat = val > 0 ? formats.pos : val < 0 ? formats.neg : formats.zero,
 
 						// Format this value, push into formatted list and save the length:
-						fVal = useFormat.replace('%s', opts.symbol).replace('%v', formatNumber(Math.abs(val), checkPrecision(opts.precision), opts.thousand, opts.decimal));
+						fVal = useFormat.replace('%s', opts.symbol).replace('%v', formatNumber(Math.abs(val), checkPrecision(opts.precision), opts.thousand, opts.decimal, opts.round));
 
 					if (fVal.length > maxLength) maxLength = fVal.length;
 					return fVal;
