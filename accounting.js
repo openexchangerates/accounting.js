@@ -124,13 +124,25 @@
 	/**
 	 * Parses a format string or object and returns format obj for use in rendering
 	 *
-	 * `format` is either a string with the default (positive) format, or object
-	 * containing `pos` (required), `neg` and `zero` values (or a function returning
-	 * either a string or object)
-	 *
-	 * Either string or format.pos must contain "%v" (value) to be valid
-	 */
+   * Parameters:
+   * string     has "default positive format, must contain "%v"
+   * object     has 'pos' (required, must contain "%v"), 'neg', 'zero' properties
+   * function   returns a string or object like above
+   *
+   * Returns:
+   * Object			has 'pos' (required, must contain "%v"), 'neg', 'zero' properties
+   *
+   */
+	 // Scenarios:
+	 // A: Valid string 			==> convert string to a format object
+	 // B: Invalid string			==> use default and turn it into an object, if it's not already
+	 // C: Valid object				==> leave the object alone
+	 // D: Invalid object			==> use default and turn it into an object, if it's not already
+	 // E: Function						==> Depends on waht the function returns
+	 // F: Nothing						==> use default and turn it into an object, if it's not already
+
 	function checkCurrencyFormat(format) {
+		//The default value will be "%s%v" to start.
 		var defaults = lib.settings.currency.format;
 
 		// Allow function as format parameter (should return string or object):
@@ -169,7 +181,7 @@
 	 * Alias: `accounting.parse(string)`
 	 *
 	 * Decimal must be included in the regular expression to match floats (defaults to
-	 * accounting.settings.number.decimal), so if the number uses a non-standard decimal 
+	 * accounting.settings.number.decimal), so if the number uses a non-standard decimal
 	 * separator, provide it as the second argument.
 	 *
 	 * Also matches bracketed negatives (eg. "$ (1.99)" => -1.99)
