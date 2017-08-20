@@ -85,7 +85,9 @@
 		for (key in defs) {
 			if (defs.hasOwnProperty(key)) {
 				// Replace values with defaults only if undefined (allow empty/zero values):
-				if (object[key] == null) object[key] = defs[key];
+				if (object[key] === undefined) { 
+					object[key] = defs[key];
+				}
 			}
 		}
 		return object;
