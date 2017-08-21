@@ -69,7 +69,7 @@
 	 * Tests whether supplied parameter is a true object
 	 */
 	function isObject(obj) {
-		return obj && toString.call(obj) === '[object Object]';
+		return !!(obj && toString.call(obj) === '[object Object]');
 	}
 
 	/**
@@ -85,7 +85,9 @@
 		for (key in defs) {
 			if (defs.hasOwnProperty(key)) {
 				// Replace values with defaults only if undefined (allow empty/zero values):
-				if (object[key] == null) object[key] = defs[key];
+				if (object[key] === undefined) {
+					object[key] = defs[key];					
+				}
 			}
 		}
 		return object;
@@ -169,7 +171,7 @@
 	 * Alias: `accounting.parse(string)`
 	 *
 	 * Decimal must be included in the regular expression to match floats (defaults to
-	 * accounting.settings.number.decimal), so if the number uses a non-standard decimal 
+	 * accounting.settings.number.decimal), so if the number uses a non-standard decimal
 	 * separator, provide it as the second argument.
 	 *
 	 * Also matches bracketed negatives (eg. "$ (1.99)" => -1.99)
