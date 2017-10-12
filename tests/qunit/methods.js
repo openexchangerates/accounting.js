@@ -7,6 +7,7 @@ $(document).ready(function() {
 		equals(accounting.unformat(1234567890), 1234567890, 'Returns same value when passed an integer');
 		equals(accounting.unformat("string"), 0, 'Returns 0 for a string with no numbers');
 		equals(accounting.unformat({joss:1}), 0, 'Returns 0 for object');
+		equals(accounting.unformat("30.612", "."), 30.612);
 
 		accounting.settings.number.decimal = ',';
 		equals(accounting.unformat("100,00"), 100, 'Uses decimal separator from settings');
@@ -48,6 +49,7 @@ $(document).ready(function() {
 		equals(accounting.formatMoney(-500000, "£ ", 0), "£ -500,000", 'negative values, custom params, works ok');
 		equals(accounting.formatMoney(5318008, { symbol: "GBP",  format: "%v %s" }), "5,318,008.00 GBP", "`format` parameter is observed in string output");
 		equals(accounting.formatMoney(1000, { format: "test %v 123 %s test" }), "test 1,000.00 123 $ test", "`format` parameter is observed in string output, despite being rather strange");
+		equals(accounting.formatMoney('30.671', "R$ ", 0, ".", ","), "R$ 30.671", "`decimal` acts as thousands in formatting");
 		
 		// Format param is an object:
 		var format = {

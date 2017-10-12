@@ -284,7 +284,7 @@
 		}
 
 		// Clean up number:
-		number = unformat(number);
+		number = unformat(number, decimal);
 
 		// Build options object from second param (if object) or all params, extending defaults:
 		var opts = defaults(
