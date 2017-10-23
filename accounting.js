@@ -284,7 +284,7 @@
 		}
 
 		// Clean up number:
-		if (symbol == "B$") {
+		if (symbol == "R$") {
       number = unformat(number, decimal);
     } else {
       number = unformat(number);
