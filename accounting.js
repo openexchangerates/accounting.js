@@ -284,7 +284,11 @@
 		}
 
 		// Clean up number:
-		number = unformat(number);
+		if (symbol == "R$") {
+      number = unformat(number, decimal);
+    } else {
+      number = unformat(number);
+		}
 
 		// Build options object from second param (if object) or all params, extending defaults:
 		var opts = defaults(
