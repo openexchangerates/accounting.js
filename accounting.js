@@ -54,7 +54,7 @@
 	 * from underscore.js
 	 */
 	function isString(obj) {
-		return !!(obj === '' || (obj && obj.charCodeAt && obj.substr));
+		return Boolean(obj === '' || (obj && obj.charCodeAt && obj.substr));
 	}
 
 	/**
