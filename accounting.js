@@ -1,9 +1,12 @@
 /*!
- * accounting.js javascript library v0.3.0
- * http://josscrowcroft.github.com/accounting.js/
+ * accounting.js v0.4.2
+ * Copyright 2014 Open Exchange Rates
  *
- * Copyright 2011 by Joss Crowcroft
- * Licensed under GPL v3 | http://www.gnu.org/licenses/gpl-3.0.txt
+ * Freely distributable under the MIT license.
+ * Portions of accounting.js are inspired or borrowed from underscore.js
+ *
+ * Full details and documentation:
+ * http://openexchangerates.github.io/accounting.js/
  */
 
 (function(root, undefined) {
@@ -14,7 +17,7 @@
 	var lib = {};
 
 	// Current version
-	lib.version = '0.3.0';
+	lib.version = '0.4.2';
 
 
 	/* --- Exposed settings --- */
@@ -55,7 +58,7 @@
 	}
 
 	/**
-	 * Tests whether supplied parameter is a string
+	 * Tests whether supplied parameter is an array
 	 * from underscore.js, delegates to ECMA5's native Array.isArray
 	 */
 	function isArray(obj) {
@@ -66,7 +69,7 @@
 	 * Tests whether supplied parameter is a true object
 	 */
 	function isObject(obj) {
-		return toString.call(obj) === '[object Object]';
+		return obj && toString.call(obj) === '[object Object]';
 	}
 
 	/**
@@ -163,10 +166,11 @@
 
 	/**
 	 * Takes a string/array of strings, removes all formatting/cruft and returns the raw float value
-	 * alias: accounting.`parse(string)`
+	 * Alias: `accounting.parse(string)`
 	 *
-	 * Decimal must be included in the regular expression to match floats (default: "."), so if the number
-	 * uses a non-standard decimal separator, provide it as the second argument.
+	 * Decimal must be included in the regular expression to match floats (defaults to
+	 * accounting.settings.number.decimal), so if the number uses a non-standard decimal 
+	 * separator, provide it as the second argument.
 	 *
 	 * Also matches bracketed negatives (eg. "$ (1.99)" => -1.99)
 	 *
@@ -186,14 +190,14 @@
 		// Return the value as-is if it's already a number:
 		if (typeof value === "number") return value;
 
-		// Default decimal point is "." but could be set to eg. "," in opts:
-		decimal = decimal || ".";
+		// Default decimal point comes from settings, but could be set to eg. "," in opts:
+		decimal = decimal || lib.settings.number.decimal;
 
 		 // Build regex to strip out everything except digits, decimal point and minus sign:
-		var regex = new RegExp("[^0-9-" + decimal + "]", ["g"]),
+		var regex = new RegExp("[^0-9-" + decimal + "]", "g"),
 			unformatted = parseFloat(
 				("" + value)
-				.replace(/\((.*)\)/, "-$1") // replace bracketed values with negatives
+				.replace(/\((?=\d+)(.*)\)/, "-$1") // replace bracketed values with negatives
 				.replace(regex, '')         // strip out any cruft
 				.replace(decimal, '.')      // make sure decimal point is standard
 			);
@@ -211,20 +215,22 @@
 	 */
 	var toFixed = lib.toFixed = function(value, precision) {
 		precision = checkPrecision(precision, lib.settings.number.precision);
-		var power = Math.pow(10, precision);
 
-		// Multiply up by precision, round accurately, then divide and use native toFixed():
-		return (Math.round(lib.unformat(value) * power) / power).toFixed(precision);
+		var exponentialForm = Number(lib.unformat(value) + 'e' + precision);
+		var rounded = Math.round(exponentialForm);
+		var finalResult = Number(rounded + 'e-' + precision).toFixed(precision);
+		return finalResult;
 	};
 
 
 	/**
 	 * Format a number, with comma-separated thousands and custom precision/decimal places
+	 * Alias: `accounting.format()`
 	 *
 	 * Localise by overriding the precision and thousand / decimal separators
 	 * 2nd parameter `precision` can be an object matching `settings.number`
 	 */
-	var formatNumber = lib.formatNumber = function(number, precision, thousand, decimal) {
+	var formatNumber = lib.formatNumber = lib.format = function(number, precision, thousand, decimal) {
 		// Resursively format arrays:
 		if (isArray(number)) {
 			return map(number, function(val) {
@@ -261,8 +267,8 @@
 	/**
 	 * Format a number into currency
 	 *
-	 * Usage: accounting.formatMoney(number, precision, symbol, thousandsSep, decimalSep, format)
-	 * defaults: (0, 2, "$", ",", ".", "%s%v")
+	 * Usage: accounting.formatMoney(number, symbol, precision, thousandsSep, decimalSep, format)
+	 * defaults: (0, "$", 2, ",", ".", "%s%v")
 	 *
 	 * Localise by overriding the symbol, precision, thousand / decimal separators and format
 	 * Second param can be an object matching `settings.currency` which is the easiest way.
@@ -316,7 +322,7 @@
 	 * browsers from collapsing the whitespace in the output strings.
 	 */
 	lib.formatColumn = function(list, symbol, precision, thousand, decimal, format) {
-		if (!list) return [];
+		if (!list || !isArray(list)) return [];
 
 		// Build options object from second param (if object) or all params, extending defaults:
 		var opts = defaults(
@@ -375,9 +381,11 @@
 
 	// Export accounting for CommonJS. If being loaded as an AMD module, define it as such.
 	// Otherwise, just add `accounting` to the global object
-	if (typeof module !== 'undefined' && module.exports) {
-		module.exports = lib;
-		lib.accounting = lib;
+	if (typeof exports !== 'undefined') {
+		if (typeof module !== 'undefined' && module.exports) {
+			exports = module.exports = lib;
+		}
+		exports.accounting = lib;
 	} else if (typeof define === 'function' && define.amd) {
 		// Return the library as an AMD module:
 		define([], function() {
