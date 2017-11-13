@@ -194,7 +194,7 @@
 		decimal = decimal || lib.settings.number.decimal;
 
 		 // Build regex to strip out everything except digits, decimal point and minus sign:
-		var regex = new RegExp("[^0-9-" + decimal + "]", ["g"]),
+		var regex = new RegExp("[^0-9-" + decimal + "]", "g"),
 			unformatted = parseFloat(
 				("" + value)
 				.replace(/\((?=\d+)(.*)\)/, "-$1") // replace bracketed values with negatives
