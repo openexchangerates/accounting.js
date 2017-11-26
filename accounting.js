@@ -238,9 +238,6 @@
 			});
 		}
 
-		// Clean up number:
-		number = unformat(number);
-
 		// Build options object from second param (if object) or all params, extending defaults:
 		var opts = defaults(
 				(isObject(precision) ? precision : {
@@ -249,10 +246,13 @@
 					decimal : decimal
 				}),
 				lib.settings.number
-			),
+			);
 
-			// Clean up precision
-			usePrecision = checkPrecision(opts.precision),
+		// Clean up number:
+		number = unformat(number, opts.decimal);
+
+		// Clean up precision
+		var usePrecision = checkPrecision(opts.precision),
 
 			// Do some calc:
 			negative = number < 0 ? "-" : "",
@@ -283,9 +283,6 @@
 			});
 		}
 
-		// Clean up number:
-		number = unformat(number);
-
 		// Build options object from second param (if object) or all params, extending defaults:
 		var opts = defaults(
 				(isObject(symbol) ? symbol : {
@@ -296,10 +293,13 @@
 					format : format
 				}),
 				lib.settings.currency
-			),
+			);
 
-			// Check format (returns object with pos, neg and zero):
-			formats = checkCurrencyFormat(opts.format),
+		// Clean up number:
+		number = unformat(number, opts.decimal);
+
+		// Check format (returns object with pos, neg and zero):
+		var formats = checkCurrencyFormat(opts.format),
 
 			// Choose which format to use for this value:
 			useFormat = number > 0 ? formats.pos : number < 0 ? formats.neg : formats.zero;

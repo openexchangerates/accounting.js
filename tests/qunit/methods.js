@@ -10,8 +10,10 @@ $(document).ready(function() {
 
 		accounting.settings.number.decimal = ',';
 		equals(accounting.unformat("100,00"), 100, 'Uses decimal separator from settings');
-		equals(accounting.unformat("¤1.000,00"), 1000, 'Uses decimal separator from settings');
+		equals(accounting.unformat("ï¿½1.000,00"), 1000, 'Uses decimal separator from settings');
 		accounting.settings.number.decimal = '.';
+		equals(accounting.unformat("100,00", ","), 100, 'Accepts decimal separator as second argument')
+		equals(accounting.unformat("ï¿½1.000,00", ","), 1000, 'Accepts decimal separator as second argument')
 	});
 
 	test("accounting.toFixed()", function() {
@@ -30,6 +32,11 @@ $(document).ready(function() {
 			decimal : "--"
 		}), "5__318__008--000", 'Correctly handles custom precision and separators passed in via second param options object');
 
+		// works with number as string and non-standard separators (eg. { thousand: ".", decimal: "," }):
+		equal(accounting.formatNumber("123,45", 2, ".", ","), "123,45", 'Accepts number as string and handles non-standard separators as individual arguments')
+		equal(accounting.formatNumber("1.234,56", 2, ".", ","), "1.234,56", 'Accepts number as string and handles non-standard separators as individual arguments')
+		equal(accounting.formatNumber("123,45", { precision: 2, thousand: ".", decimal: "," }), "123,45", 'Accepts number as string and handles non-standard separators passed as options object')
+		equal(accounting.formatNumber("1.234,56", { precision: 2, thousand: ".", decimal: "," }), "1.234,56", 'Accepts number as string and handles non-standard separators passed as options object')
 		
 		// check rounding:
 		equals(accounting.formatNumber(0.615, 2), "0.62", 'Rounds 0.615 up to "0.62" with precision of 2');
@@ -45,7 +52,7 @@ $(document).ready(function() {
 	test("accounting.formatMoney()", function() {
 		equals(accounting.formatMoney(12345678), "$12,345,678.00", "Default usage with default parameters is ok");
 		equals(accounting.formatMoney(4999.99, "$ ", 2, ".", ","), "$ 4.999,99", 'custom formatting via straight params works ok');
-		equals(accounting.formatMoney(-500000, "£ ", 0), "£ -500,000", 'negative values, custom params, works ok');
+		equals(accounting.formatMoney(-500000, "ï¿½ ", 0), "ï¿½ -500,000", 'negative values, custom params, works ok');
 		equals(accounting.formatMoney(5318008, { symbol: "GBP",  format: "%v %s" }), "5,318,008.00 GBP", "`format` parameter is observed in string output");
 		equals(accounting.formatMoney(1000, { format: "test %v 123 %s test" }), "test 1,000.00 123 $ test", "`format` parameter is observed in string output, despite being rather strange");
 		
@@ -62,6 +69,23 @@ $(document).ready(function() {
 		accounting.settings.currency.format = "%s%v";
 		accounting.formatMoney(0, {format:""});
 		equals(typeof accounting.settings.currency.format, "object", "`settings.currency.format` default string value should be reformatted to an object, the first time it is used");
+
+		// works with number as string and non-standard separators (eg. { thousand: ".", decimal: "," }):
+		equal(accounting.formatMoney("123,45", "â‚¬ ", 2, ".", ","), "â‚¬ 123,45", 'Accepts number as string and handles non-standard separators as individual arguments')
+		equal(accounting.formatMoney("1.234,56", "R$ ", 2, ".", ","), "R$ 1.234,56", 'Accepts number as string and handles non-standard separators as individual arguments')
+		equal(accounting.formatMoney("123,45", { 
+			symbol: "â‚¬ ", 
+			precision: 2, 
+			thousand: ".", 
+			decimal: "," 
+		}), "â‚¬ 123,45", 'Accepts number as string and handles non-standard separators passed as options object')
+		equal(accounting.formatMoney("1.234,56", {
+			symbol: "R$ ", 
+			precision: 2, 
+			thousand: ".", 
+			decimal: "," 
+		}), "R$ 1.234,56", 'Accepts number as string and handles non-standard separators passed as options object')
+
 	});
 
 

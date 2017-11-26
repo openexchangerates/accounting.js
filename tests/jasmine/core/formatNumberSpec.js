@@ -83,6 +83,8 @@ describe('formatNumber', function(){
             expect( accounting.formatNumber(98765432.12, 2, '&', '*') ).toBe( '98&765&432*12' );
             expect( accounting.formatNumber(98765432.12, 3, '"', '\'') ).toBe( '98"765"432\'120' );
             expect( accounting.formatNumber(98765432.12, 4, '[', ']') ).toBe( '98[765[432]1200' );
+            expect( accounting.formatNumber("123,45", 2, '.', ',') ).toBe( '123,45' );
+            expect( accounting.formatNumber("1.234,56", 2, '.', ',').toBe( '1.234,56' );
         });
 
         it('should use default separators if null', function(){
