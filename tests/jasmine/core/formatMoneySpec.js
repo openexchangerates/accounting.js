@@ -20,4 +20,9 @@ describe('formatMoney()', function(){
         expect( accounting.formatMoney(5318008, "$", 0) ).toBe( '$5,318,008' );
     });
 
+    it('should accept number as string and work with non-standard separators', function(){
+        expect( accounting.formatMoney("123,45", "€ ", 2, ".", ",") ).toBe( "€ 123,45" );
+        expect( accounting.formatMoney("1.234,56", "R$ ", 2, ".", ",") ).toBe( "R$ 1.234,56" );
+    });
+
 });
