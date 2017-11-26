@@ -95,8 +95,9 @@ accounting.toFixed(0.615, 2); // "0.62"</pre>
 
 		<h4><strong>unformat()</strong> - parse a value from any formatted number/currency string</h4>
 
-		<p>Takes any number and removes all currency formatting. Aliased as <code>accounting.parse()</code></p>
-		<pre class="prettyprint lang-js">accounting.unformat("&pound; 12,345,678.90 GBP"); // 12345678.9</pre>
+		<p>Takes any number and removes all currency formatting. If a non-standard decimal separator was used (eg. a comma) the separator is required as the second argument. Aliased as <code>accounting.parse()</code></p>
+		<pre class="prettyprint lang-js">accounting.unformat("&pound; 12,345,678.90 GBP"); // 12345678.9
+accounting.unformat("&euro; 1.000.000,00", ","); // 1000000</pre>
 	</section>
 
 	<section id="demo">
