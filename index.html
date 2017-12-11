@@ -82,8 +82,8 @@ accounting.formatColumn([123.5, 3456.49, 777888.99, 12345678, -5432], "$ ");</pr
 		<h4><strong>formatNumber()</strong> - format a number with custom precision and localisation</h4>
 
 		<p>The base function of the library, which takes any number or array of numbers, runs <code>accounting.unformat()</code> to remove any formatting, and returns the number(s) formatted with separated thousands and custom precision:</p>
-		<pre class="prettyprint lang-js">accounting.formatNumber(5318008); // 5,318,008
-accounting.formatNumber(9876543.21, 3, " "); // 9 876 543.210</pre>
+		<pre class="prettyprint lang-js">accounting.formatNumber(5318008); // "5,318,008"
+accounting.formatNumber(9876543.21, 3, " "); // "9 876 543.210"</pre>
 
 
 		<h4><strong>toFixed()</strong> - better rounding for floating point numbers</h4>
