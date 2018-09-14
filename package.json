@@ -9,7 +9,7 @@
 		"Open Exchange Rates <info@openxchangerates.org> (https://openexchangerates.org)",
 		"Joss Crowcroft <josscrowcroft@gmail.com> (http://www.josscrowcroft.com)"
 	],
-	"dependencies" : [],
+	"dependencies" : {},
 	"repository" : {"type": "git", "url": "git://github.com/openexchangerates/accounting.js.git"},
 	"main" : "accounting.js",
 	"version" : "0.4.2"
