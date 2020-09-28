@@ -58,6 +58,7 @@ $(document).ready(function() {
 		equals(accounting.formatMoney(0, { symbol: "GBP",  format:format}), "GBP  --", "`format` parameter provided given as an object with `zero` format, correctly observed in string output");
 		equals(accounting.formatMoney(-1000, { symbol: "GBP",  format:format}), "GBP (1,000.00)", "`format` parameter provided given as an object with `neg` format, correctly observed in string output");
 		equals(accounting.formatMoney(1000, { symbol: "GBP",  format:{neg:"--%v %s"}}), "GBP1,000.00", "`format` parameter provided, but only `neg` value provided - positive value should be formatted by default format (%s%v)");
+		equals(accounting.formatMoney(-1000, { symbol: "GBP",  format:{pos:"%s%v"}}), "GBP-1,000.00", "`format` parameter provided, but only `pos` value provided - negative and zero should be optional");
 		
 		accounting.settings.currency.format = "%s%v";
 		accounting.formatMoney(0, {format:""});

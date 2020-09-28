@@ -156,6 +156,17 @@
 				zero : defaults
 			};
 
+		// If format is an object then neg and zero should be optional
+		} else if ( isObject( format ) && ( !format.neg || !format.zero ) ) {
+
+			// If the negative or zero value is missing, populate based on positive
+			if ( !format.neg ) {
+				format.neg = format.pos.replace("%v", "-%v");
+			}
+			if ( !format.zero ) {
+				format.zero = format.pos;
+			}
+
 		}
 		// Otherwise, assume format was fine:
 		return format;
