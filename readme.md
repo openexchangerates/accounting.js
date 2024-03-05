@@ -10,7 +10,7 @@ Maintained by [Open Exchange Rates](https://openexchangerates.org "Free reliable
 
 ### Works great with:
 
-* **[money.js](http://openexchangerates.github.com/money.js "JavaScript and NodeJS Currency Conversion Library")** - a tiny (1kb) standalone JavaScript currency conversion library, for web & nodeJS
+* **[money.js](http://openexchangerates.github.io/money.js "JavaScript and NodeJS Currency Conversion Library")** - a tiny (1kb) standalone JavaScript currency conversion library, for web & nodeJS
 * **[Open Exchange Rates](https://openexchangerates.org "realtime and historical exchange rates/currency conversion data API")** - the free currency conversion data API
 
 ---
